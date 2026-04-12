@@ -1,14 +1,60 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import VotingArena from './pages/VotingArena';
+import CandidateProfiles from './pages/CandidateProfiles';
+import CandidateManagement from './pages/CandidateManagement';
+import TransparencyDashboard from './pages/TransparencyDashboard';
+import ReceiptVerification from './pages/ReceiptVerification';
+
 function App() {
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-      <div className="bg-white/10 backdrop-blur-lg border border-white/20 p-8 rounded-2xl shadow-[0_0_20px_rgba(0,255,128,0.15)] text-center">
-        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mb-4">
-          Voting System Initialized
-        </h1>
-        <p className="text-zinc-300">Phase 1 complete. Tailwind v4 is working perfectly.</p>
+    <Router>
+      <div className="min-h-screen bg-transparent">
+        <Navbar />
+        <Toaster
+          position="top-right"
+          gutter={10}
+          toastOptions={{
+            duration: 3600,
+            style: {
+              background: '#11284f',
+              color: '#eaf1ff',
+              border: '1px solid #35598e',
+              borderRadius: '14px',
+              boxShadow: '0 16px 34px rgba(12, 30, 62, 0.36)',
+              fontSize: '14px'
+            },
+            success: {
+              iconTheme: {
+                primary: '#41ba67',
+                secondary: '#11284f'
+              }
+            },
+            error: {
+              iconTheme: {
+                primary: '#ef5e5e',
+                secondary: '#11284f'
+              }
+            }
+          }}
+        />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/candidates" element={<CandidateProfiles />} />
+          <Route path="/manage-candidates" element={<CandidateManagement />} />
+          <Route path="/transparency" element={<TransparencyDashboard />} />
+          <Route path="/receipt" element={<ReceiptVerification />} />
+          <Route path="/vote" element={<VotingArena />} />
+        </Routes>
       </div>
-    </div>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
