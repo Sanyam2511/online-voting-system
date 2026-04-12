@@ -1,0 +1,42 @@
+<svg width="900" height="620" viewBox="0 0 900 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Digital ballot selection and vote confirmation">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7FBFF"/>
+      <stop offset="1" stop-color="#E8F1FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="620" rx="36" fill="url(#bg)"/>
+  <circle cx="106" cy="104" r="70" fill="#D9E8FF"/>
+  <circle cx="788" cy="520" r="86" fill="#D1E2FF"/>
+
+  <rect x="106" y="104" width="522" height="408" rx="26" fill="#FFFFFF" stroke="#C5D7F6" stroke-width="2"/>
+  <rect x="146" y="142" width="442" height="44" rx="12" fill="#EDF4FF"/>
+  <rect x="166" y="158" width="166" height="12" rx="6" fill="#254780"/>
+  <rect x="438" y="154" width="132" height="20" rx="10" fill="#1F66F4"/>
+
+  <rect x="146" y="210" width="442" height="82" rx="14" fill="#F5F9FF" stroke="#D1DFF6"/>
+  <rect x="166" y="232" width="116" height="12" rx="6" fill="#2E4E84"/>
+  <rect x="166" y="254" width="206" height="10" rx="5" fill="#6A84AE"/>
+  <circle cx="546" cy="251" r="16" fill="#E0EBFF" stroke="#AFC4EB"/>
+
+  <rect x="146" y="306" width="442" height="82" rx="14" fill="#EAF2FF" stroke="#AEC5EE"/>
+  <rect x="166" y="328" width="124" height="12" rx="6" fill="#2E4E84"/>
+  <rect x="166" y="350" width="194" height="10" rx="5" fill="#6A84AE"/>
+  <circle cx="546" cy="347" r="16" fill="#1F66F4"/>
+  <path d="M539 347L545 353L556 342" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="146" y="402" width="442" height="82" rx="14" fill="#F5F9FF" stroke="#D1DFF6"/>
+  <rect x="166" y="424" width="136" height="12" rx="6" fill="#2E4E84"/>
+  <rect x="166" y="446" width="230" height="10" rx="5" fill="#6A84AE"/>
+  <circle cx="546" cy="443" r="16" fill="#E0EBFF" stroke="#AFC4EB"/>
+
+  <rect x="654" y="252" width="146" height="214" rx="20" fill="#1F66F4"/>
+  <rect x="680" y="230" width="94" height="40" rx="8" fill="#274A84"/>
+  <rect x="692" y="236" width="70" height="8" rx="4" fill="#DCE9FF"/>
+  <path d="M677 304H777L758 338H696L677 304Z" fill="#DCE9FF"/>
+  <rect x="672" y="340" width="110" height="106" rx="12" fill="#DCE9FF"/>
+  <path d="M703 392L721 410L751 378" stroke="#1F66F4" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <text x="104" y="78" fill="#1F3766" font-family="Arial, sans-serif" font-size="24" font-weight="700">Official Ballot Selection</text>
+</svg>

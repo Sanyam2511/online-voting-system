@@ -1,0 +1,50 @@
+<svg width="960" height="620" viewBox="0 0 960 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Public transparency dashboard">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="960" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FBFF"/>
+      <stop offset="1" stop-color="#E9F2FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="960" height="620" rx="34" fill="url(#bg)"/>
+  <circle cx="104" cy="108" r="66" fill="#DDE9FF"/>
+  <circle cx="850" cy="520" r="88" fill="#D4E5FF"/>
+
+  <rect x="82" y="114" width="796" height="408" rx="24" fill="#FFFFFF" stroke="#C8D9F6" stroke-width="2"/>
+
+  <rect x="122" y="154" width="168" height="92" rx="16" fill="#EEF4FF"/>
+  <rect x="314" y="154" width="168" height="92" rx="16" fill="#F3F8FF"/>
+  <rect x="506" y="154" width="168" height="92" rx="16" fill="#EEF4FF"/>
+  <rect x="698" y="154" width="140" height="92" rx="16" fill="#1F66F4"/>
+
+  <rect x="138" y="178" width="86" height="10" rx="5" fill="#5B739A"/>
+  <rect x="138" y="198" width="98" height="18" rx="9" fill="#2A4B84"/>
+
+  <rect x="330" y="178" width="94" height="10" rx="5" fill="#5B739A"/>
+  <rect x="330" y="198" width="104" height="18" rx="9" fill="#2A4B84"/>
+
+  <rect x="522" y="178" width="90" height="10" rx="5" fill="#5B739A"/>
+  <rect x="522" y="198" width="108" height="18" rx="9" fill="#2A4B84"/>
+
+  <rect x="716" y="178" width="76" height="10" rx="5" fill="#DDE9FF"/>
+  <rect x="716" y="198" width="92" height="18" rx="9" fill="#DDE9FF"/>
+
+  <rect x="122" y="274" width="380" height="210" rx="18" fill="#F7FAFF" stroke="#CADBF7"/>
+  <rect x="146" y="304" width="24" height="150" rx="6" fill="#1F66F4"/>
+  <rect x="186" y="336" width="24" height="118" rx="6" fill="#2F7DFF"/>
+  <rect x="226" y="286" width="24" height="168" rx="6" fill="#274A84"/>
+  <rect x="266" y="322" width="24" height="132" rx="6" fill="#6690F4"/>
+  <rect x="306" y="352" width="24" height="102" rx="6" fill="#8FB1F8"/>
+  <rect x="350" y="300" width="118" height="12" rx="6" fill="#274A84"/>
+  <rect x="350" y="322" width="94" height="10" rx="5" fill="#6C85AF"/>
+  <rect x="350" y="342" width="106" height="10" rx="5" fill="#9AB0D1"/>
+
+  <rect x="526" y="274" width="312" height="210" rx="18" fill="#EEF4FF" stroke="#CADBF7"/>
+  <path d="M552 438C580 398 610 412 638 374C666 336 696 350 724 320C752 290 782 302 812 266" stroke="#1F66F4" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="812" cy="266" r="8" fill="#1F66F4"/>
+  <rect x="552" y="286" width="156" height="12" rx="6" fill="#2A4B84"/>
+  <rect x="552" y="308" width="124" height="10" rx="5" fill="#6983AD"/>
+  <rect x="552" y="328" width="140" height="10" rx="5" fill="#97AFD1"/>
+
+  <text x="82" y="78" fill="#1E3968" font-family="Arial, sans-serif" font-size="24" font-weight="700">Public Transparency Dashboard</text>
+</svg>

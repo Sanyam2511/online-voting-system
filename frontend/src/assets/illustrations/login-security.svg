@@ -1,0 +1,40 @@
+<svg width="900" height="620" viewBox="0 0 900 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Secure login for digital voting">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7FBFF"/>
+      <stop offset="1" stop-color="#E9F2FF"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="195" y1="148" x2="640" y2="450" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F2F7FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="620" rx="36" fill="url(#bg)"/>
+  <circle cx="100" cy="110" r="74" fill="#DBE9FF"/>
+  <circle cx="798" cy="520" r="84" fill="#D3E4FF"/>
+
+  <rect x="182" y="128" width="538" height="350" rx="22" fill="#EAF2FF" stroke="#C4D6F4" stroke-width="2"/>
+  <rect x="206" y="154" width="490" height="274" rx="16" fill="url(#screen)" stroke="#C4D6F4"/>
+  <rect x="404" y="444" width="94" height="14" rx="7" fill="#9AB1D3"/>
+
+  <rect x="312" y="228" width="278" height="136" rx="18" fill="#EDF4FF" stroke="#C5D8F8"/>
+  <rect x="336" y="292" width="230" height="16" rx="8" fill="#D6E5FF"/>
+  <rect x="336" y="320" width="150" height="12" rx="6" fill="#B4CBF1"/>
+
+  <rect x="410" y="242" width="82" height="56" rx="14" fill="#1F66F4"/>
+  <path d="M429 242V224C429 206 442 194 451 194C460 194 473 206 473 224V242" stroke="#1F66F4" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="451" cy="266" r="10" fill="#DDE9FF"/>
+
+  <path d="M728 188L786 210V264C786 303 762 336 728 351C694 336 670 303 670 264V210L728 188Z" fill="#1F66F4"/>
+  <path d="M704 268L721 284L753 246" stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="98" y="208" width="140" height="226" rx="22" fill="#FFFFFF" stroke="#C7D8F5" stroke-width="2"/>
+  <rect x="120" y="236" width="96" height="16" rx="8" fill="#35598E"/>
+  <rect x="120" y="266" width="86" height="12" rx="6" fill="#6581AD"/>
+  <rect x="120" y="292" width="96" height="12" rx="6" fill="#A3B7D7"/>
+  <rect x="120" y="338" width="96" height="68" rx="12" fill="#EAF2FF"/>
+  <path d="M138 372L154 388L194 348" stroke="#1F66F4" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <text x="82" y="74" fill="#1F3766" font-family="Arial, sans-serif" font-size="24" font-weight="700">Secure Voter Login</text>
+</svg>

@@ -1,0 +1,43 @@
+<svg width="960" height="620" viewBox="0 0 960 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Vote receipt verification interface">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="960" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FBFF"/>
+      <stop offset="1" stop-color="#E9F2FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="960" height="620" rx="34" fill="url(#bg)"/>
+  <circle cx="132" cy="96" r="68" fill="#DCE9FF"/>
+  <circle cx="842" cy="522" r="82" fill="#D3E4FF"/>
+
+  <rect x="86" y="112" width="788" height="408" rx="24" fill="#FFFFFF" stroke="#C8D9F6" stroke-width="2"/>
+
+  <rect x="126" y="154" width="352" height="324" rx="20" fill="#EEF4FF" stroke="#C7D8F6"/>
+  <rect x="156" y="192" width="292" height="56" rx="12" fill="#FFFFFF" stroke="#C7D8F6"/>
+  <rect x="174" y="214" width="172" height="12" rx="6" fill="#2A4B84"/>
+  <rect x="126" y="266" width="352" height="2" fill="#C7D8F6"/>
+
+  <rect x="156" y="290" width="292" height="16" rx="8" fill="#2A4B84"/>
+  <rect x="156" y="318" width="210" height="10" rx="5" fill="#6A84AE"/>
+  <rect x="156" y="338" width="184" height="10" rx="5" fill="#95ACCF"/>
+
+  <rect x="156" y="372" width="144" height="40" rx="10" fill="#1F66F4"/>
+  <text x="186" y="397" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="700">Verify Code</text>
+
+  <rect x="510" y="154" width="324" height="324" rx="20" fill="#F6FAFF" stroke="#C7D8F6"/>
+  <rect x="540" y="190" width="264" height="132" rx="14" fill="#FFFFFF" stroke="#C7D8F6"/>
+  <rect x="560" y="214" width="132" height="12" rx="6" fill="#2A4B84"/>
+  <rect x="560" y="238" width="184" height="10" rx="5" fill="#6A84AE"/>
+  <rect x="560" y="258" width="168" height="10" rx="5" fill="#95ACCF"/>
+  <rect x="560" y="278" width="96" height="28" rx="14" fill="#EAF2FF" stroke="#B9CDF3"/>
+
+  <circle cx="760" cy="256" r="28" fill="#1F66F4"/>
+  <path d="M748 257L757 266L773 248" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="540" y="344" width="264" height="104" rx="14" fill="#EEF4FF" stroke="#C7D8F6"/>
+  <rect x="560" y="366" width="196" height="10" rx="5" fill="#2A4B84"/>
+  <rect x="560" y="386" width="174" height="10" rx="5" fill="#6A84AE"/>
+  <rect x="560" y="406" width="132" height="10" rx="5" fill="#95ACCF"/>
+
+  <text x="86" y="80" fill="#1E3968" font-family="Arial, sans-serif" font-size="24" font-weight="700">Vote Receipt Verification</text>
+</svg>

@@ -1,0 +1,42 @@
+<svg width="900" height="620" viewBox="0 0 900 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Voter registration and onboarding">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7FBFF"/>
+      <stop offset="1" stop-color="#E7F0FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="620" rx="36" fill="url(#bg)"/>
+  <circle cx="132" cy="100" r="68" fill="#DCE9FF"/>
+  <circle cx="806" cy="530" r="78" fill="#D4E5FF"/>
+
+  <rect x="76" y="122" width="748" height="392" rx="28" fill="#FFFFFF" stroke="#C5D7F6" stroke-width="2"/>
+
+  <rect x="120" y="166" width="268" height="304" rx="20" fill="#EEF4FF" stroke="#C7D8F6"/>
+  <circle cx="254" cy="238" r="54" fill="#1F66F4"/>
+  <circle cx="254" cy="225" r="19" fill="#DDE9FF"/>
+  <path d="M223 270C223 249 239 235 259 235H249C269 235 285 249 285 270V284H223V270Z" fill="#DDE9FF"/>
+  <rect x="158" y="320" width="192" height="14" rx="7" fill="#2F4E84"/>
+  <rect x="158" y="346" width="160" height="11" rx="5.5" fill="#6481AE"/>
+  <rect x="158" y="366" width="176" height="11" rx="5.5" fill="#90A8CC"/>
+  <rect x="158" y="404" width="192" height="40" rx="10" fill="#1F66F4"/>
+  <text x="192" y="430" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="700">Verify Profile</text>
+
+  <rect x="428" y="166" width="352" height="146" rx="16" fill="#EDF4FF" stroke="#C7D8F6"/>
+  <rect x="454" y="196" width="212" height="14" rx="7" fill="#274A84"/>
+  <rect x="454" y="222" width="180" height="11" rx="5.5" fill="#6684AF"/>
+  <rect x="454" y="244" width="194" height="11" rx="5.5" fill="#98AFD2"/>
+  <circle cx="718" cy="236" r="26" fill="#1F66F4"/>
+  <path d="M708 236L716 244L730 228" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="428" y="334" width="352" height="136" rx="16" fill="#FFFFFF" stroke="#C7D8F6"/>
+  <rect x="456" y="362" width="232" height="12" rx="6" fill="#2C4D85"/>
+  <rect x="456" y="385" width="168" height="10" rx="5" fill="#5E7BA9"/>
+  <rect x="456" y="404" width="196" height="10" rx="5" fill="#91A8CD"/>
+  <rect x="690" y="358" width="64" height="90" rx="10" fill="#1F66F4"/>
+  <rect x="706" y="372" width="32" height="8" rx="4" fill="#DDE9FF"/>
+  <rect x="706" y="388" width="32" height="8" rx="4" fill="#DDE9FF"/>
+  <rect x="706" y="404" width="32" height="8" rx="4" fill="#DDE9FF"/>
+
+  <text x="74" y="78" fill="#1F3766" font-family="Arial, sans-serif" font-size="24" font-weight="700">Citizen Onboarding</text>
+</svg>

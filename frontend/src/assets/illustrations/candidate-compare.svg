@@ -1,0 +1,52 @@
+<svg width="960" height="620" viewBox="0 0 960 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Candidate profile comparison">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="960" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7FBFF"/>
+      <stop offset="1" stop-color="#E8F2FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="960" height="620" rx="34" fill="url(#bg)"/>
+  <circle cx="122" cy="96" r="70" fill="#D9E8FF"/>
+  <circle cx="834" cy="530" r="86" fill="#D2E4FF"/>
+
+  <rect x="76" y="110" width="808" height="418" rx="24" fill="#FFFFFF" stroke="#C8D9F6" stroke-width="2"/>
+
+  <rect x="116" y="154" width="232" height="330" rx="20" fill="#EEF4FF" stroke="#C7D8F6"/>
+  <circle cx="232" cy="220" r="48" fill="#1F66F4"/>
+  <circle cx="232" cy="208" r="16" fill="#DCE9FF"/>
+  <path d="M205 248C205 232 217 220 233 220H231C247 220 259 232 259 248V262H205V248Z" fill="#DCE9FF"/>
+  <rect x="146" y="294" width="172" height="12" rx="6" fill="#2A4B84"/>
+  <rect x="146" y="316" width="146" height="10" rx="5" fill="#6783AE"/>
+  <rect x="146" y="334" width="160" height="10" rx="5" fill="#94ABCE"/>
+  <rect x="146" y="370" width="172" height="42" rx="10" fill="#1F66F4"/>
+  <text x="177" y="396" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="700">View Profile</text>
+
+  <rect x="366" y="154" width="232" height="330" rx="20" fill="#F7FAFF" stroke="#C7D8F6"/>
+  <circle cx="482" cy="220" r="48" fill="#2F7DFF"/>
+  <circle cx="482" cy="208" r="16" fill="#DCE9FF"/>
+  <path d="M455 248C455 232 467 220 483 220H481C497 220 509 232 509 248V262H455V248Z" fill="#DCE9FF"/>
+  <rect x="396" y="294" width="172" height="12" rx="6" fill="#2A4B84"/>
+  <rect x="396" y="316" width="146" height="10" rx="5" fill="#6783AE"/>
+  <rect x="396" y="334" width="160" height="10" rx="5" fill="#94ABCE"/>
+  <rect x="396" y="370" width="172" height="42" rx="10" fill="#EAF2FF" stroke="#B8CCF3"/>
+  <text x="426" y="396" fill="#1F66F4" font-family="Arial, sans-serif" font-size="16" font-weight="700">Add Compare</text>
+
+  <rect x="616" y="154" width="228" height="330" rx="20" fill="#F1F7FF" stroke="#C7D8F6"/>
+  <rect x="642" y="188" width="176" height="14" rx="7" fill="#274A84"/>
+  <rect x="642" y="214" width="150" height="10" rx="5" fill="#6D87B0"/>
+  <rect x="642" y="236" width="168" height="10" rx="5" fill="#9BB0D1"/>
+
+  <rect x="642" y="272" width="176" height="132" rx="14" fill="#FFFFFF" stroke="#C7D8F6"/>
+  <rect x="656" y="288" width="146" height="10" rx="5" fill="#2A4B84"/>
+  <rect x="656" y="308" width="120" height="10" rx="5" fill="#6783AE"/>
+  <rect x="656" y="328" width="128" height="10" rx="5" fill="#9BB0D1"/>
+  <rect x="656" y="352" width="70" height="26" rx="13" fill="#1F66F4"/>
+  <rect x="734" y="352" width="70" height="26" rx="13" fill="#EAF2FF" stroke="#B8CCF3"/>
+
+  <path d="M354 448H610" stroke="#9EB8EA" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 8"/>
+  <circle cx="482" cy="448" r="16" fill="#1F66F4"/>
+  <path d="M476 448H488M488 448L484 444M488 448L484 452" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <text x="78" y="78" fill="#1E3968" font-family="Arial, sans-serif" font-size="24" font-weight="700">Candidate Profiles &amp; Compare</text>
+</svg>
