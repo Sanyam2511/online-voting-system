@@ -9,6 +9,10 @@ const candidateSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add a party name']
   },
+  electionName: {
+    type: String,
+    default: 'National General Election 2026'
+  },
   manifesto: {
     type: String,
     required: [true, 'Please add a manifesto or description']
@@ -16,6 +20,38 @@ const candidateSchema = new mongoose.Schema({
   imageUrl: {
     type: String,
     default: 'https://via.placeholder.com/150' // Fallback image
+  },
+  campaignTagline: {
+    type: String,
+    default: ''
+  },
+  bio: {
+    type: String,
+    default: ''
+  },
+  region: {
+    type: String,
+    default: ''
+  },
+  age: {
+    type: Number,
+    default: null
+  },
+  education: {
+    type: String,
+    default: ''
+  },
+  experience: {
+    type: String,
+    default: ''
+  },
+  priorities: {
+    type: [String],
+    default: []
+  },
+  isVerified: {
+    type: Boolean,
+    default: true
   },
   voteCount: {
     type: Number,
