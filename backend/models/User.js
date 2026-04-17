@@ -25,14 +25,14 @@ const userSchema = new mongoose.Schema({
   },
   isVerified: {
     type: Boolean,
-    default: false // Can be used later for email OTP verification
+    default: false
   },
   hasVoted: {
     type: Boolean,
-    default: false // Critical flag to prevent double voting
+    default: false
   }
 }, {
-  timestamps: true // Automatically creates createdAt and updatedAt fields
+  timestamps: true
 });
 
 const User = mongoose.model('User', userSchema);

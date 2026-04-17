@@ -1,6 +1,12 @@
 import mongoose from 'mongoose';
 
 const candidateSchema = new mongoose.Schema({
+  election: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Election',
+    index: true,
+    default: null
+  },
   name: {
     type: String,
     required: [true, 'Please add a candidate name']
@@ -55,7 +61,7 @@ const candidateSchema = new mongoose.Schema({
   },
   voteCount: {
     type: Number,
-    default: 0 // Initializes with 0 votes
+    default: 0 
   }
 }, {
   timestamps: true

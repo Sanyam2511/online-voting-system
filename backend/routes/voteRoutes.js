@@ -1,5 +1,10 @@
 import express from 'express';
 import {
+	getPublicElections,
+	getManagedElections,
+	createElection,
+	updateElection,
+	transitionElectionStatus,
 	getCandidates,
 	getManagedCandidates,
 	createCandidate,
@@ -14,9 +19,15 @@ import {
 	verifyVoteReceipt,
 	getMyVoteReceipt
 } from '../controllers/voteController.js';
-import { protect, adminOnly } from '../middleware/authMiddleware.js';
+import { protect, adminOnly } from '../middleware/AuthMiddleware.js';
 
 const router = express.Router();
+
+router.get('/elections/public', getPublicElections);
+router.get('/elections/manage', protect, adminOnly, getManagedElections);
+router.post('/elections/manage', protect, adminOnly, createElection);
+router.put('/elections/manage/:electionId', protect, adminOnly, updateElection);
+router.post('/elections/manage/:electionId/transition', protect, adminOnly, transitionElectionStatus);
 
 // Public route to see candidates
 router.get('/candidates', getCandidates);

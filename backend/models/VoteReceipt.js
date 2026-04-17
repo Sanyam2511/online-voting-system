@@ -5,7 +5,12 @@ const voteReceiptSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-    unique: true,
+    index: true
+  },
+  election: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Election',
+    required: true,
     index: true
   },
   candidate: {
@@ -33,6 +38,8 @@ const voteReceiptSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+voteReceiptSchema.index({ user: 1, election: 1 }, { unique: true });
 
 const VoteReceipt = mongoose.model('VoteReceipt', voteReceiptSchema);
 export default VoteReceipt;

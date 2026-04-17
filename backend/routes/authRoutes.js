@@ -1,6 +1,6 @@
 import express from 'express';
 import { registerVoter, loginVoter, getCurrentVoter } from '../controllers/authController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { protect } from '../middleware/AuthMiddleware.js';
 
 const router = express.Router();
 
