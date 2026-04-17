@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Building2, LogOut, ShieldCheck, Vote } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AUTH_CHANGED_EVENT, clearAuthSession, getStoredUser } from '../lib/auth';
 
 const Navbar = () => {

@@ -1,3 +1,4 @@
+import React from 'react';
 import { CheckCircle2, Circle } from 'lucide-react';
 
 const PartyCard = ({ partyName, candidates, selectedCandidateId, onSelectCandidate, disabled }) => {

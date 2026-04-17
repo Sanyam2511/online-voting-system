@@ -1,5 +1,5 @@
 import { AlertCircle, ArrowRight, CheckCircle2, LockKeyhole, Mail, ShieldCheck } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../lib/api';
 import { setAuthSession } from '../lib/auth';
