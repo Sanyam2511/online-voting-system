@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { BadgeCheck, LoaderCircle, SearchCheck, ShieldCheck } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { BadgeCheck, CalendarDays, LoaderCircle, SearchCheck, ShieldCheck } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
 import api from '../lib/api';
@@ -26,6 +26,8 @@ const ReceiptCard = ({ title, receipt }) => (
 const ReceiptVerification = () => {
   const [searchParams] = useSearchParams();
   const [lookupCode, setLookupCode] = useState(searchParams.get('code') || '');
+  const [selectedElectionId, setSelectedElectionId] = useState(searchParams.get('electionId') || '');
+  const [elections, setElections] = useState([]);
   const [voterDetails, setVoterDetails] = useState(null);
 
   const [myReceipt, setMyReceipt] = useState(null);
@@ -35,6 +37,26 @@ const ReceiptVerification = () => {
   const [verifiedReceipt, setVerifiedReceipt] = useState(null);
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [verifyError, setVerifyError] = useState('');
+
+  useEffect(() => {
+    const fetchElections = async () => {
+      try {
+        const response = await api.get('/vote/elections/public');
+        const electionList = response.data?.elections || [];
+        setElections(electionList);
+
+        if (!selectedElectionId && electionList.length > 0) {
+          const liveElection = electionList.find((election) => election.status === 'live');
+          setSelectedElectionId(liveElection?._id || electionList[0]._id);
+        }
+      } catch {
+        setElections([]);
+      }
+    };
+
+    fetchElections();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const fetchMyReceipt = async () => {
@@ -47,7 +69,11 @@ const ReceiptVerification = () => {
 
       try {
         const [receiptResponse, voterResponse] = await Promise.all([
-          api.get('/vote/receipt/me'),
+          api.get('/vote/receipt/me', {
+            params: selectedElectionId
+              ? { electionId: selectedElectionId }
+              : {}
+          }),
           api.get('/auth/me')
         ]);
 
@@ -72,7 +98,7 @@ const ReceiptVerification = () => {
     };
 
     fetchMyReceipt();
-  }, []);
+  }, [selectedElectionId]);
 
   useEffect(() => {
     const codeFromQuery = (searchParams.get('code') || '').trim().toUpperCase();
@@ -232,6 +258,33 @@ const ReceiptVerification = () => {
               Export PDF
             </button>
           </div>
+
+          <div className="mt-3">
+            <label htmlFor="receipt-election" className="block text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
+              Election Scope (For My Receipt)
+            </label>
+            <div className="flex items-center gap-2">
+              <CalendarDays className="w-4 h-4 text-[#5f7398]" />
+              <select
+                id="receipt-election"
+                value={selectedElectionId}
+                onChange={(event) => setSelectedElectionId(event.target.value)}
+                className="form-field"
+                disabled={elections.length === 0}
+              >
+                {elections.length === 0 ? (
+                  <option value="">No elections available</option>
+                ) : (
+                  elections.map((election) => (
+                    <option key={election._id} value={election._id}>
+                      {election.name}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
+          </div>
+
           {verifyError && <p className="text-sm text-[#b63f3f] mt-3">{verifyError}</p>}
           {!canExport && (
             <p className="text-xs text-[#60759b] mt-3">

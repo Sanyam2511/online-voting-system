@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Activity, BadgeCheck, LoaderCircle, PieChart as PieChartIcon, ShieldCheck } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Activity, BadgeCheck, CalendarDays, LoaderCircle, PieChart as PieChartIcon, ShieldCheck } from 'lucide-react';
 import {
   Area,
   AreaChart,
@@ -21,11 +21,52 @@ const TransparencyDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [elections, setElections] = useState([]);
+  const [selectedElectionId, setSelectedElectionId] = useState('');
+
+  const selectedElection = useMemo(
+    () => elections.find((election) => election._id === selectedElectionId) || null,
+    [elections, selectedElectionId]
+  );
+
+  useEffect(() => {
+    const fetchElections = async () => {
+      try {
+        const response = await api.get('/vote/elections/public');
+        const electionList = response.data?.elections || [];
+
+        setElections(electionList);
+
+        if (electionList.length > 0) {
+          const liveElection = electionList.find((election) => election.status === 'live');
+          setSelectedElectionId(liveElection?._id || electionList[0]._id);
+        } else {
+          setLoading(false);
+        }
+      } catch {
+        setError('Unable to load transparency dashboard right now.');
+        setLoading(false);
+      }
+    };
+
+    fetchElections();
+  }, []);
 
   useEffect(() => {
     const fetchDashboard = async () => {
+      if (!selectedElectionId) {
+        return;
+      }
+
+      setLoading(true);
+      setError('');
+
       try {
-        const response = await api.get('/vote/transparency');
+        const response = await api.get('/vote/transparency', {
+          params: {
+            electionId: selectedElectionId
+          }
+        });
         setData(response.data);
       } catch {
         setError('Unable to load transparency dashboard right now.');
@@ -35,7 +76,7 @@ const TransparencyDashboard = () => {
     };
 
     fetchDashboard();
-  }, []);
+  }, [selectedElectionId]);
 
   const partyChartData = useMemo(() => {
     if (!data?.partyBreakdown?.length) {
@@ -82,6 +123,39 @@ const TransparencyDashboard = () => {
               <p className="text-[#5f7398] leading-relaxed max-w-3xl">
                 Real-time visibility into turnout, candidate rankings, party vote share, and receipt-level verification activity.
               </p>
+
+              <div className="mt-5 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 items-end max-w-2xl">
+                <div>
+                  <label htmlFor="transparency-election" className="block text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
+                    Election Scope
+                  </label>
+                  <select
+                    id="transparency-election"
+                    className="form-field"
+                    value={selectedElectionId}
+                    onChange={(event) => setSelectedElectionId(event.target.value)}
+                    disabled={elections.length === 0}
+                  >
+                    {elections.length === 0 ? (
+                      <option value="">No elections available</option>
+                    ) : (
+                      elections.map((election) => (
+                        <option key={election._id} value={election._id}>
+                          {election.name}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
+
+                {selectedElection && (
+                  <div className="rounded-2xl border border-[#d2def6] bg-white px-4 py-3">
+                    <p className="text-xs text-[#60739a] inline-flex items-center gap-2">
+                      <CalendarDays className="w-4 h-4" /> {selectedElection.status}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="rounded-2xl border border-[#c8d8f6] bg-white overflow-hidden">
               <img
@@ -98,6 +172,10 @@ const TransparencyDashboard = () => {
           <div className="surface-card p-12 text-center">
             <LoaderCircle className="w-8 h-8 animate-spin text-[#1f66f4] mx-auto mb-3" />
             <p className="text-[#5d7298]">Loading transparency metrics...</p>
+          </div>
+        ) : elections.length === 0 ? (
+          <div className="surface-card p-6 border border-[#d3e0fb] bg-[#f7fbff]">
+            <p className="text-[#4b6796]">No election is available for transparency analytics yet.</p>
           </div>
         ) : error ? (
           <div className="surface-card p-6 border border-[#f1c6c6] bg-[#fff1f1]">

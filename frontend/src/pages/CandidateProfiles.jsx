@@ -1,10 +1,28 @@
-import { useEffect, useMemo, useState } from 'react';
-import { ArrowRightLeft, BadgeCheck, LoaderCircle, Search, X } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ArrowRightLeft, BadgeCheck, CalendarDays, LoaderCircle, Search, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../lib/api';
 import candidateCompareIllustration from '../assets/illustrations/candidate-compare.svg';
 
 const normalizeToken = (value) => value.trim().replace(/\.+$/, '');
+
+const formatElectionStatus = (status) => {
+  if (!status) {
+    return 'Unknown';
+  }
+
+  const map = {
+    draft: 'Draft',
+    registration: 'Registration',
+    live: 'Voting Live',
+    counting: 'Counting',
+    audited: 'Audited',
+    published: 'Published',
+    archived: 'Archived'
+  };
+
+  return map[status] || status;
+};
 
 const getCandidateFocusPoints = (candidate) => {
   const explicitPriorities = (candidate.priorities || [])
@@ -96,20 +114,65 @@ const CandidateProfiles = () => {
   const [compareLoading, setCompareLoading] = useState(false);
   const [compareError, setCompareError] = useState('');
 
+  const [elections, setElections] = useState([]);
+  const [selectedElectionId, setSelectedElectionId] = useState('');
+
+  const selectedElection = useMemo(
+    () => elections.find((election) => election._id === selectedElectionId) || null,
+    [elections, selectedElectionId]
+  );
+
+  useEffect(() => {
+    const fetchElections = async () => {
+      try {
+        const response = await api.get('/vote/elections/public');
+        const electionList = response.data?.elections || [];
+        setElections(electionList);
+
+        if (electionList.length > 0) {
+          const liveElection = electionList.find((election) => election.status === 'live');
+          setSelectedElectionId(liveElection?._id || electionList[0]._id);
+        }
+      } catch {
+        setError('Unable to load elections. Please try again.');
+        setLoading(false);
+      }
+    };
+
+    fetchElections();
+  }, []);
+
   useEffect(() => {
     const fetchCandidates = async () => {
+      if (!selectedElectionId) {
+        setCandidates([]);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError('');
+      setSelectedProfileId('');
+      setProfile(null);
+      setCompareIds([]);
+      setCompareCandidates([]);
+      setCompareError('');
+
       try {
-        const response = await api.get('/vote/candidates');
-        setCandidates(response.data);
+        const response = await api.get('/vote/candidates', {
+          params: { electionId: selectedElectionId }
+        });
+
+        setCandidates(response.data?.candidates || []);
       } catch {
-        setError('Unable to load candidate profiles. Please try again.');
+        setError('Unable to load candidate profiles for this election. Please try again.');
       } finally {
         setLoading(false);
       }
     };
 
     fetchCandidates();
-  }, []);
+  }, [selectedElectionId]);
 
   useEffect(() => {
     const fetchComparedCandidates = async () => {
@@ -123,7 +186,13 @@ const CandidateProfiles = () => {
       setCompareError('');
 
       try {
-        const response = await api.get(`/vote/compare?candidateIds=${compareIds.join(',')}`);
+        const response = await api.get('/vote/compare', {
+          params: {
+            candidateIds: compareIds.join(','),
+            electionId: selectedElectionId
+          }
+        });
+
         setCompareCandidates(response.data.candidates || []);
       } catch (requestError) {
         setCompareError(requestError.response?.data?.message || 'Failed to load comparison data.');
@@ -133,7 +202,7 @@ const CandidateProfiles = () => {
     };
 
     fetchComparedCandidates();
-  }, [compareIds]);
+  }, [compareIds, selectedElectionId]);
 
   const filteredCandidates = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -209,6 +278,39 @@ const CandidateProfiles = () => {
               <p className="text-[#5d7298] leading-relaxed max-w-3xl">
                 Review verified candidate profiles and compare up to three candidates side-by-side before entering the ballot arena.
               </p>
+
+              <div className="mt-5 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 items-end">
+                <div>
+                  <label htmlFor="candidate-election" className="block text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
+                    Election Context
+                  </label>
+                  <select
+                    id="candidate-election"
+                    value={selectedElectionId}
+                    onChange={(event) => setSelectedElectionId(event.target.value)}
+                    className="form-field"
+                    disabled={elections.length === 0}
+                  >
+                    {elections.length === 0 ? (
+                      <option value="">No elections available</option>
+                    ) : (
+                      elections.map((election) => (
+                        <option key={election._id} value={election._id}>
+                          {election.name}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
+
+                {selectedElection && (
+                  <div className="rounded-2xl border border-[#d2def6] bg-white px-4 py-3">
+                    <p className="text-xs text-[#60739a] inline-flex items-center gap-2">
+                      <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status)}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="rounded-2xl overflow-hidden border border-[#c8d8f6] bg-white">
@@ -248,7 +350,7 @@ const CandidateProfiles = () => {
               </div>
             ) : Object.keys(groupedCandidates).length === 0 ? (
               <div className="surface-card p-8 text-center">
-                <p className="text-[#5f7398]">No candidates found for your search.</p>
+                <p className="text-[#5f7398]">No candidates found for this election.</p>
               </div>
             ) : (
               <div className="space-y-6">
