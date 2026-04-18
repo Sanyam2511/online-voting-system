@@ -17,6 +17,24 @@ import transparencyIllustration from '../assets/illustrations/transparency-dashb
 
 const PARTY_COLORS = ['#1F66F4', '#2F7DFF', '#274A84', '#5A89F6', '#89AEEF', '#3A5F9C'];
 
+const formatElectionStatus = (status) => {
+  if (!status) {
+    return 'Unknown';
+  }
+
+  const map = {
+    draft: 'Draft',
+    registration: 'Registration',
+    live: 'Voting Live',
+    counting: 'Counting',
+    audited: 'Audited',
+    published: 'Published',
+    archived: 'Archived'
+  };
+
+  return map[status] || status;
+};
+
 const TransparencyDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -111,7 +129,7 @@ const TransparencyDashboard = () => {
   }, [data]);
 
   return (
-    <main className="min-h-screen pt-28 pb-16">
+    <main className="min-h-screen page-shell pt-28 pb-16">
       <div className="section-wrap">
         <header className="glass-panel p-8 md:p-10 mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-center">
@@ -151,10 +169,16 @@ const TransparencyDashboard = () => {
                 {selectedElection && (
                   <div className="rounded-2xl border border-[#d2def6] bg-white px-4 py-3">
                     <p className="text-xs text-[#60739a] inline-flex items-center gap-2">
-                      <CalendarDays className="w-4 h-4" /> {selectedElection.status}
+                      <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status)}
                     </p>
                   </div>
                 )}
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className="metric-pill">Parties: {data?.summary?.totalParties ?? '--'}</span>
+                <span className="metric-pill">Ranked Candidates: {data?.candidateRanking?.length ?? '--'}</span>
+                <span className="metric-pill">Recent Receipts: {data?.recentReceipts?.length ?? '--'}</span>
               </div>
             </div>
             <div className="rounded-2xl border border-[#c8d8f6] bg-white overflow-hidden">

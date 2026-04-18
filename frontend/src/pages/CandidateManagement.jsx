@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   AlertCircle,
   CalendarDays,
@@ -97,6 +97,15 @@ const CandidateManagement = () => {
   const [transitioningElectionId, setTransitioningElectionId] = useState('');
 
   const selectedElection = elections.find((election) => election._id === selectedElectionId) || null;
+  const managementSummary = useMemo(
+    () => ({
+      totalElections: elections.length,
+      liveElections: elections.filter((election) => election.status === 'live').length,
+      totalCandidates: elections.reduce((sum, election) => sum + Number(election.totalCandidates || 0), 0),
+      totalVotes: elections.reduce((sum, election) => sum + Number(election.totalVotesCast || 0), 0)
+    }),
+    [elections]
+  );
 
   const loadManagedElections = async (preferredElectionId = '') => {
     const response = await api.get('/vote/elections/manage');
@@ -442,7 +451,7 @@ const CandidateManagement = () => {
   };
 
   return (
-    <main className="min-h-screen pt-28 pb-16">
+    <main className="min-h-screen page-shell pt-28 pb-16">
       <div className="section-wrap space-y-6">
         <header className="glass-panel p-8 md:p-10">
           <p className="eyebrow mb-4">
@@ -453,6 +462,25 @@ const CandidateManagement = () => {
             Create elections, move lifecycle states, and manage candidate records per election context.
           </p>
         </header>
+
+        <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <article className="surface-card p-4">
+            <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-1">Total Elections</p>
+            <p className="text-2xl font-semibold text-[#12305d]">{managementSummary.totalElections}</p>
+          </article>
+          <article className="surface-card p-4">
+            <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-1">Live Elections</p>
+            <p className="text-2xl font-semibold text-[#12305d]">{managementSummary.liveElections}</p>
+          </article>
+          <article className="surface-card p-4">
+            <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-1">Registered Candidates</p>
+            <p className="text-2xl font-semibold text-[#12305d]">{managementSummary.totalCandidates}</p>
+          </article>
+          <article className="surface-card p-4">
+            <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-1">Tracked Votes</p>
+            <p className="text-2xl font-semibold text-[#12305d]">{managementSummary.totalVotes}</p>
+          </article>
+        </section>
 
         {error && (
           <div className="surface-card p-4 border border-[#f1c6c6] bg-[#fff1f1] text-[#a43a3a] flex items-start gap-2">
@@ -580,7 +608,7 @@ const CandidateManagement = () => {
                           <div>
                             <p className="font-semibold text-[#12305d]">{election.name}</p>
                             <p className="text-xs text-[#5f7398] mt-1">Status: {formatElectionStatus(election.status)}</p>
-                            <p className="text-xs text-[#5f7398] mt-1">Candidates: {election.totalCandidates || 0} � Votes: {election.totalVotesCast || 0}</p>
+                            <p className="text-xs text-[#5f7398] mt-1">Candidates: {election.totalCandidates || 0} | Votes: {election.totalVotesCast || 0}</p>
                           </div>
 
                           <div className="flex flex-wrap items-center gap-2">

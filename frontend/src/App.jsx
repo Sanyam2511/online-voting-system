@@ -14,7 +14,7 @@ import ReceiptVerification from './pages/ReceiptVerification';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-transparent">
+      <div className="min-h-screen bg-transparent app-shell">
         <Navbar />
         <Toaster
           position="top-right"

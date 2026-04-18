@@ -63,7 +63,7 @@ const Signup = () => {
   };
 
   return (
-    <main className="min-h-screen pt-28 pb-14">
+    <main className="min-h-screen page-shell pt-28 pb-14">
       <div className="section-wrap">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 items-stretch">
           <section className="surface-card p-8 sm:p-10 lg:p-12">
@@ -71,7 +71,13 @@ const Signup = () => {
               <ShieldCheck className="w-4 h-4" /> Verified Registration
             </p>
             <h1 className="text-4xl sm:text-5xl text-[#102347] mb-3">Create Voter Account</h1>
-            <p className="text-[#5b7095] mb-8">Register once to access your official digital ballot and governance dashboard.</p>
+            <p className="text-[#5b7095] mb-5">Register once to access your official digital ballot and governance dashboard.</p>
+
+            <div className="flex flex-wrap gap-2 mb-8">
+              <span className="metric-pill">Identity Ready</span>
+              <span className="metric-pill">Secure Credential</span>
+              <span className="metric-pill">Instant Ballot Access</span>
+            </div>
 
             {error && (
               <div className="mb-6 p-4 rounded-2xl bg-[#fff1f1] border border-[#f1c6c6] flex gap-3">

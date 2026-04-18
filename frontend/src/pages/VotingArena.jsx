@@ -249,7 +249,7 @@ const VotingArena = () => {
   };
 
   return (
-    <main className="min-h-screen pt-28 pb-16">
+    <main className="min-h-screen page-shell pt-28 pb-16">
       <div className="section-wrap">
         <header className="glass-panel p-8 sm:p-10 mb-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
@@ -300,6 +300,12 @@ const VotingArena = () => {
                 </p>
               </div>
             )}
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <span className="metric-pill">Candidates: {candidates.length}</span>
+            <span className="metric-pill">Election Votes: {selectedElection?.totalVotesCast || 0}</span>
+            <span className="metric-pill">Election Candidates: {selectedElection?.totalCandidates || 0}</span>
           </div>
         </header>
 

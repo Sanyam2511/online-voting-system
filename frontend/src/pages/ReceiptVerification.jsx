@@ -206,7 +206,7 @@ const ReceiptVerification = () => {
   const canExport = Boolean(voterDetails && (myReceipt || verifiedReceipt));
 
   return (
-    <main className="min-h-screen pt-28 pb-16">
+    <main className="min-h-screen page-shell pt-28 pb-16">
       <div className="section-wrap">
         <header className="glass-panel p-8 md:p-10 mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-center">
@@ -218,6 +218,12 @@ const ReceiptVerification = () => {
               <p className="text-[#5e7398] leading-relaxed max-w-3xl">
                 Confirm that a vote receipt exists in the election ledger by entering a receipt code generated at vote submission.
               </p>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className="metric-pill">Ledger Search</span>
+                <span className="metric-pill">Election Scoped</span>
+                <span className="metric-pill">PDF Export</span>
+              </div>
             </div>
             <div className="rounded-2xl border border-[#c8d8f6] bg-white overflow-hidden">
               <img

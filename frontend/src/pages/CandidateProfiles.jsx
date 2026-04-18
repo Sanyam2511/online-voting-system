@@ -229,6 +229,8 @@ const CandidateProfiles = () => {
     }, {});
   }, [filteredCandidates]);
 
+  const totalParties = Object.keys(groupedCandidates).length;
+
   const fetchCandidateProfile = async (candidateId) => {
     setSelectedProfileId(candidateId);
     setProfileLoading(true);
@@ -266,7 +268,7 @@ const CandidateProfiles = () => {
   };
 
   return (
-    <main className="min-h-screen pt-28 pb-16">
+    <main className="min-h-screen page-shell pt-28 pb-16">
       <div className="section-wrap">
         <header className="glass-panel p-8 md:p-10 mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-center">
@@ -323,6 +325,25 @@ const CandidateProfiles = () => {
             </div>
           </div>
         </header>
+
+        <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+          <article className="surface-card p-4">
+            <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">Election</p>
+            <p className="text-sm font-semibold text-[#12305d] truncate">{selectedElection?.name || 'No election selected'}</p>
+          </article>
+          <article className="surface-card p-4">
+            <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">Visible Candidates</p>
+            <p className="text-2xl font-semibold text-[#12305d]">{filteredCandidates.length}</p>
+          </article>
+          <article className="surface-card p-4">
+            <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">Participating Parties</p>
+            <p className="text-2xl font-semibold text-[#12305d]">{totalParties}</p>
+          </article>
+          <article className="surface-card p-4">
+            <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">Compare Queue</p>
+            <p className="text-2xl font-semibold text-[#12305d]">{compareIds.length}</p>
+          </article>
+        </section>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
           <section>

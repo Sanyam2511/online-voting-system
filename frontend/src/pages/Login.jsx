@@ -39,7 +39,7 @@ const Login = () => {
   };
 
   return (
-    <main className="min-h-screen pt-28 pb-14">
+    <main className="min-h-screen page-shell pt-28 pb-14">
       <div className="section-wrap">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 items-stretch">
           <section className="surface-card p-8 sm:p-10 lg:p-12">
@@ -47,7 +47,13 @@ const Login = () => {
               <ShieldCheck className="w-4 h-4" /> Secure Sign In
             </p>
             <h1 className="text-4xl sm:text-5xl text-[#102347] mb-3">Welcome Back</h1>
-            <p className="text-[#5b7095] mb-8">Access your verified ballot and participate in official decision-making.</p>
+            <p className="text-[#5b7095] mb-5">Access your verified ballot and participate in official decision-making.</p>
+
+            <div className="flex flex-wrap gap-2 mb-8">
+              <span className="metric-pill">JWT Session</span>
+              <span className="metric-pill">One Vote / Election</span>
+              <span className="metric-pill">Receipt Backed</span>
+            </div>
 
             {error && (
               <div className="mb-6 p-4 rounded-2xl bg-[#fff1f1] border border-[#f1c6c6] flex gap-3">
