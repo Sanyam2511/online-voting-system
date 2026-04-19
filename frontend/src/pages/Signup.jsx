@@ -63,14 +63,14 @@ const Signup = () => {
   };
 
   return (
-    <main className="min-h-screen page-shell pt-28 pb-14">
+    <main className="min-h-screen page-shell pt-20 pb-12">
       <div className="section-wrap">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 items-stretch">
-          <section className="surface-card p-8 sm:p-10 lg:p-12">
+          <section className="surface-card p-6 sm:p-7 lg:p-8">
             <p className="eyebrow mb-6">
               <ShieldCheck className="w-4 h-4" /> Verified Registration
             </p>
-            <h1 className="text-4xl sm:text-5xl text-[#102347] mb-3">Create Voter Account</h1>
+            <h1 className="text-2xl sm:text-3xl text-[#102347] mb-3">Create Voter Account</h1>
             <p className="text-[#5b7095] mb-5">Register once to access your official digital ballot and governance dashboard.</p>
 
             <div className="flex flex-wrap gap-2 mb-8">
@@ -180,7 +180,7 @@ const Signup = () => {
             </p>
           </section>
 
-          <aside className="glass-panel p-8 sm:p-10 lg:p-12">
+          <aside className="glass-panel p-6 sm:p-7 lg:p-8">
             <div className="rounded-2xl border border-[#cfdcf6] bg-white overflow-hidden mb-6 shadow-sm">
               <img
                 src={signupOnboardingIllustration}
@@ -191,7 +191,7 @@ const Signup = () => {
             </div>
 
             <p className="text-xs uppercase tracking-[0.12em] text-[#4d6794] mb-4">Onboarding Standards</p>
-            <h2 className="text-3xl sm:text-4xl text-[#132b56] mb-5">Trusted civic onboarding</h2>
+            <h2 className="text-2xl sm:text-3xl text-[#132b56] mb-5">Trusted civic onboarding</h2>
             <p className="text-[#5e7298] leading-relaxed mb-8">
               A mature voting ecosystem starts with clean registration, identity confidence, and fraud-resistant account creation.
             </p>

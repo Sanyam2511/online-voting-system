@@ -1,7 +1,8 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Building2, LogOut, Menu, ShieldCheck, Vote, X } from 'lucide-react';
+import { LogOut, Menu, ShieldCheck, Vote, X } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { AUTH_CHANGED_EVENT, clearAuthSession, getStoredUser } from '../lib/auth';
+import BrandMark from './BrandMark';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -50,15 +51,13 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50">
-      <div className="section-wrap pt-3 pb-2">
-        <div className="rounded-[1.4rem] border border-[#c6d5f1] bg-white/90 backdrop-blur-xl shadow-[0_16px_34px_rgba(12,33,71,0.14)] px-4 sm:px-5 py-3">
-          <div className="flex items-center justify-between gap-4">
-            <Link to="/" onClick={closeMobileMenu} className="flex items-center gap-3 min-w-0">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#eaf2ff] to-[#dbe8ff] border border-[#bfd3fb] flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
-                <Building2 className="w-5 h-5 text-[#1f66f4]" />
-              </div>
+      <div className="section-wrap pt-2 pb-1">
+        <div className="rounded-[1.2rem] border border-[#c6d5f1] bg-white/90 backdrop-blur-xl shadow-[0_16px_34px_rgba(12,33,71,0.14)] px-3 sm:px-4 py-2.5">
+          <div className="flex items-center justify-between gap-3">
+            <Link to="/" onClick={closeMobileMenu} className="flex items-center gap-2.5 min-w-0">
+              <BrandMark className="w-10 h-10" />
               <div className="min-w-0">
-                <p className="text-base sm:text-lg font-semibold text-[#132b56] tracking-tight truncate">SecureVote</p>
+                <p className="text-[15px] sm:text-base font-semibold text-[#132b56] tracking-tight truncate">SecureVote</p>
                 <p className="hidden sm:block text-[11px] uppercase tracking-[0.12em] text-[#60759a]">Election Portal</p>
               </div>
             </Link>
@@ -71,9 +70,9 @@ const Navbar = () => {
               ))}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               {!isAdmin && (
-                <Link to="/vote" onClick={closeMobileMenu} className="btn-primary text-sm !py-2.5 !px-4 inline-flex items-center gap-2">
+                <Link to="/vote" onClick={closeMobileMenu} className="btn-primary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5">
                   <Vote className="w-4 h-4" />
                   <span className="hidden sm:inline">Vote</span>
                 </Link>
@@ -83,7 +82,7 @@ const Navbar = () => {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="btn-secondary text-sm !py-2.5 !px-4 inline-flex items-center gap-2"
+                  className="btn-secondary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5"
                 >
                   <LogOut className="w-4 h-4" />
                   <span className="hidden sm:inline">Logout</span>
@@ -91,7 +90,7 @@ const Navbar = () => {
               ) : (
                 <>
                   <Link to="/login" onClick={closeMobileMenu} className="hidden sm:inline-flex nav-link">Login</Link>
-                  <Link to="/signup" onClick={closeMobileMenu} className="btn-secondary text-sm !py-2.5 !px-4 inline-flex items-center gap-2">
+                  <Link to="/signup" onClick={closeMobileMenu} className="btn-secondary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5">
                     <ShieldCheck className="w-4 h-4" />
                     <span className="hidden sm:inline">Register</span>
                   </Link>
@@ -101,7 +100,7 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={() => setMobileOpen((current) => !current)}
-                className="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-[#c5d5f4] bg-[#f4f8ff] text-[#2b4d80]"
+                className="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[#c5d5f4] bg-[#f4f8ff] text-[#2b4d80]"
                 aria-label="Toggle navigation menu"
               >
                 {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -110,7 +109,7 @@ const Navbar = () => {
           </div>
 
           {mobileOpen && (
-            <div className="lg:hidden mt-3 pt-3 border-t border-[#d9e4f9]">
+            <div className="lg:hidden mt-2.5 pt-2.5 border-t border-[#d9e4f9]">
               <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
                 {navLinks.map((item) => (
                   <NavLink key={item.to} to={item.to} className={getNavLinkClass} onClick={closeMobileMenu}>
@@ -120,7 +119,7 @@ const Navbar = () => {
               </div>
 
               {!isLoggedIn && (
-                <div className="mt-3">
+                <div className="mt-2">
                   <Link to="/login" onClick={closeMobileMenu} className="nav-link mr-2 inline-flex">Login</Link>
                 </div>
               )}

@@ -451,13 +451,13 @@ const CandidateManagement = () => {
   };
 
   return (
-    <main className="min-h-screen page-shell pt-28 pb-16">
+    <main className="min-h-screen page-shell pt-20 pb-14">
       <div className="section-wrap space-y-6">
-        <header className="glass-panel p-8 md:p-10">
+        <header className="glass-panel p-6 md:p-7">
           <p className="eyebrow mb-4">
             <ShieldCheck className="w-4 h-4" /> Election + Candidate Management
           </p>
-          <h1 className="text-4xl sm:text-5xl text-[#102347] mb-2">Run Election Lifecycle Operations</h1>
+          <h1 className="text-2xl sm:text-3xl text-[#102347] mb-2">Run Election Lifecycle Operations</h1>
           <p className="text-[#5e7398] max-w-3xl">
             Create elections, move lifecycle states, and manage candidate records per election context.
           </p>

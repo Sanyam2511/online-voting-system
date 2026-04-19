@@ -249,15 +249,15 @@ const VotingArena = () => {
   };
 
   return (
-    <main className="min-h-screen page-shell pt-28 pb-16">
+    <main className="min-h-screen page-shell pt-20 pb-14">
       <div className="section-wrap">
-        <header className="glass-panel p-8 sm:p-10 mb-8">
+        <header className="glass-panel p-6 sm:p-7 mb-7">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
             <div>
               <p className="eyebrow mb-4">
                 <Vote className="w-4 h-4" /> Official Ballot Arena
               </p>
-              <h1 className="text-4xl sm:text-5xl text-[#102347] mb-2">Cast Your Vote</h1>
+              <h1 className="text-2xl sm:text-3xl text-[#102347] mb-2">Cast Your Vote</h1>
               <p className="text-[#5c7197]">Welcome, {voterName}. Select one candidate and confirm your ballot.</p>
             </div>
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -53,6 +54,7 @@ function App() {
           <Route path="/receipt" element={<ReceiptVerification />} />
           <Route path="/vote" element={<VotingArena />} />
         </Routes>
+        <Footer />
       </div>
     </Router>
   );

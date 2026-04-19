@@ -39,14 +39,14 @@ const Login = () => {
   };
 
   return (
-    <main className="min-h-screen page-shell pt-28 pb-14">
+    <main className="min-h-screen page-shell pt-20 pb-12">
       <div className="section-wrap">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 items-stretch">
-          <section className="surface-card p-8 sm:p-10 lg:p-12">
+          <section className="surface-card p-6 sm:p-7 lg:p-8">
             <p className="eyebrow mb-6">
               <ShieldCheck className="w-4 h-4" /> Secure Sign In
             </p>
-            <h1 className="text-4xl sm:text-5xl text-[#102347] mb-3">Welcome Back</h1>
+            <h1 className="text-2xl sm:text-3xl text-[#102347] mb-3">Welcome Back</h1>
             <p className="text-[#5b7095] mb-5">Access your verified ballot and participate in official decision-making.</p>
 
             <div className="flex flex-wrap gap-2 mb-8">
@@ -122,7 +122,7 @@ const Login = () => {
             </p>
           </section>
 
-          <aside className="glass-panel p-8 sm:p-10 lg:p-12 relative overflow-hidden">
+          <aside className="glass-panel p-6 sm:p-7 lg:p-8 relative overflow-hidden">
             <div className="absolute inset-x-8 top-8 h-28 rounded-full bg-[#d7e6ff] blur-3xl" aria-hidden="true"></div>
             <div className="relative z-10">
               <div className="rounded-2xl border border-[#cfdcf6] bg-white overflow-hidden mb-6 shadow-sm">
@@ -135,7 +135,7 @@ const Login = () => {
               </div>
 
               <p className="text-xs uppercase tracking-[0.12em] text-[#4d6794] mb-4">Platform Assurance</p>
-              <h2 className="text-3xl sm:text-4xl text-[#132b56] mb-5">Election-grade access controls</h2>
+              <h2 className="text-2xl sm:text-3xl text-[#132b56] mb-5">Election-grade access controls</h2>
               <p className="text-[#5e7298] leading-relaxed mb-8">
                 Session protection, token-based authentication, and single-vote enforcement preserve institutional trust.
               </p>

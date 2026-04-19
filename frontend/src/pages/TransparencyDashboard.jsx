@@ -129,15 +129,15 @@ const TransparencyDashboard = () => {
   }, [data]);
 
   return (
-    <main className="min-h-screen page-shell pt-28 pb-16">
+    <main className="min-h-screen page-shell pt-20 pb-14">
       <div className="section-wrap">
-        <header className="glass-panel p-8 md:p-10 mb-8">
+        <header className="glass-panel p-6 md:p-7 mb-7">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-center">
             <div>
               <p className="eyebrow mb-4">
                 <ShieldCheck className="w-4 h-4" /> Public Transparency Dashboard
               </p>
-              <h1 className="text-4xl sm:text-5xl text-[#102347] mb-2">Open Election Metrics</h1>
+              <h1 className="text-2xl sm:text-3xl text-[#102347] mb-2">Open Election Metrics</h1>
               <p className="text-[#5f7398] leading-relaxed max-w-3xl">
                 Real-time visibility into turnout, candidate rankings, party vote share, and receipt-level verification activity.
               </p>

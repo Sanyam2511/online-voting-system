@@ -128,7 +128,7 @@ const Home = () => {
   ];
 
   return (
-    <main className="min-h-screen page-shell pt-28 pb-20">
+    <main className="min-h-screen page-shell pt-20 pb-16">
       <section className="section-wrap">
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 items-stretch">
           <div className="surface-card p-8 md:p-12 relative overflow-hidden">
@@ -138,7 +138,7 @@ const Home = () => {
               <Landmark className="w-4 h-4" /> Public Decision Infrastructure
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl text-[#0f1f3d] leading-[1.05] mb-5">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl text-[#0f1f3d] leading-[1.05] mb-5">
               Secure digital voting with multi-election governance precision.
             </h1>
 
@@ -198,7 +198,7 @@ const Home = () => {
             </div>
           </div>
 
-          <aside className="surface-card p-6 sm:p-8 relative overflow-hidden">
+          <aside className="surface-card p-5 sm:p-6 relative overflow-hidden">
             <div className="absolute inset-x-10 top-6 h-32 rounded-full bg-[#d6e6ff] blur-3xl opacity-80" aria-hidden="true"></div>
             <div className="relative z-10 space-y-4">
               <div className="rounded-2xl border border-[#bfd1f8] bg-white overflow-hidden shadow-sm">
@@ -250,15 +250,15 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="section-wrap mt-16">
-        <div className="glass-panel p-8 md:p-10">
+      <section className="section-wrap mt-12">
+        <div className="glass-panel p-6 md:p-7">
           <div className="grid grid-cols-1 xl:grid-cols-[1.05fr_0.95fr] gap-6">
             <div>
               <div className="mb-8">
                 <p className="eyebrow mb-4">
                   <ClipboardCheck className="w-4 h-4" /> Steps To Use The Platform
                 </p>
-                <h2 className="text-3xl sm:text-4xl text-[#102347] mb-3">A clear, citizen-first voting journey</h2>
+                <h2 className="text-2xl sm:text-3xl text-[#102347] mb-3">A clear, citizen-first voting journey</h2>
                 <p className="text-[#5a6f95] max-w-3xl">From registration to final vote confirmation, each step is designed for integrity, accessibility, and accountability.</p>
               </div>
 
@@ -327,13 +327,13 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="section-wrap mt-16">
+      <section className="section-wrap mt-12">
         <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6">
-          <div className="surface-card p-8 md:p-10">
+          <div className="surface-card p-6 md:p-7">
             <p className="eyebrow mb-5">
               <BarChart3 className="w-4 h-4" /> Why Voting Is Needed
             </p>
-            <h2 className="text-3xl sm:text-4xl text-[#102347] mb-4">Voting turns public needs into enforceable priorities.</h2>
+            <h2 className="text-2xl sm:text-3xl text-[#102347] mb-4">Voting turns public needs into enforceable priorities.</h2>
             <p className="text-[#5b7096] leading-relaxed mb-6">
               Elections are not a ritual. They are an accountability mechanism that determines who allocates budgets,
               writes policy, and represents citizen concerns. High-quality participation leads to better institutions.
@@ -355,10 +355,10 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="glass-panel p-8 md:p-10 flex flex-col justify-between">
+          <div className="glass-panel p-6 md:p-7 flex flex-col justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.12em] text-[#4f6793] mb-4">Platform Evolution</p>
-              <h3 className="text-3xl text-[#112851] mb-4">From one ballot to multi-election orchestration.</h3>
+              <h3 className="text-2xl text-[#112851] mb-4">From one ballot to multi-election orchestration.</h3>
               <p className="text-[#5f7298] leading-relaxed">
                 A mature voting platform should reduce friction for voters while increasing confidence for regulators,
                 observers, and election administrators.
