@@ -4,6 +4,7 @@ import {
   BadgeCheck,
   CalendarDays,
   CheckCircle2,
+  KeyRound,
   LoaderCircle,
   ShieldCheck,
   Vote
@@ -47,6 +48,14 @@ const VotingArena = () => {
   const [receipt, setReceipt] = useState(null);
   const [elections, setElections] = useState([]);
   const [selectedElectionId, setSelectedElectionId] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [verificationToken, setVerificationToken] = useState('');
+  const [verificationMessage, setVerificationMessage] = useState('');
+  const [verificationError, setVerificationError] = useState('');
+  const [verificationPreviewCode, setVerificationPreviewCode] = useState('');
+  const [verificationExpiresAt, setVerificationExpiresAt] = useState('');
+  const [requestingVerificationCode, setRequestingVerificationCode] = useState(false);
+  const [verifyingCode, setVerifyingCode] = useState(false);
 
   const selectedElection = useMemo(
     () => elections.find((election) => election._id === selectedElectionId) || null,
@@ -127,6 +136,12 @@ const VotingArena = () => {
       setSuccess('');
       setSelectedCandidate(null);
       setAgreeToTerms(false);
+      setVerificationCode('');
+      setVerificationToken('');
+      setVerificationMessage('');
+      setVerificationError('');
+      setVerificationPreviewCode('');
+      setVerificationExpiresAt('');
 
       try {
         const candidatesResponse = await api.get('/vote/candidates', {
@@ -188,6 +203,68 @@ const VotingArena = () => {
     setError('');
   };
 
+  const requestStrongVerificationCode = async () => {
+    if (!selectedElectionId) {
+      setVerificationError('Select an election before requesting verification code.');
+      return;
+    }
+
+    if (!isElectionLive) {
+      setVerificationError('Verification is available only while election status is live.');
+      return;
+    }
+
+    if (hasVoted) {
+      setVerificationError('Vote is already cast for this election.');
+      return;
+    }
+
+    setRequestingVerificationCode(true);
+    setVerificationError('');
+
+    try {
+      const response = await api.post('/auth/vote-verification/request', {
+        electionId: selectedElectionId
+      });
+
+      setVerificationToken('');
+      setVerificationMessage(response.data?.message || 'Verification code requested successfully.');
+      setVerificationPreviewCode(response.data?.verificationCodePreview || '');
+      setVerificationExpiresAt(response.data?.expiresAt || '');
+    } catch (requestError) {
+      setVerificationError(requestError.response?.data?.message || 'Could not request verification code.');
+    } finally {
+      setRequestingVerificationCode(false);
+    }
+  };
+
+  const verifyStrongCode = async () => {
+    const normalizedCode = verificationCode.trim();
+
+    if (!/^\d{6}$/.test(normalizedCode)) {
+      setVerificationError('Enter a valid 6-digit verification code.');
+      return;
+    }
+
+    setVerifyingCode(true);
+    setVerificationError('');
+
+    try {
+      const response = await api.post('/auth/vote-verification/verify', {
+        electionId: selectedElectionId,
+        code: normalizedCode
+      });
+
+      setVerificationToken(response.data?.verificationToken || '');
+      setVerificationMessage(response.data?.message || 'Verification completed. You can now cast your vote.');
+    } catch (requestError) {
+      setVerificationToken('');
+      setVerificationError(requestError.response?.data?.message || 'Code verification failed.');
+    } finally {
+      setVerifyingCode(false);
+    }
+  };
+
   const handleConfirmVote = async () => {
     if (!selectedElectionId) {
       setError('Select an election before voting.');
@@ -214,6 +291,11 @@ const VotingArena = () => {
       return;
     }
 
+    if (!verificationToken) {
+      setError('Complete strong voter verification before submitting your vote.');
+      return;
+    }
+
     setLoading(true);
     setError('');
     setSuccess('');
@@ -221,13 +303,15 @@ const VotingArena = () => {
     try {
       const response = await api.post('/vote/cast', {
         candidateId: selectedCandidate._id,
-        electionId: selectedElectionId
+        electionId: selectedElectionId,
+        verificationToken
       });
 
       setSuccess(response.data.message || 'Vote submitted successfully!');
       setHasVoted(true);
       setReceipt(response.data.receipt || null);
       patchStoredUser({ hasVoted: true });
+      setVerificationToken('');
 
       setCandidates((prevCandidates) =>
         prevCandidates.map((candidate) => {
@@ -242,7 +326,12 @@ const VotingArena = () => {
         })
       );
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to submit vote. Please try again.');
+      const message = err.response?.data?.message || 'Failed to submit vote. Please try again.';
+      setError(message);
+
+      if (message.toLowerCase().includes('verification')) {
+        setVerificationToken('');
+      }
     } finally {
       setLoading(false);
     }
@@ -400,6 +489,68 @@ const VotingArena = () => {
                 </p>
               </div>
 
+              <div className="rounded-2xl border border-[#d2def6] bg-white p-4 mb-5">
+                <p className="text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2 inline-flex items-center gap-2">
+                  <KeyRound className="w-3.5 h-3.5" /> Strong Voter Verification
+                </p>
+                <p className="text-xs text-[#597099] leading-relaxed mb-3">
+                  Request a one-time 6-digit code, verify it, then submit your ballot.
+                </p>
+
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <button
+                    type="button"
+                    onClick={requestStrongVerificationCode}
+                    disabled={requestingVerificationCode || hasVoted || !isElectionLive}
+                    className="text-xs rounded-full border border-[#bfd1f8] bg-[#eaf2ff] text-[#1f66f4] px-3 py-1.5 font-semibold disabled:opacity-60"
+                  >
+                    {requestingVerificationCode ? 'Requesting...' : 'Request Code'}
+                  </button>
+
+                  <input
+                    type="text"
+                    value={verificationCode}
+                    onChange={(event) => setVerificationCode(event.target.value.replace(/\D/g, '').slice(0, 6))}
+                    className="form-field !py-1.5 !px-3 max-w-[150px]"
+                    placeholder="6-digit code"
+                    disabled={hasVoted || !isElectionLive}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={verifyStrongCode}
+                    disabled={verifyingCode || hasVoted || !isElectionLive}
+                    className="text-xs rounded-full border border-[#bfd1f8] bg-white text-[#35598e] px-3 py-1.5 font-semibold disabled:opacity-60"
+                  >
+                    {verifyingCode ? 'Verifying...' : 'Verify Code'}
+                  </button>
+                </div>
+
+                {verificationPreviewCode && (
+                  <p className="text-xs text-[#5e7398] mb-2">
+                    Dev preview code: <span className="font-semibold text-[#1f66f4]">{verificationPreviewCode}</span>
+                  </p>
+                )}
+
+                {verificationExpiresAt && (
+                  <p className="text-[11px] text-[#6b7fa6] mb-2">
+                    Code expires at: {new Date(verificationExpiresAt).toLocaleTimeString()}
+                  </p>
+                )}
+
+                {verificationMessage && !verificationError && (
+                  <p className="text-xs text-[#1f7d3f]">{verificationMessage}</p>
+                )}
+
+                {verificationError && (
+                  <p className="text-xs text-[#a43a3a]">{verificationError}</p>
+                )}
+
+                {verificationToken && (
+                  <p className="text-xs text-[#1f66f4] mt-2 font-semibold">Verification active for this election.</p>
+                )}
+              </div>
+
               <label className="flex items-start gap-3 mb-5">
                 <input
                   type="checkbox"
@@ -416,7 +567,7 @@ const VotingArena = () => {
               <button
                 type="button"
                 onClick={handleConfirmVote}
-                disabled={loading || hasVoted || !selectedCandidate || !agreeToTerms || !isElectionLive}
+                disabled={loading || hasVoted || !selectedCandidate || !agreeToTerms || !isElectionLive || !verificationToken}
                 className="btn-primary w-full disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {loading
@@ -425,6 +576,8 @@ const VotingArena = () => {
                     ? 'Vote Already Submitted'
                     : !isElectionLive
                       ? 'Election Not Live'
+                      : !verificationToken
+                        ? 'Complete Verification First'
                       : 'Confirm Vote'}
               </button>
 
