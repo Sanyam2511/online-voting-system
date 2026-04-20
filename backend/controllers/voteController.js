@@ -3,14 +3,17 @@ import User from '../models/User.js';
 import defaultCandidates from '../data/defaultCandidates.js';
 import VoteReceipt from '../models/VoteReceipt.js';
 import Election, { ELECTION_STATUSES } from '../models/Election.js';
+import VoteVerificationChallenge from '../models/VoteVerificationChallenge.js';
 import crypto from 'crypto';
 import mongoose from 'mongoose';
+import { verifyVoteVerificationToken } from '../lib/voteVerification.js';
 
 const DEFAULT_ELECTION_NAME = 'National General Election 2026';
 const DEFAULT_ELECTION_SLUG = 'national-general-election-2026';
 const PUBLIC_ELECTION_STATUSES = ['registration', 'live', 'counting', 'audited', 'published'];
 const VOTABLE_ELECTION_STATUSES = ['live'];
 const RECEIPT_COUNTABLE_STATUSES = ['counted', 'pending'];
+const VOTE_VERIFICATION_MAX_AGE_MS = 10 * 60 * 1000;
 
 const ELECTION_STATUS_TRANSITIONS = {
   draft: ['registration', 'archived'],
@@ -672,7 +675,100 @@ const isUnsupportedTransactionError = (error) => {
   );
 };
 
-const executeVoteCast = async ({ userId, candidateId, requestedElectionId, session = null }) => {
+const validateVoteVerificationForCast = async ({
+  userId,
+  requestedElectionId,
+  verificationToken,
+  session = null
+}) => {
+  if (!verificationToken || typeof verificationToken !== 'string') {
+    throwHttpError(400, 'Strong voter verification is required before casting vote.');
+  }
+
+  let verificationPayload = null;
+
+  try {
+    verificationPayload = verifyVoteVerificationToken(verificationToken);
+  } catch {
+    throwHttpError(401, 'Vote verification token is invalid or expired. Verify again before casting your vote.');
+  }
+
+  if (verificationPayload?.purpose !== 'vote-cast') {
+    throwHttpError(401, 'Invalid vote verification token purpose.');
+  }
+
+  const verifiedUserId = String(verificationPayload.userId || '');
+  const verifiedElectionId = String(verificationPayload.electionId || '');
+  const challengeId = String(verificationPayload.challengeId || '');
+
+  if (!verifiedUserId || !verifiedElectionId || !challengeId) {
+    throwHttpError(401, 'Vote verification token is malformed.');
+  }
+
+  if (verifiedUserId !== String(userId)) {
+    throwHttpError(403, 'Vote verification token does not belong to this voter.');
+  }
+
+  if (requestedElectionId && verifiedElectionId !== String(requestedElectionId)) {
+    throwHttpError(400, 'Vote verification token does not match the selected election.');
+  }
+
+  validateObjectId(verifiedElectionId, 'verified election id');
+  validateObjectId(challengeId, 'verification challenge id');
+
+  const challenge = await withOptionalSession(
+    VoteVerificationChallenge.findOne({
+      _id: challengeId,
+      user: userId,
+      election: verifiedElectionId
+    }),
+    session
+  );
+
+  if (!challenge) {
+    throwHttpError(401, 'Vote verification challenge not found. Request a new code.');
+  }
+
+  if (!challenge.verifiedAt) {
+    throwHttpError(401, 'Verification code is not confirmed yet. Complete verification first.');
+  }
+
+  if (challenge.consumedAt) {
+    throwHttpError(401, 'Vote verification challenge is already consumed. Request a new code.');
+  }
+
+  const now = new Date();
+
+  if (challenge.expiresAt && now > challenge.expiresAt) {
+    throwHttpError(401, 'Verification code expired. Request and verify a new code.');
+  }
+
+  if (now.getTime() - challenge.verifiedAt.getTime() > VOTE_VERIFICATION_MAX_AGE_MS) {
+    throwHttpError(401, 'Vote verification session expired. Verify again before casting your vote.');
+  }
+
+  return {
+    verifiedElectionId,
+    challenge
+  };
+};
+
+const executeVoteCast = async ({
+  userId,
+  candidateId,
+  requestedElectionId,
+  verificationToken,
+  session = null
+}) => {
+  const verificationContext = await validateVoteVerificationForCast({
+    userId,
+    requestedElectionId,
+    verificationToken,
+    session
+  });
+
+  const effectiveRequestedElectionId = requestedElectionId || verificationContext.verifiedElectionId;
+
   const user = await withOptionalSession(User.findById(userId), session);
   if (!user) {
     throwHttpError(404, 'Voter not found.');
@@ -689,8 +785,8 @@ const executeVoteCast = async ({ userId, candidateId, requestedElectionId, sessi
     election = await withOptionalSession(Election.findById(candidate.election), session);
   }
 
-  if (!election && requestedElectionId) {
-    election = await findElectionById(requestedElectionId, session);
+  if (!election && effectiveRequestedElectionId) {
+    election = await findElectionById(effectiveRequestedElectionId, session);
   }
 
   if (!election) {
@@ -701,10 +797,10 @@ const executeVoteCast = async ({ userId, candidateId, requestedElectionId, sessi
     throwHttpError(404, 'No election available for voting.');
   }
 
-  if (requestedElectionId) {
-    validateObjectId(requestedElectionId, 'election id');
+  if (effectiveRequestedElectionId) {
+    validateObjectId(effectiveRequestedElectionId, 'election id');
 
-    if (String(election.id) !== requestedElectionId) {
+    if (String(election.id) !== effectiveRequestedElectionId) {
       throwHttpError(400, 'Selected candidate does not belong to the requested election.');
     }
   }
@@ -767,6 +863,9 @@ const executeVoteCast = async ({ userId, candidateId, requestedElectionId, sessi
 
   receipt.status = 'counted';
   await saveWithOptionalSession(receipt, session);
+
+  verificationContext.challenge.consumedAt = new Date();
+  await saveWithOptionalSession(verificationContext.challenge, session);
 
   return {
     message: 'Vote successfully cast!',
@@ -1578,7 +1677,7 @@ export const getMyVoteReceipt = async (req, res) => {
 
 // @desc Cast a vote
 export const castVote = async (req, res) => {
-  const { candidateId } = req.body;
+  const { candidateId, verificationToken } = req.body;
   const requestedElectionId = extractElectionId(req);
   const userId = req.user.id;
 
@@ -1588,6 +1687,10 @@ export const castVote = async (req, res) => {
 
   if (!mongoose.Types.ObjectId.isValid(candidateId)) {
     return res.status(400).json({ message: 'Invalid candidate id.' });
+  }
+
+  if (!verificationToken || typeof verificationToken !== 'string') {
+    return res.status(400).json({ message: 'verificationToken is required for strong voter verification.' });
   }
 
   try {
@@ -1604,6 +1707,7 @@ export const castVote = async (req, res) => {
             userId,
             candidateId,
             requestedElectionId,
+            verificationToken,
             session
           });
         });
@@ -1620,7 +1724,8 @@ export const castVote = async (req, res) => {
       responsePayload = await executeVoteCast({
         userId,
         candidateId,
-        requestedElectionId
+        requestedElectionId,
+        verificationToken
       });
     }
 
