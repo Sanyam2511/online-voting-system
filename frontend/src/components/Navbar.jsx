@@ -30,6 +30,7 @@ const Navbar = () => {
     () => [
       { to: '/', label: 'Home' },
       { to: '/candidates', label: 'Candidates' },
+      { to: '/disputes', label: 'Disputes' },
       ...(isAdmin ? [{ to: '/manage-candidates', label: 'Manage' }] : []),
       { to: '/transparency', label: 'Transparency' },
       { to: '/receipt', label: 'Receipt Verify' }

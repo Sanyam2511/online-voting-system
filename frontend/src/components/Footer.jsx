@@ -6,6 +6,7 @@ import BrandMark from './BrandMark';
 const platformLinks = [
   { to: '/', label: 'Home' },
   { to: '/candidates', label: 'Candidate Profiles' },
+  { to: '/disputes', label: 'Recount and Disputes' },
   { to: '/transparency', label: 'Transparency Dashboard' },
   { to: '/receipt', label: 'Receipt Verification' }
 ];

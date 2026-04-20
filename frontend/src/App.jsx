@@ -11,6 +11,7 @@ import CandidateProfiles from './pages/CandidateProfiles';
 import CandidateManagement from './pages/CandidateManagement';
 import TransparencyDashboard from './pages/TransparencyDashboard';
 import ReceiptVerification from './pages/ReceiptVerification';
+import RecountDisputes from './pages/RecountDisputes';
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           <Route path="/manage-candidates" element={<CandidateManagement />} />
           <Route path="/transparency" element={<TransparencyDashboard />} />
           <Route path="/receipt" element={<ReceiptVerification />} />
+          <Route path="/disputes" element={<RecountDisputes />} />
           <Route path="/vote" element={<VotingArena />} />
         </Routes>
         <Footer />
