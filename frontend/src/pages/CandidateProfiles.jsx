@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowRightLeft, BadgeCheck, CalendarDays, LoaderCircle, Search, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import ThemedSelect from '../components/ThemedSelect';
 import api from '../lib/api';
 import candidateCompareIllustration from '../assets/illustrations/candidate-compare.svg';
 
@@ -286,23 +287,17 @@ const CandidateProfiles = () => {
                   <label htmlFor="candidate-election" className="block text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
                     Election Context
                   </label>
-                  <select
+                  <ThemedSelect
                     id="candidate-election"
                     value={selectedElectionId}
-                    onChange={(event) => setSelectedElectionId(event.target.value)}
-                    className="form-field"
+                    onValueChange={setSelectedElectionId}
                     disabled={elections.length === 0}
-                  >
-                    {elections.length === 0 ? (
-                      <option value="">No elections available</option>
-                    ) : (
-                      elections.map((election) => (
-                        <option key={election._id} value={election._id}>
-                          {election.name}
-                        </option>
-                      ))
-                    )}
-                  </select>
+                    placeholder={elections.length === 0 ? 'No elections available' : 'Select election'}
+                    options={elections.map((election) => ({
+                      value: election._id,
+                      label: election.name
+                    }))}
+                  />
                 </div>
 
                 {selectedElection && (

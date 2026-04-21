@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import { getAuthToken } from '../lib/auth';
 import toast from 'react-hot-toast';
+import ThemedSelect from '../components/ThemedSelect';
 
 const defaultCandidateForm = {
   name: '',
@@ -655,23 +656,17 @@ const CandidateManagement = () => {
                   <label htmlFor="candidate-election-picker" className="block text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
                     Active Election
                   </label>
-                  <select
+                  <ThemedSelect
                     id="candidate-election-picker"
-                    className="form-field"
                     value={selectedElectionId}
-                    onChange={(event) => setSelectedElectionId(event.target.value)}
+                    onValueChange={setSelectedElectionId}
                     disabled={elections.length === 0}
-                  >
-                    {elections.length === 0 ? (
-                      <option value="">No elections available</option>
-                    ) : (
-                      elections.map((election) => (
-                        <option key={election._id} value={election._id}>
-                          {election.name}
-                        </option>
-                      ))
-                    )}
-                  </select>
+                    placeholder={elections.length === 0 ? 'No elections available' : 'Select election'}
+                    options={elections.map((election) => ({
+                      value: election._id,
+                      label: election.name
+                    }))}
+                  />
                 </div>
               </div>
 

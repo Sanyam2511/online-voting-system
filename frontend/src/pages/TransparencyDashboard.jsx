@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import api from '../lib/api';
 import transparencyIllustration from '../assets/illustrations/transparency-dashboard.svg';
+import ThemedSelect from '../components/ThemedSelect';
 
 const PARTY_COLORS = ['#1F66F4', '#2F7DFF', '#274A84', '#5A89F6', '#89AEEF', '#3A5F9C'];
 
@@ -147,23 +148,17 @@ const TransparencyDashboard = () => {
                   <label htmlFor="transparency-election" className="block text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
                     Election Scope
                   </label>
-                  <select
+                  <ThemedSelect
                     id="transparency-election"
-                    className="form-field"
                     value={selectedElectionId}
-                    onChange={(event) => setSelectedElectionId(event.target.value)}
+                    onValueChange={setSelectedElectionId}
                     disabled={elections.length === 0}
-                  >
-                    {elections.length === 0 ? (
-                      <option value="">No elections available</option>
-                    ) : (
-                      elections.map((election) => (
-                        <option key={election._id} value={election._id}>
-                          {election.name}
-                        </option>
-                      ))
-                    )}
-                  </select>
+                    placeholder={elections.length === 0 ? 'No elections available' : 'Select election'}
+                    options={elections.map((election) => ({
+                      value: election._id,
+                      label: election.name
+                    }))}
+                  />
                 </div>
 
                 {selectedElection && (

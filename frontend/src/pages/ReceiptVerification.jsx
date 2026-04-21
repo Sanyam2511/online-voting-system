@@ -5,6 +5,7 @@ import { jsPDF } from 'jspdf';
 import api from '../lib/api';
 import receiptIllustration from '../assets/illustrations/receipt-verification.svg';
 import { getAuthToken } from '../lib/auth';
+import ThemedSelect from '../components/ThemedSelect';
 
 const ReceiptCard = ({ title, receipt }) => (
   <article className="surface-card p-6">
@@ -271,23 +272,18 @@ const ReceiptVerification = () => {
             </label>
             <div className="flex items-center gap-2">
               <CalendarDays className="w-4 h-4 text-[#5f7398]" />
-              <select
+              <ThemedSelect
                 id="receipt-election"
                 value={selectedElectionId}
-                onChange={(event) => setSelectedElectionId(event.target.value)}
-                className="form-field"
+                onValueChange={setSelectedElectionId}
                 disabled={elections.length === 0}
-              >
-                {elections.length === 0 ? (
-                  <option value="">No elections available</option>
-                ) : (
-                  elections.map((election) => (
-                    <option key={election._id} value={election._id}>
-                      {election.name}
-                    </option>
-                  ))
-                )}
-              </select>
+                placeholder={elections.length === 0 ? 'No elections available' : 'Select election'}
+                options={elections.map((election) => ({
+                  value: election._id,
+                  label: election.name
+                }))}
+                className="flex-1"
+              />
             </div>
           </div>
 

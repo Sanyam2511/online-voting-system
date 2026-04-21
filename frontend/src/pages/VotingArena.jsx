@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import PartyCard from '../components/PartyCard';
+import ThemedSelect from '../components/ThemedSelect';
 import api from '../lib/api';
 import { clearAuthSession, patchStoredUser } from '../lib/auth';
 import votingBallotIllustration from '../assets/illustrations/voting-ballot.svg';
@@ -363,23 +364,17 @@ const VotingArena = () => {
               <label htmlFor="election-picker" className="block text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
                 Select Election
               </label>
-              <select
+              <ThemedSelect
                 id="election-picker"
                 value={selectedElectionId}
-                onChange={(event) => setSelectedElectionId(event.target.value)}
-                className="form-field"
+                onValueChange={setSelectedElectionId}
                 disabled={pageLoading || ballotLoading || elections.length === 0}
-              >
-                {elections.length === 0 ? (
-                  <option value="">No elections available</option>
-                ) : (
-                  elections.map((election) => (
-                    <option key={election._id} value={election._id}>
-                      {election.name}
-                    </option>
-                  ))
-                )}
-              </select>
+                placeholder={elections.length === 0 ? 'No elections available' : 'Select election'}
+                options={elections.map((election) => ({
+                  value: election._id,
+                  label: election.name
+                }))}
+              />
             </div>
 
             {selectedElection && (

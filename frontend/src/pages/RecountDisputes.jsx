@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../lib/api';
 import { clearAuthSession, getAuthToken } from '../lib/auth';
+import ThemedSelect from '../components/ThemedSelect';
 
 const DISPUTE_TYPE_OPTIONS = [
   { value: 'dispute', label: 'Dispute Case' },
@@ -402,12 +403,10 @@ const RecountDisputes = () => {
                   <label htmlFor="case-election" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
                     Election Scope
                   </label>
-                  <select
+                  <ThemedSelect
                     id="case-election"
-                    className="form-field"
                     value={selectedElectionId}
-                    onChange={(event) => {
-                      const nextElectionId = event.target.value;
+                    onValueChange={(nextElectionId) => {
                       setSelectedElectionId(nextElectionId);
                       setFormData((current) => ({
                         ...current,
@@ -415,13 +414,12 @@ const RecountDisputes = () => {
                         candidateId: ''
                       }));
                     }}
-                  >
-                    {elections.map((election) => (
-                      <option key={election._id} value={election._id}>
-                        {election.name}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder={elections.length === 0 ? 'No elections available' : 'Select election'}
+                    options={elections.map((election) => ({
+                      value: election._id,
+                      label: election.name
+                    }))}
+                  />
                 </div>
 
                 {isAdmin && (
@@ -430,36 +428,24 @@ const RecountDisputes = () => {
                       <label htmlFor="admin-status-filter" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
                         Status Filter
                       </label>
-                      <select
+                      <ThemedSelect
                         id="admin-status-filter"
-                        className="form-field"
                         value={statusFilter}
-                        onChange={(event) => setStatusFilter(event.target.value)}
-                      >
-                        {STATUS_FILTER_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
+                        onValueChange={setStatusFilter}
+                        options={STATUS_FILTER_OPTIONS}
+                      />
                     </div>
 
                     <div>
                       <label htmlFor="admin-type-filter" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
                         Type Filter
                       </label>
-                      <select
+                      <ThemedSelect
                         id="admin-type-filter"
-                        className="form-field"
                         value={typeFilter}
-                        onChange={(event) => setTypeFilter(event.target.value)}
-                      >
-                        {TYPE_FILTER_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
+                        onValueChange={setTypeFilter}
+                        options={TYPE_FILTER_OPTIONS}
+                      />
                     </div>
                   </>
                 )}
@@ -479,39 +465,32 @@ const RecountDisputes = () => {
                       <label htmlFor="case-type" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
                         Case Type
                       </label>
-                      <select
+                      <ThemedSelect
                         id="case-type"
                         name="type"
                         value={formData.type}
                         onChange={onFormChange}
-                        className="form-field"
-                      >
-                        {DISPUTE_TYPE_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
+                        options={DISPUTE_TYPE_OPTIONS}
+                      />
                     </div>
 
                     <div>
                       <label htmlFor="case-candidate" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
                         Candidate (Optional)
                       </label>
-                      <select
+                      <ThemedSelect
                         id="case-candidate"
                         name="candidateId"
                         value={formData.candidateId}
                         onChange={onFormChange}
-                        className="form-field"
-                      >
-                        <option value="">Select candidate</option>
-                        {candidateOptions.map((candidate) => (
-                          <option key={candidate._id} value={candidate._id}>
-                            {candidate.name} ({candidate.party})
-                          </option>
-                        ))}
-                      </select>
+                        options={[
+                          { value: '', label: 'Select candidate' },
+                          ...candidateOptions.map((candidate) => ({
+                            value: candidate._id,
+                            label: `${candidate.name} (${candidate.party})`
+                          }))
+                        ]}
+                      />
                     </div>
                   </div>
 
