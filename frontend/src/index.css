@@ -53,6 +53,83 @@ body {
   overflow-x: hidden;
 }
 
+.skip-link {
+  position: fixed;
+  top: 0.65rem;
+  left: 0.65rem;
+  z-index: 120;
+  border: 1px solid #1f66f4;
+  border-radius: 0.65rem;
+  background: #ffffff;
+  color: #12305d;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.45rem 0.72rem;
+  transform: translateY(-180%);
+  transition: transform 0.18s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+body.theme-dark {
+  color: #e7efff;
+  background-color: #0b1324;
+  background-image:
+    radial-gradient(circle at 8% 10%, rgba(62, 120, 248, 0.18), transparent 34%),
+    radial-gradient(circle at 92% 2%, rgba(94, 145, 255, 0.16), transparent 38%),
+    radial-gradient(circle at 50% 100%, rgba(52, 94, 188, 0.12), transparent 44%),
+    linear-gradient(to bottom, rgba(25, 34, 58, 0.4) 1px, transparent 1px),
+    linear-gradient(to right, rgba(25, 34, 58, 0.4) 1px, transparent 1px);
+  background-size: auto, auto, auto, 36px 36px, 36px 36px;
+}
+
+body.theme-dark::before {
+  background: rgba(52, 94, 188, 0.28);
+}
+
+body.theme-dark::after {
+  background: rgba(77, 131, 255, 0.22);
+}
+
+body.theme-dark .surface-card {
+  background: linear-gradient(160deg, rgba(16, 24, 46, 0.94), rgba(12, 20, 38, 0.96));
+  border-color: rgba(91, 118, 170, 0.5);
+  box-shadow: 0 24px 60px rgba(5, 10, 22, 0.45);
+}
+
+body.theme-dark .glass-panel {
+  background: linear-gradient(160deg, rgba(20, 32, 58, 0.78), rgba(10, 18, 36, 0.86));
+  border-color: rgba(91, 118, 170, 0.5);
+  box-shadow: 0 22px 56px rgba(5, 10, 22, 0.4);
+}
+
+body.theme-dark .nav-link,
+body.theme-dark .footer-link,
+body.theme-dark .footer-mini-link {
+  color: #d5e4ff;
+}
+
+body.theme-dark .metric-pill {
+  background: rgba(26, 40, 70, 0.78);
+  border-color: rgba(92, 126, 188, 0.55);
+  color: #d7e6ff;
+}
+
+body.theme-dark .form-field {
+  background: rgba(14, 22, 40, 0.92);
+  border-color: rgba(86, 116, 174, 0.5);
+  color: #e5efff;
+}
+
+body.theme-dark .btn-secondary {
+  background: rgba(20, 32, 58, 0.92);
+  color: #dbe7ff;
+  border-color: rgba(86, 116, 174, 0.65);
+}
+
 body::before,
 body::after {
   content: '';

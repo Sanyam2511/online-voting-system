@@ -1,11 +1,20 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { LogOut, Menu, ShieldCheck, Vote, X } from 'lucide-react';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { LogOut, Menu, Moon, ShieldCheck, Sun, Vote, X } from 'lucide-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { AUTH_CHANGED_EVENT, clearAuthSession, getStoredUser } from '../lib/auth';
 import BrandMark from './BrandMark';
+import { useUiPreferences } from '../context/useUiPreferences';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const {
+    language,
+    setLanguage,
+    theme,
+    toggleTheme,
+    t
+  } = useUiPreferences();
+  const location = useLocation();
   const [user, setUser] = useState(getStoredUser());
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -28,20 +37,28 @@ const Navbar = () => {
 
   const navLinks = useMemo(
     () => [
-      { to: '/', label: 'Home' },
-      { to: '/candidates', label: 'Candidates' },
-      { to: '/disputes', label: 'Disputes' },
-      ...(isAdmin ? [{ to: '/manage-candidates', label: 'Manage' }] : []),
-      { to: '/transparency', label: 'Transparency' },
-      { to: '/receipt', label: 'Receipt Verify' }
+      { to: '/', label: t('nav.home', 'Home') },
+      { to: '/candidates', label: t('nav.candidates', 'Candidates') },
+      { to: '/disputes', label: t('nav.disputes', 'Disputes') },
+      ...(isAdmin ? [{ to: '/manage-candidates', label: t('nav.manage', 'Manage') }] : []),
+      ...(isAdmin ? [{ to: '/security', label: t('nav.security', 'Security') }] : []),
+      { to: '/transparency', label: t('nav.transparency', 'Transparency') },
+      { to: '/receipt', label: t('nav.receipt', 'Receipt Verify') }
     ],
-    [isAdmin]
+    [isAdmin, t]
   );
+
+  const toggleLanguage = () => {
+    const nextLanguage = language === 'en' ? 'hi' : 'en';
+    setLanguage(nextLanguage);
+    const nextPath = location.pathname.replace(/^\/(en|hi)(?=\/|$)/, `/${nextLanguage}`);
+    navigate(nextPath || `/${nextLanguage}`);
+  };
 
   const handleLogout = () => {
     clearAuthSession();
     setMobileOpen(false);
-    navigate('/login');
+    navigate(`/${language}/login`);
   };
 
   const closeMobileMenu = () => {
@@ -55,7 +72,7 @@ const Navbar = () => {
       <div className="section-wrap pt-2 pb-1">
         <div className="rounded-[1.2rem] border border-[#c6d5f1] bg-white/90 backdrop-blur-xl shadow-[0_16px_34px_rgba(12,33,71,0.14)] px-3 sm:px-4 py-2.5">
           <div className="flex items-center justify-between gap-3">
-            <Link to="/" onClick={closeMobileMenu} className="flex items-center gap-2.5 min-w-0">
+            <Link to={`/${language}/`} onClick={closeMobileMenu} className="flex items-center gap-2.5 min-w-0">
               <BrandMark className="w-10 h-10" />
               <div className="min-w-0">
                 <p className="text-[15px] sm:text-base font-semibold text-[#132b56] tracking-tight truncate">SecureVote</p>
@@ -65,17 +82,42 @@ const Navbar = () => {
 
             <div className="hidden lg:flex items-center gap-1">
               {navLinks.map((item) => (
-                <NavLink key={item.to} to={item.to} className={getNavLinkClass} onClick={closeMobileMenu}>
+                <NavLink
+                  key={item.to}
+                  to={`/${language}${item.to === '/' ? '' : item.to}`}
+                  className={getNavLinkClass}
+                  onClick={closeMobileMenu}
+                >
                   {item.label}
                 </NavLink>
               ))}
             </div>
 
             <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={toggleLanguage}
+                className="hidden md:inline-flex nav-link"
+                aria-label={`${t('nav.language', 'Language')}: ${t('nav.languageValue', language === 'en' ? 'English' : 'Hindi')}`}
+              >
+                {language === 'en' ? 'EN' : 'HI'}
+              </button>
+
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="hidden md:inline-flex nav-link"
+                aria-pressed={theme === 'dark'}
+                aria-label={theme === 'dark' ? t('nav.themeDark', 'Dark mode on') : t('nav.themeLight', 'Light mode on')}
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                <span className="hidden sm:inline">{t('nav.theme', 'Theme')}</span>
+              </button>
+
               {!isAdmin && (
-                <Link to="/vote" onClick={closeMobileMenu} className="btn-primary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5">
+                <Link to={`/${language}/vote`} onClick={closeMobileMenu} className="btn-primary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5">
                   <Vote className="w-4 h-4" />
-                  <span className="hidden sm:inline">Vote</span>
+                  <span className="hidden sm:inline">{t('nav.vote', 'Vote')}</span>
                 </Link>
               )}
 
@@ -86,14 +128,14 @@ const Navbar = () => {
                   className="btn-secondary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span className="hidden sm:inline">Logout</span>
+                  <span className="hidden sm:inline">{t('nav.logout', 'Logout')}</span>
                 </button>
               ) : (
                 <>
-                  <Link to="/login" onClick={closeMobileMenu} className="hidden sm:inline-flex nav-link">Login</Link>
-                  <Link to="/signup" onClick={closeMobileMenu} className="btn-secondary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5">
+                  <Link to={`/${language}/login`} onClick={closeMobileMenu} className="hidden sm:inline-flex nav-link">{t('nav.login', 'Login')}</Link>
+                  <Link to={`/${language}/signup`} onClick={closeMobileMenu} className="btn-secondary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5">
                     <ShieldCheck className="w-4 h-4" />
-                    <span className="hidden sm:inline">Register</span>
+                    <span className="hidden sm:inline">{t('nav.register', 'Register')}</span>
                   </Link>
                 </>
               )}
@@ -102,7 +144,7 @@ const Navbar = () => {
                 type="button"
                 onClick={() => setMobileOpen((current) => !current)}
                 className="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[#c5d5f4] bg-[#f4f8ff] text-[#2b4d80]"
-                aria-label="Toggle navigation menu"
+                aria-label={t('nav.toggleMenu', 'Toggle navigation menu')}
               >
                 {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
               </button>
@@ -113,7 +155,12 @@ const Navbar = () => {
             <div className="lg:hidden mt-2.5 pt-2.5 border-t border-[#d9e4f9]">
               <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
                 {navLinks.map((item) => (
-                  <NavLink key={item.to} to={item.to} className={getNavLinkClass} onClick={closeMobileMenu}>
+                  <NavLink
+                    key={item.to}
+                    to={`/${language}${item.to === '/' ? '' : item.to}`}
+                    className={getNavLinkClass}
+                    onClick={closeMobileMenu}
+                  >
                     {item.label}
                   </NavLink>
                 ))}
@@ -121,9 +168,18 @@ const Navbar = () => {
 
               {!isLoggedIn && (
                 <div className="mt-2">
-                  <Link to="/login" onClick={closeMobileMenu} className="nav-link mr-2 inline-flex">Login</Link>
+                  <Link to={`/${language}/login`} onClick={closeMobileMenu} className="nav-link mr-2 inline-flex">{t('nav.login', 'Login')}</Link>
                 </div>
               )}
+
+              <div className="mt-2 pt-2 border-t border-[#d9e4f9] flex flex-wrap gap-2">
+                <button type="button" onClick={toggleLanguage} className="nav-link">
+                  {language === 'en' ? 'EN' : 'HI'}
+                </button>
+                <button type="button" onClick={toggleTheme} className="nav-link" aria-pressed={theme === 'dark'}>
+                  {t('nav.theme', 'Theme')}
+                </button>
+              </div>
             </div>
           )}
         </div>
