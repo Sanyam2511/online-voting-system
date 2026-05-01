@@ -15,28 +15,30 @@ import {
 import api from '../lib/api';
 import transparencyIllustration from '../assets/illustrations/transparency-dashboard.svg';
 import ThemedSelect from '../components/ThemedSelect';
+import { useUiPreferences } from '../context/useUiPreferences';
 
 const PARTY_COLORS = ['#1F66F4', '#2F7DFF', '#274A84', '#5A89F6', '#89AEEF', '#3A5F9C'];
 
-const formatElectionStatus = (status) => {
+const formatElectionStatus = (status, t) => {
   if (!status) {
-    return 'Unknown';
+    return t('election.status.unknown', 'Unknown');
   }
 
   const map = {
-    draft: 'Draft',
-    registration: 'Registration',
-    live: 'Voting Live',
-    counting: 'Counting',
-    audited: 'Audited',
-    published: 'Published',
-    archived: 'Archived'
+    draft: t('election.status.draft', 'Draft'),
+    registration: t('election.status.registration', 'Registration'),
+    live: t('election.status.live', 'Voting Live'),
+    counting: t('election.status.counting', 'Counting'),
+    audited: t('election.status.audited', 'Audited'),
+    published: t('election.status.published', 'Published'),
+    archived: t('election.status.archived', 'Archived')
   };
 
   return map[status] || status;
 };
 
 const TransparencyDashboard = () => {
+  const { t } = useUiPreferences();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -63,13 +65,13 @@ const TransparencyDashboard = () => {
           setLoading(false);
         }
       } catch {
-        setError('Unable to load transparency dashboard right now.');
+        setError(t('transparency.errors.load', 'Unable to load transparency dashboard right now.'));
         setLoading(false);
       }
     };
 
     fetchElections();
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -88,14 +90,14 @@ const TransparencyDashboard = () => {
         });
         setData(response.data);
       } catch {
-        setError('Unable to load transparency dashboard right now.');
+        setError(t('transparency.errors.load', 'Unable to load transparency dashboard right now.'));
       } finally {
         setLoading(false);
       }
     };
 
     fetchDashboard();
-  }, [selectedElectionId]);
+  }, [selectedElectionId, t]);
 
   const partyChartData = useMemo(() => {
     if (!data?.partyBreakdown?.length) {
@@ -136,24 +138,24 @@ const TransparencyDashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-center">
             <div>
               <p className="eyebrow mb-4">
-                <ShieldCheck className="w-4 h-4" /> Public Transparency Dashboard
+                <ShieldCheck className="w-4 h-4" /> {t('transparency.eyebrow', 'Public Transparency Dashboard')}
               </p>
-              <h1 className="text-2xl sm:text-3xl text-[#102347] mb-2">Open Election Metrics</h1>
+              <h1 className="text-2xl sm:text-3xl text-[#102347] mb-2">{t('transparency.title', 'Open Election Metrics')}</h1>
               <p className="text-[#5f7398] leading-relaxed max-w-3xl">
-                Real-time visibility into turnout, candidate rankings, party vote share, and receipt-level verification activity.
+                {t('transparency.subtitle', 'Real-time visibility into turnout, candidate rankings, party vote share, and receipt-level verification activity.')}
               </p>
 
               <div className="mt-5 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 items-end max-w-2xl">
                 <div>
                   <label htmlFor="transparency-election" className="block text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
-                    Election Scope
+                    {t('transparency.scope', 'Election Scope')}
                   </label>
                   <ThemedSelect
                     id="transparency-election"
                     value={selectedElectionId}
                     onValueChange={setSelectedElectionId}
                     disabled={elections.length === 0}
-                    placeholder={elections.length === 0 ? 'No elections available' : 'Select election'}
+                    placeholder={elections.length === 0 ? t('transparency.noElections', 'No elections available') : t('transparency.selectElection', 'Select election')}
                     options={elections.map((election) => ({
                       value: election._id,
                       label: election.name
@@ -164,22 +166,22 @@ const TransparencyDashboard = () => {
                 {selectedElection && (
                   <div className="rounded-2xl border border-[#d2def6] bg-white px-4 py-3">
                     <p className="text-xs text-[#60739a] inline-flex items-center gap-2">
-                      <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status)}
+                      <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status, t)}
                     </p>
                   </div>
                 )}
               </div>
 
               <div className="mt-4 flex flex-wrap gap-2">
-                <span className="metric-pill">Parties: {data?.summary?.totalParties ?? '--'}</span>
-                <span className="metric-pill">Ranked Candidates: {data?.candidateRanking?.length ?? '--'}</span>
-                <span className="metric-pill">Recent Receipts: {data?.recentReceipts?.length ?? '--'}</span>
+                <span className="metric-pill">{t('transparency.metrics.parties', 'Parties')}: {data?.summary?.totalParties ?? '--'}</span>
+                <span className="metric-pill">{t('transparency.metrics.ranked', 'Ranked Candidates')}: {data?.candidateRanking?.length ?? '--'}</span>
+                <span className="metric-pill">{t('transparency.metrics.receipts', 'Recent Receipts')}: {data?.recentReceipts?.length ?? '--'}</span>
               </div>
             </div>
             <div className="rounded-2xl border border-[#c8d8f6] bg-white overflow-hidden">
               <img
                 src={transparencyIllustration}
-                alt="Election transparency analytics"
+                alt={t('transparency.imageAlt', 'Election transparency analytics')}
                 className="w-full h-44 object-cover"
                 loading="lazy"
               />
@@ -190,11 +192,11 @@ const TransparencyDashboard = () => {
         {loading ? (
           <div className="surface-card p-12 text-center">
             <LoaderCircle className="w-8 h-8 animate-spin text-[#1f66f4] mx-auto mb-3" />
-            <p className="text-[#5d7298]">Loading transparency metrics...</p>
+            <p className="text-[#5d7298]">{t('transparency.loading', 'Loading transparency metrics...')}</p>
           </div>
         ) : elections.length === 0 ? (
           <div className="surface-card p-6 border border-[#d3e0fb] bg-[#f7fbff]">
-            <p className="text-[#4b6796]">No election is available for transparency analytics yet.</p>
+            <p className="text-[#4b6796]">{t('transparency.empty', 'No election is available for transparency analytics yet.')}</p>
           </div>
         ) : error ? (
           <div className="surface-card p-6 border border-[#f1c6c6] bg-[#fff1f1]">
@@ -204,36 +206,36 @@ const TransparencyDashboard = () => {
           <>
             <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 mb-8">
               <div className="surface-card p-5">
-                <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">Election</p>
+                <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">{t('transparency.table.election', 'Election')}</p>
                 <p className="text-sm font-semibold text-[#12305f]">{data.summary.electionName}</p>
               </div>
               <div className="surface-card p-5">
-                <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">Registered Voters</p>
+                <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">{t('transparency.table.registered', 'Registered Voters')}</p>
                 <p className="text-2xl font-semibold text-[#12305f]">{data.summary.totalRegisteredVoters}</p>
               </div>
               <div className="surface-card p-5">
-                <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">Votes Cast</p>
+                <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">{t('transparency.table.votes', 'Votes Cast')}</p>
                 <p className="text-2xl font-semibold text-[#12305f]">{data.summary.totalVotesCast}</p>
               </div>
               <div className="surface-card p-5">
-                <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">Turnout</p>
+                <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">{t('transparency.table.turnout', 'Turnout')}</p>
                 <p className="text-2xl font-semibold text-[#12305f]">{data.summary.turnoutPercentage}%</p>
               </div>
               <div className="surface-card p-5">
-                <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">Active Parties</p>
+                <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">{t('transparency.table.parties', 'Active Parties')}</p>
                 <p className="text-2xl font-semibold text-[#12305f]">{data.summary.totalParties}</p>
               </div>
             </section>
 
             <section className="mb-8">
               <article className="surface-card p-6">
-                <h2 className="text-2xl text-[#102347] mb-4">Election Result Calculation</h2>
+                <h2 className="text-2xl text-[#102347] mb-4">{t('transparency.results.title', 'Election Result Calculation')}</h2>
                 <p className="text-sm text-[#5d7298] mb-5">
-                  Each election below shows the top 3 candidates and total votes cast for dynamic result tracking.
+                  {t('transparency.results.subtitle', 'Each election below shows the top 3 candidates and total votes cast for dynamic result tracking.')}
                 </p>
 
                 {!data.electionResults || data.electionResults.length === 0 ? (
-                  <p className="text-sm text-[#60759b]">No election result data available yet.</p>
+                  <p className="text-sm text-[#60759b]">{t('transparency.results.empty', 'No election result data available yet.')}</p>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {data.electionResults.map((result) => (
@@ -244,7 +246,7 @@ const TransparencyDashboard = () => {
                             <p className="text-lg font-semibold text-[#12305d]">{result.electionName}</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-xs uppercase tracking-[0.08em] text-[#6980a7]">Total Votes Cast</p>
+                            <p className="text-xs uppercase tracking-[0.08em] text-[#6980a7]">{t('transparency.results.totalVotes', 'Total Votes Cast')}</p>
                             <p className="text-xl font-semibold text-[#12305f]">{result.totalVotesCast}</p>
                           </div>
                         </div>
@@ -253,10 +255,10 @@ const TransparencyDashboard = () => {
                           <table className="w-full text-sm">
                             <thead>
                               <tr className="text-left border-b border-[#e3ebfa]">
-                                <th className="pb-2 text-[#6d82a8] font-semibold">Rank</th>
-                                <th className="pb-2 text-[#6d82a8] font-semibold">Candidate</th>
-                                <th className="pb-2 text-[#6d82a8] font-semibold">Party</th>
-                                <th className="pb-2 text-[#6d82a8] font-semibold">Votes</th>
+                                <th className="pb-2 text-[#6d82a8] font-semibold">{t('transparency.results.rank', 'Rank')}</th>
+                                <th className="pb-2 text-[#6d82a8] font-semibold">{t('transparency.results.candidate', 'Candidate')}</th>
+                                <th className="pb-2 text-[#6d82a8] font-semibold">{t('transparency.results.party', 'Party')}</th>
+                                <th className="pb-2 text-[#6d82a8] font-semibold">{t('transparency.results.votes', 'Votes')}</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -282,11 +284,11 @@ const TransparencyDashboard = () => {
               <article className="surface-card p-6">
                 <div className="flex items-center gap-2 mb-5">
                   <PieChartIcon className="w-5 h-5 text-[#1f66f4]" />
-                  <h2 className="text-2xl text-[#102347]">Party Vote Share</h2>
+                  <h2 className="text-2xl text-[#102347]">{t('transparency.chart.partyShare', 'Party Vote Share')}</h2>
                 </div>
 
                 {partyChartData.length === 0 ? (
-                  <p className="text-sm text-[#60759b]">No party vote share data available.</p>
+                  <p className="text-sm text-[#60759b]">{t('transparency.chart.empty', 'No party vote share data available.')}</p>
                 ) : (
                   <div className="grid grid-cols-1 xl:grid-cols-[290px_1fr] gap-4 items-center">
                     <div className="h-[260px]">
@@ -308,8 +310,8 @@ const TransparencyDashboard = () => {
                           </Pie>
                           <Tooltip
                             formatter={(value, _name, payload) => [
-                              `${value} votes (${payload?.payload?.share || 0}%)`,
-                              payload?.payload?.party || 'Party'
+                              `${value} ${t('transparency.chart.votes', 'votes')} (${payload?.payload?.share || 0}%)`,
+                              payload?.payload?.party || t('transparency.results.party', 'Party')
                             ]}
                             contentStyle={{
                               backgroundColor: '#11284f',
@@ -350,11 +352,11 @@ const TransparencyDashboard = () => {
               <article className="glass-panel p-6">
                 <div className="flex items-center gap-2 mb-5">
                   <Activity className="w-5 h-5 text-[#1f66f4]" />
-                  <h2 className="text-2xl text-[#102347]">Turnout Timeline</h2>
+                  <h2 className="text-2xl text-[#102347]">{t('transparency.timeline.title', 'Turnout Timeline')}</h2>
                 </div>
 
                 {timelineData.length === 0 ? (
-                  <p className="text-sm text-[#60759b]">No turnout events recorded yet.</p>
+                  <p className="text-sm text-[#60759b]">{t('transparency.timeline.empty', 'No turnout events recorded yet.')}</p>
                 ) : (
                   <div className="h-[280px] w-full">
                     <ResponsiveContainer width="100%" height="100%">

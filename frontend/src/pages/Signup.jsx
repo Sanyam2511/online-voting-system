@@ -4,9 +4,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import api from '../lib/api';
 import { setAuthSession } from '../lib/auth';
 import signupOnboardingIllustration from '../assets/illustrations/signup-onboarding.svg';
+import { useUiPreferences } from '../context/useUiPreferences';
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { t, withLanguagePath } = useUiPreferences();
   const [formData, setFormData] = useState({ 
     name: '', 
     email: '', 
@@ -31,13 +33,13 @@ const Signup = () => {
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('signup.errors.passwordMismatch', 'Passwords do not match'));
       setLoading(false);
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError(t('signup.errors.passwordLength', 'Password must be at least 6 characters'));
       setLoading(false);
       return;
     }
@@ -52,11 +54,13 @@ const Signup = () => {
       const response = await api.post('/auth/register', submitData);
       const authPayload = response.data;
       setAuthSession(authPayload);
-      setSuccess('Account created successfully! Redirecting...');
-      const redirectPath = authPayload.role === 'Admin' ? '/manage-candidates' : '/vote';
+      setSuccess(t('signup.success', 'Account created successfully! Redirecting...'));
+      const redirectPath = authPayload.role === 'Admin'
+        ? withLanguagePath('/manage-candidates')
+        : withLanguagePath('/vote');
       setTimeout(() => navigate(redirectPath), 900);
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(err.response?.data?.message || t('signup.errors.submitFailed', 'Registration failed. Please try again.'));
     } finally {
       setLoading(false);
     }
@@ -68,15 +72,15 @@ const Signup = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 items-stretch">
           <section className="surface-card p-6 sm:p-7 lg:p-8">
             <p className="eyebrow mb-6">
-              <ShieldCheck className="w-4 h-4" /> Verified Registration
+              <ShieldCheck className="w-4 h-4" /> {t('signup.eyebrow', 'Verified Registration')}
             </p>
-            <h1 className="text-2xl sm:text-3xl text-[#102347] mb-3">Create Voter Account</h1>
-            <p className="text-[#5b7095] mb-5">Register once to access your official digital ballot and governance dashboard.</p>
+            <h1 className="text-2xl sm:text-3xl text-[#102347] mb-3">{t('signup.title', 'Create Voter Account')}</h1>
+            <p className="text-[#5b7095] mb-5">{t('signup.subtitle', 'Register once to access your official digital ballot and governance dashboard.')}</p>
 
             <div className="flex flex-wrap gap-2 mb-8">
-              <span className="metric-pill">Identity Ready</span>
-              <span className="metric-pill">Secure Credential</span>
-              <span className="metric-pill">Instant Ballot Access</span>
+              <span className="metric-pill">{t('signup.badge.identity', 'Identity Ready')}</span>
+              <span className="metric-pill">{t('signup.badge.credential', 'Secure Credential')}</span>
+              <span className="metric-pill">{t('signup.badge.access', 'Instant Ballot Access')}</span>
             </div>
 
             {error && (
@@ -95,7 +99,7 @@ const Signup = () => {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-[#183769] mb-2">Full Name</label>
+                <label htmlFor="name" className="block text-sm font-semibold text-[#183769] mb-2">{t('signup.nameLabel', 'Full Name')}</label>
                 <div className="relative">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6a7ea3]" />
                   <input
@@ -104,7 +108,7 @@ const Signup = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="Your full legal name"
+                    placeholder={t('signup.namePlaceholder', 'Your full legal name')}
                     required
                     className="form-field form-field-with-icon"
                   />
@@ -112,7 +116,7 @@ const Signup = () => {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-[#183769] mb-2">Email Address</label>
+                <label htmlFor="email" className="block text-sm font-semibold text-[#183769] mb-2">{t('signup.emailLabel', 'Email Address')}</label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6a7ea3]" />
                   <input
@@ -121,7 +125,7 @@ const Signup = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="you@example.com"
+                    placeholder={t('signup.emailPlaceholder', 'you@example.com')}
                     required
                     className="form-field form-field-with-icon"
                   />
@@ -129,7 +133,7 @@ const Signup = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-[#183769] mb-2">Password</label>
+                <label htmlFor="password" className="block text-sm font-semibold text-[#183769] mb-2">{t('signup.passwordLabel', 'Password')}</label>
                 <div className="relative">
                   <LockKeyhole className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6a7ea3]" />
                   <input
@@ -138,7 +142,7 @@ const Signup = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="At least 6 characters"
+                    placeholder={t('signup.passwordPlaceholder', 'At least 6 characters')}
                     required
                     className="form-field form-field-with-icon"
                   />
@@ -146,7 +150,7 @@ const Signup = () => {
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-[#183769] mb-2">Confirm Password</label>
+                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-[#183769] mb-2">{t('signup.confirmLabel', 'Confirm Password')}</label>
                 <div className="relative">
                   <LockKeyhole className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6a7ea3]" />
                   <input
@@ -155,7 +159,7 @@ const Signup = () => {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    placeholder="Re-enter password"
+                    placeholder={t('signup.confirmPlaceholder', 'Re-enter password')}
                     required
                     className="form-field form-field-with-icon"
                   />
@@ -167,15 +171,15 @@ const Signup = () => {
                 disabled={loading}
                 className="btn-primary w-full inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loading ? 'Creating account...' : 'Create Account'}
+                {loading ? t('signup.loading', 'Creating account...') : t('signup.cta', 'Create Account')}
                 {!loading && <ArrowRight className="w-4 h-4" />}
               </button>
             </form>
 
             <p className="text-sm text-[#5e7298] mt-6">
-              Already registered?{' '}
-              <Link to="/login" className="font-semibold text-[#1f66f4] hover:text-[#1149bd] transition">
-                Sign in here
+              {t('signup.haveAccount', 'Already registered?')}{' '}
+              <Link to={withLanguagePath('/login')} className="font-semibold text-[#1f66f4] hover:text-[#1149bd] transition">
+                {t('signup.signInLink', 'Sign in here')}
               </Link>
             </p>
           </section>
@@ -184,49 +188,49 @@ const Signup = () => {
             <div className="rounded-2xl border border-[#cfdcf6] bg-white overflow-hidden mb-6 shadow-sm">
               <img
                 src={signupOnboardingIllustration}
-                alt="Citizen onboarding and identity verification for voting platform"
+                alt={t('signup.imageAlt', 'Citizen onboarding and identity verification for voting platform')}
                 className="w-full h-48 object-cover"
                 loading="lazy"
               />
             </div>
 
-            <p className="text-xs uppercase tracking-[0.12em] text-[#4d6794] mb-4">Onboarding Standards</p>
-            <h2 className="text-2xl sm:text-3xl text-[#132b56] mb-5">Trusted civic onboarding</h2>
+            <p className="text-xs uppercase tracking-[0.12em] text-[#4d6794] mb-4">{t('signup.onboardingEyebrow', 'Onboarding Standards')}</p>
+            <h2 className="text-2xl sm:text-3xl text-[#132b56] mb-5">{t('signup.onboardingTitle', 'Trusted civic onboarding')}</h2>
             <p className="text-[#5e7298] leading-relaxed mb-8">
-              A mature voting ecosystem starts with clean registration, identity confidence, and fraud-resistant account creation.
+              {t('signup.onboardingBody', 'A mature voting ecosystem starts with clean registration, identity confidence, and fraud-resistant account creation.')}
             </p>
 
             <div className="space-y-4">
               <div className="rounded-2xl border border-[#cfdcf6] bg-white p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle2 className="w-5 h-5 text-[#1f66f4]" />
-                  <p className="font-semibold text-[#17386f]">Citizen Identity Ready</p>
+                  <p className="font-semibold text-[#17386f]">{t('signup.onboarding.identityTitle', 'Citizen Identity Ready')}</p>
                 </div>
-                <p className="text-sm text-[#60739a]">Users are onboarded before they can access ballots.</p>
+                <p className="text-sm text-[#60739a]">{t('signup.onboarding.identityBody', 'Users are onboarded before they can access ballots.')}</p>
               </div>
 
               <div className="rounded-2xl border border-[#cfdcf6] bg-white p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle2 className="w-5 h-5 text-[#1f66f4]" />
-                  <p className="font-semibold text-[#17386f]">Protected Credentials</p>
+                  <p className="font-semibold text-[#17386f]">{t('signup.onboarding.credentialsTitle', 'Protected Credentials')}</p>
                 </div>
-                <p className="text-sm text-[#60739a]">Passwords are validated before account creation is accepted.</p>
+                <p className="text-sm text-[#60739a]">{t('signup.onboarding.credentialsBody', 'Passwords are validated before account creation is accepted.')}</p>
               </div>
 
               <div className="rounded-2xl border border-[#cfdcf6] bg-white p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle2 className="w-5 h-5 text-[#1f66f4]" />
-                  <p className="font-semibold text-[#17386f]">Direct Ballot Access</p>
+                  <p className="font-semibold text-[#17386f]">{t('signup.onboarding.ballotTitle', 'Direct Ballot Access')}</p>
                 </div>
-                <p className="text-sm text-[#60739a]">After registration, users move directly to the secure voting arena.</p>
+                <p className="text-sm text-[#60739a]">{t('signup.onboarding.ballotBody', 'After registration, users move directly to the secure voting arena.')}</p>
               </div>
 
               <div className="rounded-2xl border border-[#bfd1f8] bg-[#1f66f4] p-5 mt-5">
                 <div className="flex items-center gap-2 mb-2">
                   <UserPlus className="w-5 h-5 text-white" />
-                  <p className="font-semibold text-white">Platform Integrity</p>
+                  <p className="font-semibold text-white">{t('signup.onboarding.integrityTitle', 'Platform Integrity')}</p>
                 </div>
-                <p className="text-sm text-[#d9e7ff]">Reliable onboarding is the first layer of election credibility.</p>
+                <p className="text-sm text-[#d9e7ff]">{t('signup.onboarding.integrityBody', 'Reliable onboarding is the first layer of election credibility.')}</p>
               </div>
             </div>
           </aside>

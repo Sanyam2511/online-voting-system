@@ -4,9 +4,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import api from '../lib/api';
 import { setAuthSession } from '../lib/auth';
 import loginSecurityIllustration from '../assets/illustrations/login-security.svg';
+import { useUiPreferences } from '../context/useUiPreferences';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { t, withLanguagePath } = useUiPreferences();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -28,11 +30,13 @@ const Login = () => {
       const response = await api.post('/auth/login', formData);
       const authPayload = response.data;
       setAuthSession(authPayload);
-      setSuccess('Login successful! Redirecting...');
-      const redirectPath = authPayload.role === 'Admin' ? '/manage-candidates' : '/vote';
+      setSuccess(t('login.success', 'Login successful! Redirecting...'));
+      const redirectPath = authPayload.role === 'Admin'
+        ? withLanguagePath('/manage-candidates')
+        : withLanguagePath('/vote');
       setTimeout(() => navigate(redirectPath), 900);
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(err.response?.data?.message || t('login.error', 'Login failed. Please try again.'));
     } finally {
       setLoading(false);
     }
@@ -44,15 +48,15 @@ const Login = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-8 items-stretch">
           <section className="surface-card p-6 sm:p-7 lg:p-8">
             <p className="eyebrow mb-6">
-              <ShieldCheck className="w-4 h-4" /> Secure Sign In
+              <ShieldCheck className="w-4 h-4" /> {t('login.eyebrow', 'Secure Sign In')}
             </p>
-            <h1 className="text-2xl sm:text-3xl text-[#102347] mb-3">Welcome Back</h1>
-            <p className="text-[#5b7095] mb-5">Access your verified ballot and participate in official decision-making.</p>
+            <h1 className="text-2xl sm:text-3xl text-[#102347] mb-3">{t('login.title', 'Welcome Back')}</h1>
+            <p className="text-[#5b7095] mb-5">{t('login.subtitle', 'Access your verified ballot and participate in official decision-making.')}</p>
 
             <div className="flex flex-wrap gap-2 mb-8">
-              <span className="metric-pill">JWT Session</span>
-              <span className="metric-pill">One Vote / Election</span>
-              <span className="metric-pill">Receipt Backed</span>
+              <span className="metric-pill">{t('login.badge.jwt', 'JWT Session')}</span>
+              <span className="metric-pill">{t('login.badge.oneVote', 'One Vote / Election')}</span>
+              <span className="metric-pill">{t('login.badge.receipt', 'Receipt Backed')}</span>
             </div>
 
             {error && (
@@ -71,7 +75,7 @@ const Login = () => {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-[#183769] mb-2">Email Address</label>
+                <label htmlFor="email" className="block text-sm font-semibold text-[#183769] mb-2">{t('login.emailLabel', 'Email Address')}</label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6a7ea3]" />
                   <input
@@ -80,7 +84,7 @@ const Login = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="you@example.com"
+                    placeholder={t('login.emailPlaceholder', 'you@example.com')}
                     required
                     className="form-field form-field-with-icon"
                   />
@@ -88,7 +92,7 @@ const Login = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-[#183769] mb-2">Password</label>
+                <label htmlFor="password" className="block text-sm font-semibold text-[#183769] mb-2">{t('login.passwordLabel', 'Password')}</label>
                 <div className="relative">
                   <LockKeyhole className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6a7ea3]" />
                   <input
@@ -97,7 +101,7 @@ const Login = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Enter your secure password"
+                    placeholder={t('login.passwordPlaceholder', 'Enter your secure password')}
                     required
                     className="form-field form-field-with-icon"
                   />
@@ -109,15 +113,15 @@ const Login = () => {
                 disabled={loading}
                 className="btn-primary w-full inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loading ? 'Signing in...' : 'Sign In'}
+                {loading ? t('login.loading', 'Signing in...') : t('login.cta', 'Sign In')}
                 {!loading && <ArrowRight className="w-4 h-4" />}
               </button>
             </form>
 
             <p className="text-sm text-[#5e7298] mt-6">
-              New voter?{' '}
-              <Link to="/signup" className="font-semibold text-[#1f66f4] hover:text-[#1149bd] transition">
-                Create an account
+              {t('login.noAccount', 'New voter?')}{' '}
+              <Link to={withLanguagePath('/signup')} className="font-semibold text-[#1f66f4] hover:text-[#1149bd] transition">
+                {t('login.createAccount', 'Create an account')}
               </Link>
             </p>
           </section>
@@ -128,32 +132,32 @@ const Login = () => {
               <div className="rounded-2xl border border-[#cfdcf6] bg-white overflow-hidden mb-6 shadow-sm">
                 <img
                   src={loginSecurityIllustration}
-                  alt="Secure voter login with shield and lock protection"
+                  alt={t('login.imageAlt', 'Secure voter login with shield and lock protection')}
                   className="w-full h-48 object-cover"
                   loading="lazy"
                 />
               </div>
 
-              <p className="text-xs uppercase tracking-[0.12em] text-[#4d6794] mb-4">Platform Assurance</p>
-              <h2 className="text-2xl sm:text-3xl text-[#132b56] mb-5">Election-grade access controls</h2>
+              <p className="text-xs uppercase tracking-[0.12em] text-[#4d6794] mb-4">{t('login.assuranceEyebrow', 'Platform Assurance')}</p>
+              <h2 className="text-2xl sm:text-3xl text-[#132b56] mb-5">{t('login.assuranceTitle', 'Election-grade access controls')}</h2>
               <p className="text-[#5e7298] leading-relaxed mb-8">
-                Session protection, token-based authentication, and single-vote enforcement preserve institutional trust.
+                {t('login.assuranceBody', 'Session protection, token-based authentication, and single-vote enforcement preserve institutional trust.')}
               </p>
 
               <div className="space-y-4">
                 <div className="rounded-2xl border border-[#cfdcf6] bg-white p-4">
-                  <p className="text-sm font-semibold text-[#17386f] mb-1">Identity Verification</p>
-                  <p className="text-sm text-[#60739a]">Only authenticated users can access the ballot interface.</p>
+                  <p className="text-sm font-semibold text-[#17386f] mb-1">{t('login.assurance.identityTitle', 'Identity Verification')}</p>
+                  <p className="text-sm text-[#60739a]">{t('login.assurance.identityBody', 'Only authenticated users can access the ballot interface.')}</p>
                 </div>
 
                 <div className="rounded-2xl border border-[#cfdcf6] bg-white p-4">
-                  <p className="text-sm font-semibold text-[#17386f] mb-1">Session Security</p>
-                  <p className="text-sm text-[#60739a]">Authenticated state is synced across the app for controlled access.</p>
+                  <p className="text-sm font-semibold text-[#17386f] mb-1">{t('login.assurance.sessionTitle', 'Session Security')}</p>
+                  <p className="text-sm text-[#60739a]">{t('login.assurance.sessionBody', 'Authenticated state is synced across the app for controlled access.')}</p>
                 </div>
 
                 <div className="rounded-2xl border border-[#cfdcf6] bg-[#1f66f4] p-4">
-                  <p className="text-sm font-semibold text-white mb-1">Governance Ready</p>
-                  <p className="text-sm text-[#d9e7ff]">A refined citizen experience built for credible public participation.</p>
+                  <p className="text-sm font-semibold text-white mb-1">{t('login.assurance.readyTitle', 'Governance Ready')}</p>
+                  <p className="text-sm text-[#d9e7ff]">{t('login.assurance.readyBody', 'A refined citizen experience built for credible public participation.')}</p>
                 </div>
               </div>
             </div>
