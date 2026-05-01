@@ -12,6 +12,7 @@ import User from '../models/User.js';
 import VoteReceipt from '../models/VoteReceipt.js';
 import VoteVerificationChallenge from '../models/VoteVerificationChallenge.js';
 import ElectionDispute from '../models/ElectionDispute.js';
+import SecurityEvent from '../models/SecurityEvent.js';
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@securevote.com';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin@12345';
@@ -36,6 +37,7 @@ describe('Recount + Strong Verification Workflow', () => {
     await VoteReceipt.deleteMany({});
     await VoteVerificationChallenge.deleteMany({});
     await ElectionDispute.deleteMany({});
+    await SecurityEvent.deleteMany({});
     await Candidate.updateMany({}, { $set: { voteCount: 0 } });
   });
 
@@ -94,14 +96,34 @@ describe('Recount + Strong Verification Workflow', () => {
     const requestCodeResponse = await request(app)
       .post('/api/auth/vote-verification/request')
       .set('Authorization', `Bearer ${voterToken}`)
+      .set('User-Agent', 'SecureVote-TestAgent-A')
+      .set('x-forwarded-for', '10.8.0.4')
       .send({ electionId: election._id });
 
     expect(requestCodeResponse.status).toBe(200);
     expect(requestCodeResponse.body?.verificationCodePreview).toMatch(/^\d{6}$/);
 
+    const invalidCode = requestCodeResponse.body.verificationCodePreview === '000000' ? '111111' : '000000';
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const failedVerifyResponse = await request(app)
+        .post('/api/auth/vote-verification/verify')
+        .set('Authorization', `Bearer ${voterToken}`)
+        .set('User-Agent', 'SecureVote-TestAgent-A')
+        .set('x-forwarded-for', '10.8.0.4')
+        .send({
+          electionId: election._id,
+          code: invalidCode
+        });
+
+      expect(failedVerifyResponse.status).toBe(401);
+    }
+
     const verifyCodeResponse = await request(app)
       .post('/api/auth/vote-verification/verify')
       .set('Authorization', `Bearer ${voterToken}`)
+      .set('User-Agent', 'SecureVote-TestAgent-A')
+      .set('x-forwarded-for', '10.8.0.4')
       .send({
         electionId: election._id,
         code: requestCodeResponse.body.verificationCodePreview
@@ -113,6 +135,8 @@ describe('Recount + Strong Verification Workflow', () => {
     const castVoteResponse = await request(app)
       .post('/api/vote/cast')
       .set('Authorization', `Bearer ${voterToken}`)
+      .set('User-Agent', 'SecureVote-TestAgent-B')
+      .set('x-forwarded-for', '203.1.5.17')
       .send({
         candidateId: candidate._id,
         electionId: election._id,
@@ -163,6 +187,8 @@ describe('Recount + Strong Verification Workflow', () => {
     const resolveDisputeResponse = await request(app)
       .patch(`/api/disputes/manage/${disputeId}/status`)
       .set('Authorization', `Bearer ${adminToken}`)
+      .set('User-Agent', 'SecureVote-AdminAgent')
+      .set('x-forwarded-for', '172.20.10.2')
       .send({
         status: 'resolved',
         resolutionNote: 'Receipt integrity and candidate totals were reconciled with audit logs. No recount escalation needed.'
@@ -181,5 +207,37 @@ describe('Recount + Strong Verification Workflow', () => {
     const updatedCase = myCasesResponse.body.disputes.find((entry) => entry._id === disputeId);
     expect(updatedCase).toBeTruthy();
     expect(updatedCase.status).toBe('resolved');
+
+    const voterSecurityAccessResponse = await request(app)
+      .get('/api/security/overview')
+      .set('Authorization', `Bearer ${voterToken}`);
+
+    expect(voterSecurityAccessResponse.status).toBe(403);
+
+    const securityOverviewResponse = await request(app)
+      .get('/api/security/overview')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .query({ electionId: election._id, sinceHours: 24 });
+
+    expect(securityOverviewResponse.status).toBe(200);
+    expect(securityOverviewResponse.body?.summary?.totalAnomalies).toBeGreaterThan(0);
+
+    const anomalyTypesFromOverview = securityOverviewResponse.body.recentAnomalies.map((entry) => entry.eventType);
+    expect(anomalyTypesFromOverview).toContain('verification_failed_attempts');
+    expect(anomalyTypesFromOverview).toContain('admin_fast_dispute_resolution');
+
+    const securityEventsResponse = await request(app)
+      .get('/api/security/events')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .query({ electionId: election._id, anomalyOnly: true, limit: 100 });
+
+    expect(securityEventsResponse.status).toBe(200);
+    expect(securityEventsResponse.body?.events?.length).toBeGreaterThan(0);
+
+    const anomalyTypes = securityEventsResponse.body.events.map((entry) => entry.eventType);
+    expect(anomalyTypes).toContain('verification_failed_attempts');
+    expect(anomalyTypes).toContain('access_ip_change');
+    expect(anomalyTypes).toContain('access_device_change');
+    expect(anomalyTypes).toContain('admin_fast_dispute_resolution');
   });
 });

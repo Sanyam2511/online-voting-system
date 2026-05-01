@@ -7,6 +7,12 @@ import VoteVerificationChallenge from '../models/VoteVerificationChallenge.js';
 import crypto from 'crypto';
 import mongoose from 'mongoose';
 import { verifyVoteVerificationToken } from '../lib/voteVerification.js';
+import {
+  createSecurityEvent,
+  getRequestSecurityContext,
+  observeAccessFingerprint,
+  recordAdminAction
+} from '../lib/securityMonitor.js';
 
 const DEFAULT_ELECTION_NAME = 'National General Election 2026';
 const DEFAULT_ELECTION_SLUG = 'national-general-election-2026';
@@ -14,6 +20,9 @@ const PUBLIC_ELECTION_STATUSES = ['registration', 'live', 'counting', 'audited',
 const VOTABLE_ELECTION_STATUSES = ['live'];
 const RECEIPT_COUNTABLE_STATUSES = ['counted', 'pending'];
 const VOTE_VERIFICATION_MAX_AGE_MS = 10 * 60 * 1000;
+const RAPID_VOTE_BURST_WINDOW_SECONDS = 90;
+const RAPID_VOTE_BURST_THRESHOLD = 8;
+const SUSPICIOUS_ADMIN_TRANSITION_WINDOW_MS = 2 * 60 * 1000;
 
 const ELECTION_STATUS_TRANSITIONS = {
   draft: ['registration', 'archived'],
@@ -34,6 +43,14 @@ class HttpError extends Error {
 
 const throwHttpError = (statusCode, message) => {
   throw new HttpError(statusCode, message);
+};
+
+const captureSecuritySignal = async (callback) => {
+  try {
+    await callback();
+  } catch {
+    // Security monitoring must be best-effort and never break voting flows.
+  }
 };
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -974,6 +991,19 @@ export const createElection = async (req, res) => {
       votingEndsAt
     });
 
+    await captureSecuritySignal(async () => {
+      await recordAdminAction({
+        actor: req.user,
+        eventType: 'admin_election_created',
+        message: 'Admin created a new election.',
+        requestContext: getRequestSecurityContext(req),
+        election,
+        metadata: {
+          status: election.status
+        }
+      });
+    });
+
     return res.status(201).json(serializeElection(election));
   } catch (error) {
     return handleControllerError(res, error, 'Server error while creating election.');
@@ -1052,6 +1082,20 @@ export const updateElection = async (req, res) => {
     }
 
     await election.save();
+
+    await captureSecuritySignal(async () => {
+      await recordAdminAction({
+        actor: req.user,
+        eventType: 'admin_election_updated',
+        message: 'Admin updated election metadata.',
+        requestContext: getRequestSecurityContext(req),
+        election,
+        metadata: {
+          status: election.status
+        }
+      });
+    });
+
     return res.json(serializeElection(election));
   } catch (error) {
     return handleControllerError(res, error, 'Server error while updating election.');
@@ -1076,6 +1120,9 @@ export const transitionElectionStatus = async (req, res) => {
     if (!election) {
       throwHttpError(404, 'Election not found.');
     }
+
+    const previousStatus = election.status;
+    const previousStatusUpdatedAt = election.updatedAt ? new Date(election.updatedAt) : null;
 
     if (election.status === nextStatus) {
       return res.json(serializeElection(election));
@@ -1124,6 +1171,48 @@ export const transitionElectionStatus = async (req, res) => {
 
     election.status = nextStatus;
     await election.save();
+
+    await captureSecuritySignal(async () => {
+      const requestContext = getRequestSecurityContext(req);
+
+      await recordAdminAction({
+        actor: req.user,
+        eventType: 'admin_election_transition',
+        message: `Admin transitioned election from ${previousStatus} to ${nextStatus}.`,
+        requestContext,
+        election,
+        metadata: {
+          previousStatus,
+          nextStatus
+        }
+      });
+
+      if (
+        previousStatusUpdatedAt &&
+        (Date.now() - previousStatusUpdatedAt.getTime()) <= SUSPICIOUS_ADMIN_TRANSITION_WINDOW_MS &&
+        ['counting', 'published', 'archived'].includes(nextStatus)
+      ) {
+        await createSecurityEvent({
+          eventType: 'admin_rapid_election_transition',
+          category: 'admin',
+          severity: 'high',
+          isAnomaly: true,
+          message: 'Election lifecycle transitioned unusually quickly into a sensitive state.',
+          actorId: req.user.id,
+          actorRole: req.user.role,
+          actorEmail: req.user.email,
+          electionId: election.id,
+          electionName: election.name,
+          sourceIp: requestContext.ipAddress,
+          userAgent: requestContext.userAgent,
+          metadata: {
+            previousStatus,
+            nextStatus,
+            msSinceLastTransition: Date.now() - previousStatusUpdatedAt.getTime()
+          }
+        });
+      }
+    });
 
     return res.json(serializeElection(election));
   } catch (error) {
@@ -1728,6 +1817,74 @@ export const castVote = async (req, res) => {
         verificationToken
       });
     }
+
+    await captureSecuritySignal(async () => {
+      const requestContext = getRequestSecurityContext(req);
+      const electionId = String(responsePayload.election?._id || responsePayload.receipt?.electionId || '').trim();
+      const electionName = String(responsePayload.election?.name || responsePayload.receipt?.electionName || '').trim();
+
+      await observeAccessFingerprint({
+        actor: req.user,
+        actorRole: req.user.role,
+        actorEmail: req.user.email,
+        election: electionId ? { id: electionId, name: electionName } : null,
+        electionName,
+        eventType: 'vote_cast_access',
+        message: 'Voter submitted a ballot after strong verification.',
+        requestContext,
+        metadata: {
+          candidateId
+        }
+      });
+
+      await createSecurityEvent({
+        eventType: 'vote_cast_recorded',
+        category: 'voting',
+        severity: 'info',
+        isAnomaly: false,
+        message: 'Vote cast event recorded for security telemetry.',
+        actorId: req.user.id,
+        actorRole: req.user.role,
+        actorEmail: req.user.email,
+        electionId,
+        electionName,
+        sourceIp: requestContext.ipAddress,
+        userAgent: requestContext.userAgent,
+        metadata: {
+          receiptCode: responsePayload.receipt?.receiptCode || ''
+        }
+      });
+
+      if (electionId && mongoose.Types.ObjectId.isValid(electionId)) {
+        const windowStart = new Date(Date.now() - (RAPID_VOTE_BURST_WINDOW_SECONDS * 1000));
+        const recentVotes = await VoteReceipt.countDocuments({
+          election: electionId,
+          createdAt: { $gte: windowStart }
+        });
+
+        if (recentVotes >= RAPID_VOTE_BURST_THRESHOLD) {
+          await createSecurityEvent({
+            eventType: 'rapid_vote_burst',
+            category: 'voting',
+            severity: 'high',
+            isAnomaly: true,
+            message: 'Rapid voting burst detected in a short time window.',
+            actorId: req.user.id,
+            actorRole: req.user.role,
+            actorEmail: req.user.email,
+            electionId,
+            electionName,
+            sourceIp: requestContext.ipAddress,
+            userAgent: requestContext.userAgent,
+            metadata: {
+              recentVotes,
+              windowSeconds: RAPID_VOTE_BURST_WINDOW_SECONDS,
+              threshold: RAPID_VOTE_BURST_THRESHOLD
+            }
+          });
+        }
+      }
+    });
 
     return res.status(200).json(responsePayload);
   } catch (error) {

@@ -9,6 +9,11 @@ import {
   hashVoteVerificationCode,
   signVoteVerificationToken
 } from '../lib/voteVerification.js';
+import {
+  createSecurityEvent,
+  getRequestSecurityContext,
+  observeAccessFingerprint
+} from '../lib/securityMonitor.js';
 
 const DEFAULT_ADMIN_NAME = process.env.ADMIN_NAME || 'Platform Admin';
 const DEFAULT_ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@securevote.com').toLowerCase();
@@ -16,6 +21,14 @@ const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin@12345';
 const VERIFICATION_CODE_TTL_MS = 5 * 60 * 1000;
 const VERIFICATION_TOKEN_LIFETIME_SECONDS = 10 * 60;
 const MAX_VERIFICATION_ATTEMPTS = 5;
+
+const captureSecuritySignal = async (callback) => {
+  try {
+    await callback();
+  } catch {
+    // Security monitoring should be best-effort and never block core auth flows.
+  }
+};
 
 // Generate JWT
 const generateToken = (id) => {
@@ -170,6 +183,7 @@ export const requestVoteVerificationCode = async (req, res) => {
     const verificationCode = generateVoteVerificationCode();
     const now = new Date();
     const expiresAt = new Date(now.getTime() + VERIFICATION_CODE_TTL_MS);
+    const requestContext = getRequestSecurityContext(req);
 
     await VoteVerificationChallenge.findOneAndUpdate(
       {
@@ -199,6 +213,23 @@ export const requestVoteVerificationCode = async (req, res) => {
       }
     );
 
+    await captureSecuritySignal(async () => {
+      await observeAccessFingerprint({
+        actor: req.user,
+        actorRole: req.user.role,
+        actorEmail: req.user.email,
+        election,
+        electionName: election.name,
+        eventType: 'verification_challenge_requested',
+        message: 'Voter requested a strong verification challenge.',
+        requestContext,
+        metadata: {
+          expiresAt,
+          maxAttempts: MAX_VERIFICATION_ATTEMPTS
+        }
+      });
+    });
+
     const payload = {
       message: 'Verification code generated. Enter the 6-digit code to unlock vote casting.',
       electionId: election.id,
@@ -226,6 +257,7 @@ export const verifyVoteVerificationCode = async (req, res) => {
 
     const electionId = String(req.body.electionId || '').trim();
     const submittedCode = String(req.body.code || '').trim();
+    const requestContext = getRequestSecurityContext(req);
 
     if (!/^\d{6}$/.test(submittedCode)) {
       return res.status(400).json({ message: 'A valid 6-digit verification code is required.' });
@@ -258,6 +290,27 @@ export const verifyVoteVerificationCode = async (req, res) => {
     }
 
     if (challenge.attempts >= challenge.maxAttempts) {
+      await captureSecuritySignal(async () => {
+        await createSecurityEvent({
+          eventType: 'verification_attempts_exhausted',
+          category: 'verification',
+          severity: 'high',
+          isAnomaly: true,
+          message: 'Verification attempts exhausted for voter challenge.',
+          actorId: req.user.id,
+          actorRole: req.user.role,
+          actorEmail: req.user.email,
+          electionId: election.id,
+          electionName: election.name,
+          sourceIp: requestContext.ipAddress,
+          userAgent: requestContext.userAgent,
+          metadata: {
+            attempts: challenge.attempts,
+            maxAttempts: challenge.maxAttempts
+          }
+        });
+      });
+
       return res.status(429).json({ message: 'Maximum verification attempts reached. Request a new code.' });
     }
 
@@ -273,6 +326,30 @@ export const verifyVoteVerificationCode = async (req, res) => {
 
       const attemptsRemaining = Math.max(0, challenge.maxAttempts - challenge.attempts);
 
+      if (challenge.attempts >= 3) {
+        await captureSecuritySignal(async () => {
+          await createSecurityEvent({
+            eventType: 'verification_failed_attempts',
+            category: 'verification',
+            severity: challenge.attempts >= challenge.maxAttempts ? 'high' : 'medium',
+            isAnomaly: true,
+            message: 'Multiple failed verification code attempts detected.',
+            actorId: req.user.id,
+            actorRole: req.user.role,
+            actorEmail: req.user.email,
+            electionId: election.id,
+            electionName: election.name,
+            sourceIp: requestContext.ipAddress,
+            userAgent: requestContext.userAgent,
+            metadata: {
+              attempts: challenge.attempts,
+              attemptsRemaining,
+              maxAttempts: challenge.maxAttempts
+            }
+          });
+        });
+      }
+
       return res.status(401).json({
         message: attemptsRemaining > 0
           ? `Invalid verification code. ${attemptsRemaining} attempt(s) remaining.`
@@ -284,6 +361,26 @@ export const verifyVoteVerificationCode = async (req, res) => {
     challenge.verifiedAt = now;
     challenge.attempts = 0;
     await challenge.save();
+
+    await captureSecuritySignal(async () => {
+      await createSecurityEvent({
+        eventType: 'verification_confirmed',
+        category: 'verification',
+        severity: 'info',
+        isAnomaly: false,
+        message: 'Voter successfully completed strong verification.',
+        actorId: req.user.id,
+        actorRole: req.user.role,
+        actorEmail: req.user.email,
+        electionId: election.id,
+        electionName: election.name,
+        sourceIp: requestContext.ipAddress,
+        userAgent: requestContext.userAgent,
+        metadata: {
+          challengeId: challenge.id
+        }
+      });
+    });
 
     const verificationToken = signVoteVerificationToken({
       userId: req.user.id,

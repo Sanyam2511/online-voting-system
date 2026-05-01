@@ -3,8 +3,22 @@ import Election from '../models/Election.js';
 import Candidate from '../models/Candidate.js';
 import VoteReceipt from '../models/VoteReceipt.js';
 import ElectionDispute, { DISPUTE_STATUSES, DISPUTE_TYPES } from '../models/ElectionDispute.js';
+import {
+  createSecurityEvent,
+  getRequestSecurityContext,
+  recordAdminAction
+} from '../lib/securityMonitor.js';
 
 const STATUS_UPDATE_VALUES = ['under_review', 'resolved', 'rejected'];
+const SUSPICIOUS_DISPUTE_RESOLUTION_WINDOW_MS = 5 * 60 * 1000;
+
+const captureSecuritySignal = async (callback) => {
+  try {
+    await callback();
+  } catch {
+    // Security telemetry should not block core dispute workflow.
+  }
+};
 
 const normalizeDispute = (dispute) => {
   const electionRef = dispute.election;
@@ -352,6 +366,7 @@ export const updateDisputeCaseStatus = async (req, res) => {
     }
 
     const now = new Date();
+    const requestContext = getRequestSecurityContext(req);
 
     dispute.status = nextStatus;
     dispute.reviewedBy = req.user.id;
@@ -375,6 +390,47 @@ export const updateDisputeCaseStatus = async (req, res) => {
     });
 
     await dispute.save();
+
+    await captureSecuritySignal(async () => {
+      await recordAdminAction({
+        actor: req.user,
+        eventType: 'admin_dispute_status_update',
+        message: `Admin updated dispute status to ${nextStatus}.`,
+        requestContext,
+        election: dispute.election ? { id: dispute.election, name: dispute.electionName } : null,
+        electionName: dispute.electionName,
+        metadata: {
+          disputeId: dispute.id,
+          nextStatus
+        }
+      });
+
+      if (
+        ['resolved', 'rejected'].includes(nextStatus) &&
+        dispute.createdAt &&
+        (now.getTime() - new Date(dispute.createdAt).getTime()) <= SUSPICIOUS_DISPUTE_RESOLUTION_WINDOW_MS
+      ) {
+        await createSecurityEvent({
+          eventType: 'admin_fast_dispute_resolution',
+          category: 'admin',
+          severity: 'medium',
+          isAnomaly: true,
+          message: 'Dispute was finalized unusually quickly after filing.',
+          actorId: req.user.id,
+          actorRole: req.user.role,
+          actorEmail: req.user.email,
+          electionId: dispute.election,
+          electionName: dispute.electionName,
+          sourceIp: requestContext.ipAddress,
+          userAgent: requestContext.userAgent,
+          metadata: {
+            disputeId: dispute.id,
+            status: nextStatus,
+            msSinceFiled: now.getTime() - new Date(dispute.createdAt).getTime()
+          }
+        });
+      }
+    });
 
     const hydratedDispute = await ElectionDispute.findById(dispute.id)
       .populate('candidate', 'name party')
