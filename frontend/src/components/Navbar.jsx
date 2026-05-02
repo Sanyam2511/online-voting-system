@@ -70,7 +70,7 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 w-full z-50">
       <div className="section-wrap pt-2 pb-1">
-        <div className="rounded-[1.2rem] border border-[#c6d5f1] bg-white/90 backdrop-blur-xl shadow-[0_16px_34px_rgba(12,33,71,0.14)] px-3 sm:px-4 py-2.5">
+        <div className="rounded-[1.2rem] nav-shell backdrop-blur-xl px-3 sm:px-4 py-2.5">
           <div className="flex items-center justify-between gap-3">
             <Link to={`/${language}/`} onClick={closeMobileMenu} className="flex items-center gap-2.5 min-w-0">
               <BrandMark className="w-10 h-10" />
