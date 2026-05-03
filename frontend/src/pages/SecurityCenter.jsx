@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, CalendarDays, LoaderCircle, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
@@ -109,7 +109,7 @@ const SecurityCenter = () => {
     };
 
     bootstrap();
-  }, [navigate]);
+  }, [navigate, withLanguagePath]);
 
   useEffect(() => {
     const loadSecurityData = async () => {
@@ -159,7 +159,7 @@ const SecurityCenter = () => {
     };
 
     loadSecurityData();
-  }, [bootLoading, isAdmin, navigate, selectedElectionId, selectedSeverity, selectedEventType]);
+  }, [bootLoading, isAdmin, navigate, selectedElectionId, selectedSeverity, selectedEventType, withLanguagePath]);
 
   if (bootLoading) {
     return (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BadgeCheck, CalendarDays, LoaderCircle, SearchCheck, ShieldCheck } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
@@ -108,7 +108,7 @@ const ReceiptVerification = () => {
     };
 
     fetchMyReceipt();
-  }, [selectedElectionId]);
+  }, [selectedElectionId, t]);
 
   useEffect(() => {
     const codeFromQuery = (searchParams.get('code') || '').trim().toUpperCase();

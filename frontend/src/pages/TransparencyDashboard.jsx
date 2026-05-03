@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Activity, BadgeCheck, CalendarDays, LoaderCircle, PieChart as PieChartIcon, ShieldCheck } from 'lucide-react';
 import {
   Area,

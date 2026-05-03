@@ -1,6 +1,5 @@
 /** @vitest-environment jsdom */
 
-import React from 'react';
 import { describe, expect, it } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { UiPreferencesProvider } from './UiPreferencesContext.jsx';

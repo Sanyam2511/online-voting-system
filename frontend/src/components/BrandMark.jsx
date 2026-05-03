@@ -1,4 +1,3 @@
-import React from 'react';
 
 const BrandMark = ({ className = 'w-11 h-11' }) => {
   return (

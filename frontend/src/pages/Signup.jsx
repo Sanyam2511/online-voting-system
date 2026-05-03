@@ -1,5 +1,5 @@
 import { AlertCircle, ArrowRight, CheckCircle2, LockKeyhole, Mail, ShieldCheck, User, UserPlus } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../lib/api';
 import { setAuthSession } from '../lib/auth';
@@ -31,7 +31,6 @@ const Signup = () => {
     setError('');
     setSuccess('');
 
-    // Validation
     if (formData.password !== formData.confirmPassword) {
       setError(t('signup.errors.passwordMismatch', 'Passwords do not match'));
       setLoading(false);

@@ -1,6 +1,6 @@
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { LogOut, Menu, Moon, ShieldCheck, Sun, Vote, X } from 'lucide-react';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AUTH_CHANGED_EVENT, clearAuthSession, getStoredUser } from '../lib/auth';
 import BrandMark from './BrandMark';
 import { useUiPreferences } from '../context/useUiPreferences';

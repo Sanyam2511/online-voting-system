@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { BarChart3, ShieldCheck, Vote } from 'lucide-react';
 import BrandMark from './BrandMark';
