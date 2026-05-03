@@ -13,29 +13,12 @@ import {
   YAxis
 } from 'recharts';
 import api from '../lib/api';
+import { formatElectionStatus } from '../lib/formatting';
 import transparencyIllustration from '../assets/illustrations/transparency-dashboard.svg';
 import ThemedSelect from '../components/ThemedSelect';
 import { useUiPreferences } from '../context/useUiPreferences';
 
 const PARTY_COLORS = ['#1F66F4', '#2F7DFF', '#274A84', '#5A89F6', '#89AEEF', '#3A5F9C'];
-
-const formatElectionStatus = (status, t) => {
-  if (!status) {
-    return t('election.status.unknown', 'Unknown');
-  }
-
-  const map = {
-    draft: t('election.status.draft', 'Draft'),
-    registration: t('election.status.registration', 'Registration'),
-    live: t('election.status.live', 'Voting Live'),
-    counting: t('election.status.counting', 'Counting'),
-    audited: t('election.status.audited', 'Audited'),
-    published: t('election.status.published', 'Published'),
-    archived: t('election.status.archived', 'Archived')
-  };
-
-  return map[status] || status;
-};
 
 const TransparencyDashboard = () => {
   const { t } = useUiPreferences();

@@ -3,21 +3,9 @@ import { AlertTriangle, CalendarDays, LoaderCircle, ShieldCheck } from 'lucide-r
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import { clearAuthSession, getAuthToken } from '../lib/auth';
+import { formatDateTime } from '../lib/formatting';
 import ThemedSelect from '../components/ThemedSelect';
 import { useUiPreferences } from '../context/useUiPreferences';
-
-const formatTimestamp = (value, t) => {
-  if (!value) {
-    return t('security.na', 'N/A');
-  }
-
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return t('security.na', 'N/A');
-  }
-
-  return parsed.toLocaleString();
-};
 
 const severityPillClass = (severity) => {
   if (severity === 'critical') {
@@ -317,7 +305,7 @@ const SecurityCenter = () => {
                     </div>
                     <p className="text-xs text-[#60759a] mb-1">{t('security.eventLabel', 'Event')}: {event.eventType}</p>
                     <p className="text-xs text-[#60759a] inline-flex items-center gap-2">
-                      <CalendarDays className="w-3.5 h-3.5" /> {formatTimestamp(event.createdAt, t)}
+                      <CalendarDays className="w-3.5 h-3.5" /> {formatDateTime(event.createdAt, t, { fallbackKey: 'security.na', fallbackText: 'N/A' })}
                     </p>
                   </article>
                 ))}
@@ -346,7 +334,7 @@ const SecurityCenter = () => {
                     </div>
                     <p className="text-xs text-[#536d97] mt-1">{event.message}</p>
                     <p className="text-[11px] text-[#6a7fa5] mt-1">
-                      {formatTimestamp(event.createdAt, t)} | {event.actor?.email || t('security.system', 'System')}
+                      {formatDateTime(event.createdAt, t, { fallbackKey: 'security.na', fallbackText: 'N/A' })} | {event.actor?.email || t('security.system', 'System')}
                     </p>
                   </div>
                 ))}

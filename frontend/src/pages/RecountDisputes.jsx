@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../lib/api';
 import { clearAuthSession, getAuthToken } from '../lib/auth';
+import { formatDateTime } from '../lib/formatting';
 import ThemedSelect from '../components/ThemedSelect';
 import { useUiPreferences } from '../context/useUiPreferences';
 
@@ -52,19 +53,6 @@ const getStatusPillClass = (status) => {
 };
 
 const formatCaseType = (type, t) => (type === 'recount' ? t('disputes.type.recount', 'Recount') : t('disputes.type.dispute', 'Dispute'));
-
-const formatDateTime = (value, t) => {
-  if (!value) {
-    return t('common.na', 'N/A');
-  }
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return t('common.na', 'N/A');
-  }
-
-  return date.toLocaleString();
-};
 
 const RecountDisputes = () => {
   const navigate = useNavigate();

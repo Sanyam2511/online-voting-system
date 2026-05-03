@@ -11,6 +11,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import { getAuthToken } from '../lib/auth';
+import { formatElectionStatus } from '../lib/formatting';
 import toast from 'react-hot-toast';
 import ThemedSelect from '../components/ThemedSelect';
 import { useUiPreferences } from '../context/useUiPreferences';
@@ -43,24 +44,6 @@ const lifecycleTransitions = {
   audited: ['published', 'archived'],
   published: ['archived'],
   archived: []
-};
-
-const formatElectionStatus = (status, t) => {
-  if (!status) {
-    return t('election.status.unknown', 'Unknown');
-  }
-
-  const map = {
-    draft: t('election.status.draft', 'Draft'),
-    registration: t('election.status.registration', 'Registration'),
-    live: t('election.status.live', 'Voting Live'),
-    counting: t('election.status.counting', 'Counting'),
-    audited: t('election.status.audited', 'Audited'),
-    published: t('election.status.published', 'Published'),
-    archived: t('election.status.archived', 'Archived')
-  };
-
-  return map[status] || status;
 };
 
 const toDateInputValue = (value) => {

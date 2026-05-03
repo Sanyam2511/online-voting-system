@@ -3,28 +3,11 @@ import { ArrowRightLeft, BadgeCheck, CalendarDays, LoaderCircle, Search, X } fro
 import { Link } from 'react-router-dom';
 import ThemedSelect from '../components/ThemedSelect';
 import api from '../lib/api';
+import { formatElectionStatus } from '../lib/formatting';
 import candidateCompareIllustration from '../assets/illustrations/candidate-compare.svg';
 import { useUiPreferences } from '../context/useUiPreferences';
 
 const normalizeToken = (value) => value.trim().replace(/\.+$/, '');
-
-const formatElectionStatus = (status, t) => {
-  if (!status) {
-    return t('election.status.unknown', 'Unknown');
-  }
-
-  const map = {
-    draft: t('election.status.draft', 'Draft'),
-    registration: t('election.status.registration', 'Registration'),
-    live: t('election.status.live', 'Voting Live'),
-    counting: t('election.status.counting', 'Counting'),
-    audited: t('election.status.audited', 'Audited'),
-    published: t('election.status.published', 'Published'),
-    archived: t('election.status.archived', 'Archived')
-  };
-
-  return map[status] || status;
-};
 
 const getCandidateFocusPoints = (candidate) => {
   const explicitPriorities = (candidate.priorities || [])

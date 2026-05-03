@@ -14,26 +14,9 @@ import PartyCard from '../components/PartyCard';
 import ThemedSelect from '../components/ThemedSelect';
 import api from '../lib/api';
 import { clearAuthSession, patchStoredUser } from '../lib/auth';
+import { formatElectionStatus } from '../lib/formatting';
 import votingBallotIllustration from '../assets/illustrations/voting-ballot.svg';
 import { useUiPreferences } from '../context/useUiPreferences';
-
-const formatElectionStatus = (status, t) => {
-  if (!status) {
-    return t('election.status.unknown', 'Unknown');
-  }
-
-  const labelMap = {
-    draft: t('election.status.draft', 'Draft'),
-    registration: t('election.status.registration', 'Registration'),
-    live: t('election.status.live', 'Voting Live'),
-    counting: t('election.status.counting', 'Counting'),
-    audited: t('election.status.audited', 'Audited'),
-    published: t('election.status.published', 'Published'),
-    archived: t('election.status.archived', 'Archived')
-  };
-
-  return labelMap[status] || status;
-};
 
 const VotingArena = () => {
   const navigate = useNavigate();
