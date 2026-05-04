@@ -12,6 +12,8 @@ const Navbar = () => {
     setLanguage,
     theme,
     toggleTheme,
+    accessibilityMode,
+    toggleAccessibilityMode,
     t
   } = useUiPreferences();
   const location = useLocation();
@@ -114,6 +116,19 @@ const Navbar = () => {
                 <span className="hidden sm:inline">{t('nav.theme', 'Theme')}</span>
               </button>
 
+              <button
+                type="button"
+                onClick={toggleAccessibilityMode}
+                className="hidden md:inline-flex nav-link"
+                aria-pressed={accessibilityMode}
+                aria-label={accessibilityMode
+                  ? t('nav.accessibilityOn', 'Accessibility mode on')
+                  : t('nav.accessibilityOff', 'Accessibility mode off')}
+              >
+                <span className="hidden sm:inline">{t('nav.accessibility', 'Accessibility')}</span>
+                <span className="sm:hidden">A11y</span>
+              </button>
+
               {!isAdmin && (
                 <Link to={`/${language}/vote`} onClick={closeMobileMenu} className="btn-primary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5">
                   <Vote className="w-4 h-4" />
@@ -178,6 +193,14 @@ const Navbar = () => {
                 </button>
                 <button type="button" onClick={toggleTheme} className="nav-link" aria-pressed={theme === 'dark'}>
                   {t('nav.theme', 'Theme')}
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleAccessibilityMode}
+                  className="nav-link"
+                  aria-pressed={accessibilityMode}
+                >
+                  {t('nav.accessibility', 'Accessibility')}
                 </button>
               </div>
             </div>

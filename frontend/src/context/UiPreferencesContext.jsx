@@ -22,6 +22,9 @@ const TRANSLATIONS = {
     'nav.theme': 'Theme',
     'nav.themeLight': 'Light mode on',
     'nav.themeDark': 'Dark mode on',
+    'nav.accessibility': 'Accessibility',
+    'nav.accessibilityOn': 'Accessibility mode on',
+    'nav.accessibilityOff': 'Accessibility mode off',
     'nav.languageValue': 'English',
     'footer.platformNavigation': 'Platform Navigation',
     'footer.electionAccess': 'Election Access',
@@ -152,6 +155,19 @@ const TRANSLATIONS = {
     'vote.title': 'Cast Your Vote',
     'vote.welcome': 'Welcome',
     'vote.subtitle': 'Select one candidate and confirm your ballot.',
+    'vote.accessibility.badge': 'Accessibility mode enabled',
+    'vote.accessibility.stepperLabel': 'Voting steps',
+    'vote.accessibility.stepStatus': 'Step {current} of {total}',
+    'vote.accessibility.instructions': 'Use Tab to move between fields and buttons. Press Enter or Space to activate.',
+    'vote.accessibility.stepElection': 'Choose election',
+    'vote.accessibility.stepCandidate': 'Select candidate',
+    'vote.accessibility.stepVerification': 'Verify identity',
+    'vote.accessibility.stepReview': 'Review & submit',
+    'vote.accessibility.back': 'Back',
+    'vote.accessibility.next': 'Continue',
+    'vote.accessibility.candidateHint': 'Choose one candidate. Use Tab to move through the options.',
+    'vote.accessibility.verificationHint': 'Request a 6-digit code and verify it to unlock submission.',
+    'vote.accessibility.reviewHint': 'Review your selection and confirm the voting terms before submitting.',
     'vote.statusTitle': 'Voting Status',
     'vote.status.submitted': 'Vote already submitted',
     'vote.status.awaiting': 'Awaiting your vote',
@@ -587,6 +603,9 @@ const TRANSLATIONS = {
     'nav.theme': 'थीम',
     'nav.themeLight': 'लाइट मोड चालू',
     'nav.themeDark': 'डार्क मोड चालू',
+    'nav.accessibility': 'सुलभता',
+    'nav.accessibilityOn': 'सुलभता मोड चालू',
+    'nav.accessibilityOff': 'सुलभता मोड बंद',
     'nav.languageValue': 'हिंदी',
     'footer.platformNavigation': 'प्लेटफॉर्म नेविगेशन',
     'footer.electionAccess': 'चुनाव एक्सेस',
@@ -717,6 +736,19 @@ const TRANSLATIONS = {
     'vote.title': 'अपना वोट डालें',
     'vote.welcome': 'स्वागत है',
     'vote.subtitle': 'एक उम्मीदवार चुनें और अपना बैलट पुष्टि करें।',
+    'vote.accessibility.badge': 'सुलभता मोड सक्रिय',
+    'vote.accessibility.stepperLabel': 'मतदान चरण',
+    'vote.accessibility.stepStatus': 'चरण {current} / {total}',
+    'vote.accessibility.instructions': 'फ़ील्ड और बटन के बीच जाने के लिए टैब का उपयोग करें। एंटर या स्पेस से सक्रिय करें।',
+    'vote.accessibility.stepElection': 'चुनाव चुनें',
+    'vote.accessibility.stepCandidate': 'उम्मीदवार चुनें',
+    'vote.accessibility.stepVerification': 'पहचान सत्यापन',
+    'vote.accessibility.stepReview': 'समीक्षा और सबमिट',
+    'vote.accessibility.back': 'वापस',
+    'vote.accessibility.next': 'जारी रखें',
+    'vote.accessibility.candidateHint': 'एक उम्मीदवार चुनें। विकल्पों में जाने के लिए टैब का उपयोग करें।',
+    'vote.accessibility.verificationHint': '6-अंकों का कोड मांगें और सत्यापित करें ताकि सबमिशन अनलॉक हो सके।',
+    'vote.accessibility.reviewHint': 'अपने चयन की समीक्षा करें और मतदान शर्तें पुष्टि करें।',
     'vote.statusTitle': 'मतदान स्थिति',
     'vote.status.submitted': 'वोट पहले ही सबमिट हो चुका है',
     'vote.status.awaiting': 'आपके वोट की प्रतीक्षा है',
@@ -1139,7 +1171,8 @@ const TRANSLATIONS = {
 const getInitialPreferences = () => {
   const fallback = {
     language: 'en',
-    theme: 'light'
+    theme: 'light',
+    accessibilityMode: false
   };
 
   if (typeof window === 'undefined') {
@@ -1157,7 +1190,8 @@ const getInitialPreferences = () => {
 
     return {
       language: parsed.language === 'hi' ? 'hi' : 'en',
-      theme: parsed.theme === 'dark' ? 'dark' : 'light'
+      theme: parsed.theme === 'dark' ? 'dark' : 'light',
+      accessibilityMode: Boolean(parsed.accessibilityMode)
     };
   } catch {
     return fallback;
@@ -1176,6 +1210,7 @@ export const UiPreferencesProvider = ({ children }) => {
 
     document.documentElement.lang = preferences.language;
     document.body.classList.toggle('theme-dark', preferences.theme === 'dark');
+    document.body.classList.toggle('accessibility-mode', preferences.accessibilityMode);
   }, [preferences]);
 
   const setLanguage = useCallback((language) => {
@@ -1192,6 +1227,13 @@ export const UiPreferencesProvider = ({ children }) => {
     }));
   }, []);
 
+  const toggleAccessibilityMode = useCallback(() => {
+    setPreferences((current) => ({
+      ...current,
+      accessibilityMode: !current.accessibilityMode
+    }));
+  }, []);
+
   const t = useCallback((key, fallback = '') => {
     const table = TRANSLATIONS[preferences.language] || TRANSLATIONS.en;
     return table[key] || fallback || key;
@@ -1200,10 +1242,12 @@ export const UiPreferencesProvider = ({ children }) => {
   const value = useMemo(() => ({
     language: preferences.language,
     theme: preferences.theme,
+    accessibilityMode: preferences.accessibilityMode,
     setLanguage,
     toggleTheme,
+    toggleAccessibilityMode,
     t
-  }), [preferences, setLanguage, toggleTheme, t]);
+  }), [preferences, setLanguage, toggleTheme, toggleAccessibilityMode, t]);
 
   return (
     <UiPreferencesContext.Provider value={value}>
