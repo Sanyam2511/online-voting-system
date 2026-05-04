@@ -39,7 +39,7 @@ const Navbar = () => {
 
   const navLinks = useMemo(
     () => [
-      { to: '/', label: t('nav.home', 'Home') },
+      { to: '/', label: t('nav.home', 'Home'), end: true },
       { to: '/candidates', label: t('nav.candidates', 'Candidates') },
       { to: '/disputes', label: t('nav.disputes', 'Disputes') },
       ...(isAdmin ? [{ to: '/manage-candidates', label: t('nav.manage', 'Manage') }] : []),
@@ -88,6 +88,7 @@ const Navbar = () => {
                   key={item.to}
                   to={`/${language}${item.to === '/' ? '' : item.to}`}
                   className={getNavLinkClass}
+                  end={item.end}
                   onClick={closeMobileMenu}
                 >
                   {item.label}
@@ -174,6 +175,7 @@ const Navbar = () => {
                     key={item.to}
                     to={`/${language}${item.to === '/' ? '' : item.to}`}
                     className={getNavLinkClass}
+                    end={item.end}
                     onClick={closeMobileMenu}
                   >
                     {item.label}
