@@ -21,6 +21,7 @@ const PartyCard = ({ partyName, candidates, selectedCandidateId, onSelectCandida
               key={candidate._id}
               type="button"
               disabled={disabled}
+              aria-pressed={isSelected}
               onClick={() => onSelectCandidate(candidate)}
               className={`w-full text-left rounded-2xl border p-4 transition-all duration-200 ${
                 isSelected

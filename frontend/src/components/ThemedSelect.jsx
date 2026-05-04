@@ -13,7 +13,9 @@ const ThemedSelect = ({
   onChange,
   onValueChange,
   className = '',
-  menuClassName = ''
+  menuClassName = '',
+  ariaLabel = '',
+  ariaDescribedBy = ''
 }) => {
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -209,6 +211,8 @@ const ThemedSelect = ({
         aria-haspopup="listbox"
         aria-expanded={isMenuOpen}
         aria-controls={listboxId}
+        aria-label={ariaLabel || undefined}
+        aria-describedby={ariaDescribedBy || undefined}
         onClick={() => {
           if (disabled || options.length === 0) {
             return;
