@@ -16,12 +16,12 @@
   --surface-0: #f8fbff;
   --surface-50: #f7faff;
   --surface-100: #f1f6ff;
-  --surface-card: linear-gradient(162deg, rgba(255, 255, 255, 0.96), rgba(246, 250, 255, 0.95));
-  --surface-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(243, 248, 255, 0.9));
-  --surface-card-overlay: linear-gradient(128deg, rgba(255, 255, 255, 0.42), transparent 46%);
-  --surface-glass-overlay: linear-gradient(120deg, rgba(255, 255, 255, 0.5), transparent 52%);
+  --surface-card: #ffffff;
+  --surface-glass: #ffffff;
+  --surface-card-overlay: transparent;
+  --surface-glass-overlay: transparent;
   --surface-card-base: #ffffff;
-  --surface-card-soft: rgba(255, 255, 255, 0.85);
+  --surface-card-soft: #ffffff;
   --surface-card-muted: #f7fbff;
   --surface-card-subtle: #f1f6ff;
   --surface-card-tint: #eaf1ff;
@@ -36,7 +36,7 @@
   --shadow-card-hover: 0 26px 62px rgba(16, 44, 97, 0.14);
   --shadow-panel: 0 20px 48px rgba(18, 48, 100, 0.09);
   --shadow-panel-hover: 0 24px 58px rgba(16, 45, 98, 0.12);
-  --page-glow: linear-gradient(180deg, rgba(255, 255, 255, 0.44), transparent 90%);
+  --page-glow: linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 90%);
   --ambient-1: rgba(31, 102, 244, 0.13);
   --ambient-2: rgba(47, 125, 255, 0.1);
   --status-success-bg: #eefcf3;
@@ -148,12 +148,12 @@ body.theme-dark {
   --surface-0: #0b1324;
   --surface-50: #111c34;
   --surface-100: #16233f;
-  --surface-card: linear-gradient(160deg, rgba(16, 24, 46, 0.94), rgba(12, 20, 38, 0.96));
-  --surface-glass: linear-gradient(160deg, rgba(20, 32, 58, 0.78), rgba(10, 18, 36, 0.86));
-  --surface-card-overlay: linear-gradient(128deg, rgba(48, 68, 108, 0.4), transparent 46%);
-  --surface-glass-overlay: linear-gradient(120deg, rgba(40, 58, 98, 0.42), transparent 52%);
-  --surface-card-base: rgba(16, 24, 46, 0.94);
-  --surface-card-soft: rgba(16, 24, 46, 0.78);
+  --surface-card: #0f1a30;
+  --surface-glass: #0f1a30;
+  --surface-card-overlay: transparent;
+  --surface-glass-overlay: transparent;
+  --surface-card-base: #0f1a30;
+  --surface-card-soft: #0f1a30;
   --surface-card-muted: rgba(18, 30, 54, 0.9);
   --surface-card-subtle: rgba(20, 32, 58, 0.75);
   --surface-card-tint: rgba(24, 38, 70, 0.85);
@@ -168,7 +168,7 @@ body.theme-dark {
   --shadow-card-hover: 0 28px 66px rgba(5, 10, 22, 0.55);
   --shadow-panel: 0 22px 56px rgba(5, 10, 22, 0.4);
   --shadow-panel-hover: 0 26px 62px rgba(5, 10, 22, 0.5);
-  --page-glow: linear-gradient(180deg, rgba(9, 16, 34, 0.72), transparent 90%);
+  --page-glow: linear-gradient(180deg, rgba(9, 16, 34, 0.45), transparent 90%);
   --ambient-1: rgba(52, 94, 188, 0.28);
   --ambient-2: rgba(77, 131, 255, 0.22);
   --status-success-bg: rgba(18, 54, 34, 0.75);
@@ -381,7 +381,7 @@ h4 {
   left: 0;
   right: 0;
   top: 0;
-  height: 220px;
+  height: 140px;
   pointer-events: none;
   background: var(--page-glow);
 }
@@ -406,6 +406,7 @@ h4 {
   box-shadow: var(--shadow-card);
   border-radius: 1.25rem;
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
   animation: riseIn 0.45s ease both;
@@ -417,6 +418,7 @@ h4 {
   inset: 0;
   background: var(--surface-card-overlay);
   pointer-events: none;
+  z-index: 0;
 }
 
 .surface-card:hover {
@@ -432,6 +434,7 @@ h4 {
   backdrop-filter: blur(10px);
   border-radius: 1.25rem;
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
   animation: riseIn 0.45s ease both;
@@ -443,6 +446,13 @@ h4 {
   inset: 0;
   background: var(--surface-glass-overlay);
   pointer-events: none;
+  z-index: 0;
+}
+
+.surface-card > *,
+.glass-panel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .glass-panel:hover {

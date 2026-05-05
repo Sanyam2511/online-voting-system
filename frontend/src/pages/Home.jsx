@@ -104,9 +104,8 @@ const Home = () => {
   return (
     <main className="min-h-screen page-shell pt-20 pb-16">
       <section className="section-wrap">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 items-stretch">
-          <div className="surface-card p-8 md:p-12 relative overflow-hidden">
-            <div className="absolute -top-24 -right-16 w-64 h-64 rounded-full bg-[#d9e8ff] blur-3xl opacity-70" aria-hidden="true"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 items-start">
+          <div className="surface-card px-8 pb-8 pt-3 md:px-12 md:pb-10 md:pt-5 relative overflow-hidden">
             <div className="relative z-10">
             <div className="eyebrow mb-6">
               <Landmark className="w-4 h-4" /> {t('home.hero.eyebrow', 'Public Decision Infrastructure')}
@@ -171,8 +170,7 @@ const Home = () => {
             </div>
           </div>
 
-          <aside className="surface-card p-5 sm:p-6 relative overflow-hidden">
-            <div className="absolute inset-x-10 top-6 h-32 rounded-full bg-[#d6e6ff] blur-3xl opacity-80" aria-hidden="true"></div>
+          <aside className="surface-card px-5 pb-6 pt-2 sm:px-6 sm:pb-6 sm:pt-3 relative overflow-hidden">
             <div className="relative z-10 space-y-4">
               <div className="rounded-2xl border border-[#bfd1f8] bg-white overflow-hidden shadow-sm">
                 <img
