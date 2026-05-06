@@ -13,6 +13,7 @@ import toast from 'react-hot-toast';
 import api from '../lib/api';
 import { clearAuthSession, getAuthToken } from '../lib/auth';
 import { formatDateTime } from '../lib/formatting';
+import disputeModuleIllustration from '../assets/illustrations/dispute-module.svg';
 import ThemedSelect from '../components/ThemedSelect';
 import { useUiPreferences } from '../context/useUiPreferences';
 
@@ -370,32 +371,45 @@ const RecountDisputes = () => {
     <main className="min-h-screen page-shell pt-20 pb-14">
       <div className="section-wrap space-y-6">
         <header className="glass-panel p-6 md:p-7">
-          <p className="eyebrow mb-4">
-            <Gavel className="w-4 h-4" /> {t('disputes.header.eyebrow', 'Recount and Dispute Module')}
-          </p>
-          <h1 className="text-2xl sm:text-3xl text-[#102347] mb-2">
-            {t('disputes.header.title', 'Election Case Management')}
-          </h1>
-          <p className="text-[#5e7398] max-w-3xl">
-            {t(
-              'disputes.header.subtitle',
-              'File recount requests and integrity disputes in a separate workflow, then track case review and outcomes.'
-            )}
-          </p>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-center">
+            <div>
+              <p className="eyebrow mb-4">
+                <Gavel className="w-4 h-4" /> {t('disputes.header.eyebrow', 'Recount and Dispute Module')}
+              </p>
+              <h1 className="text-2xl sm:text-3xl text-[#102347] mb-2">
+                {t('disputes.header.title', 'Election Case Management')}
+              </h1>
+              <p className="text-[#5e7398] max-w-3xl">
+                {t(
+                  'disputes.header.subtitle',
+                  'File recount requests and integrity disputes in a separate workflow, then track case review and outcomes.'
+                )}
+              </p>
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            <span className="metric-pill">
-              {t('disputes.metrics.role', 'Role: {role}')
-                .replace('{role}', profile?.role || t('common.ellipsis', '...'))}
-            </span>
-            <span className="metric-pill">
-              {t('disputes.metrics.totalCases', 'Election Cases: {count}')
-                .replace('{count}', String((mySummary?.totalCases || 0) + (adminSummary?.totalCases || 0)))}
-            </span>
-            <span className="metric-pill">
-              {t('disputes.metrics.currentElection', 'Current Election: {name}')
-                .replace('{name}', selectedElection?.name || t('disputes.metrics.notSelected', 'Not selected'))}
-            </span>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className="metric-pill">
+                  {t('disputes.metrics.role', 'Role: {role}')
+                    .replace('{role}', profile?.role || t('common.ellipsis', '...'))}
+                </span>
+                <span className="metric-pill">
+                  {t('disputes.metrics.totalCases', 'Election Cases: {count}')
+                    .replace('{count}', String((mySummary?.totalCases || 0) + (adminSummary?.totalCases || 0)))}
+                </span>
+                <span className="metric-pill">
+                  {t('disputes.metrics.currentElection', 'Current Election: {name}')
+                    .replace('{name}', selectedElection?.name || t('disputes.metrics.notSelected', 'Not selected'))}
+                </span>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-[#c8d8f6] bg-white overflow-hidden">
+              <img
+                src={disputeModuleIllustration}
+                alt={t('disputes.imageAlt', 'Dispute resolution dashboard illustration')}
+                className="w-full h-44 object-cover"
+                loading="lazy"
+              />
+            </div>
           </div>
         </header>
 
