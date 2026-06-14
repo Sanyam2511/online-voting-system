@@ -19,7 +19,7 @@ import {
 	verifyVoteReceipt,
 	getMyVoteReceipt
 } from '../controllers/voteController.js';
-import { protect, adminOnly } from '../middleware/AuthMiddleware.js';
+import { protect, adminOnly } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
