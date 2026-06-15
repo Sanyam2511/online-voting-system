@@ -7,6 +7,7 @@ import disputeRoutes from './routes/disputeRoutes.js';
 import securityRoutes from './routes/securityRoutes.js';
 
 const app = express();
+app.set('trust proxy', 1);
 
 app.use(cors());
 app.use(express.json());
