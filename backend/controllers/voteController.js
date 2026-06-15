@@ -615,7 +615,7 @@ const buildVotingSummary = async (election = null) => {
 
 const generateReceiptCode = () => {
   const year = new Date().getFullYear();
-  const randomBlock = crypto.randomBytes(3).toString('hex').toUpperCase();
+  const randomBlock = crypto.randomBytes(16).toString('hex').toUpperCase();
   return `CV-${year}-${randomBlock}`;
 };
 
@@ -635,7 +635,7 @@ const createUniqueReceiptCode = async (session = null) => {
     }
   }
 
-  return `CV-${Date.now()}-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
+  return `CV-${Date.now()}-${crypto.randomBytes(16).toString('hex').toUpperCase()}`;
 };
 
 const normalizeCandidateUpdateFields = (updates) => {
@@ -848,35 +848,42 @@ const executeVoteCast = async ({
 
   const receiptCode = await createUniqueReceiptCode(session);
 
-  const receiptRecords = session
-    ? await VoteReceipt.create([
-        {
-          user: user.id,
-          election: election.id,
-          candidate: candidate.id,
-          receiptCode,
-          electionName: election.name,
-          status: 'pending'
-        }
-      ], { session })
-    : await VoteReceipt.create([
-        {
-          user: user.id,
-          election: election.id,
-          candidate: candidate.id,
-          receiptCode,
-          electionName: election.name,
-          status: 'pending'
-        }
-      ]);
+  let receiptRecords;
+  try {
+    receiptRecords = session
+      ? await VoteReceipt.create([
+          {
+            user: user.id,
+            election: election.id,
+            candidate: candidate.id,
+            receiptCode,
+            electionName: election.name,
+            status: 'pending'
+          }
+        ], { session })
+      : await VoteReceipt.create([
+          {
+            user: user.id,
+            election: election.id,
+            candidate: candidate.id,
+            receiptCode,
+            electionName: election.name,
+            status: 'pending'
+          }
+        ]);
+  } catch (error) {
+    if (error.code === 11000) {
+      throwHttpError(400, 'You have already cast your vote in this election.');
+    }
+    throw error;
+  }
 
   const receipt = receiptRecords[0];
 
-  candidate.voteCount = Number(candidate.voteCount || 0) + 1;
-  await saveWithOptionalSession(candidate, session);
-
-  user.hasVoted = true;
-  await saveWithOptionalSession(user, session);
+  await withOptionalSession(
+    Candidate.updateOne({ _id: candidate.id }, { $inc: { voteCount: 1 } }),
+    session
+  );
 
   receipt.status = 'counted';
   await saveWithOptionalSession(receipt, session);
@@ -1389,9 +1396,13 @@ export const updateCandidate = async (req, res) => {
       throwHttpError(404, 'Candidate not found.');
     }
 
-    const updates = {
-      ...req.body
-    };
+    const allowedFields = ['name', 'party', 'manifesto', 'imageUrl', 'campaignTagline', 'bio', 'region', 'education', 'experience', 'priorities', 'age', 'electionId'];
+    const updates = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    }
 
     if (Object.prototype.hasOwnProperty.call(updates, 'priorities')) {
       updates.priorities = parsePriorities(updates.priorities);

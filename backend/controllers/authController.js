@@ -40,7 +40,6 @@ const buildAuthResponse = (user) => ({
   name: user.name,
   email: user.email,
   role: user.role,
-  hasVoted: user.hasVoted,
   token: generateToken(user._id)
 });
 
@@ -158,7 +157,6 @@ export const getCurrentVoter = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
-      hasVoted: user.hasVoted,
       isVerified: user.isVerified
     });
   } catch (error) {
