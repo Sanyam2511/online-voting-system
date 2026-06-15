@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { UiPreferencesContext } from './uiPreferencesContextObject.js';
 
 const STORAGE_KEY = 'securevote-ui-preferences';

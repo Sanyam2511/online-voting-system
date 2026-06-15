@@ -405,10 +405,9 @@ const VotingArena = () => {
         verificationToken
       });
 
-      setSuccess(response.data.message || t('vote.success', 'Vote submitted successfully!'));
+      setSuccess(response.data?.message || t('vote.success', 'Vote submitted successfully!'));
+      setReceipt(response.data?.receipt || null);
       setHasVoted(true);
-      setReceipt(response.data.receipt || null);
-      patchStoredUser({ hasVoted: true });
       setVerificationToken('');
 
       setCandidates((prevCandidates) =>

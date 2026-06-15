@@ -200,7 +200,7 @@ const ReceiptVerification = () => {
     doc.text(
       t('receipt.pdf.votingStatus', 'Voting Status: {status}').replace(
         '{status}',
-        voterDetails.hasVoted ? t('receipt.pdf.voteCast', 'Vote Cast') : t('receipt.pdf.notCast', 'Not Cast Yet')
+        receiptToExport ? t('receipt.pdf.voteCast', 'Vote Cast') : t('receipt.pdf.notCast', 'Not Cast Yet')
       ),
       40,
       220
