@@ -1,16 +1,16 @@
-<div align="center">
-  <h1>🗳️ SecureVote</h1>
+<div> 
+  <h1> SecureVote</h1>
   <p>A secure, modern, and user-friendly online voting system built with the MERN stack.</p>
 </div>
 
 <br />
 
-## 🔗 Live Demo
+## Live Demo
 **Check out the live application:** [SecureVote Live](https://online-voting-system-live.vercel.app/)
 
 ---
 
-## ✨ Features
+## Features
 
 - **Secure Authentication:** JWT-based user authentication and authorization.
 - **Role-Based Access:** Distinct roles for Voters and Administrators.
@@ -20,7 +20,7 @@
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 **Frontend:**
 - React 19 (Vite)
@@ -37,7 +37,7 @@
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
 
@@ -107,7 +107,7 @@ Once both servers are running, open your web browser and visit:
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 online-voting-system/
