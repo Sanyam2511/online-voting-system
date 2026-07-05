@@ -401,14 +401,15 @@ h4 {
 }
 
 .surface-card {
-  background: var(--surface-card);
-  border: 1px solid var(--line-300);
-  box-shadow: var(--shadow-card);
-  border-radius: 1.25rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: 1px solid var(--line-300);
+  box-shadow: none;
+  border-radius: 0;
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  transition: border-color 0.28s ease;
   animation: riseIn 0.45s ease both;
 }
 
@@ -422,21 +423,20 @@ h4 {
 }
 
 .surface-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--line-200);
-  box-shadow: var(--shadow-card-hover);
+  border-bottom-color: var(--line-200);
 }
 
 .glass-panel {
-  background: var(--surface-glass);
-  border: 1px solid var(--line-300);
-  box-shadow: var(--shadow-panel);
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: 1px solid var(--line-300);
+  box-shadow: none;
   backdrop-filter: blur(10px);
-  border-radius: 1.25rem;
+  border-radius: 0;
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  transition: border-color 0.28s ease;
   animation: riseIn 0.45s ease both;
 }
 
@@ -456,9 +456,7 @@ h4 {
 }
 
 .glass-panel:hover {
-  transform: translateY(-2px);
-  border-color: var(--line-200);
-  box-shadow: var(--shadow-panel-hover);
+  border-bottom-color: var(--line-200);
 }
 
 .btn-primary {
