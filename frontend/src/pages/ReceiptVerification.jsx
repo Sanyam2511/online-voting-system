@@ -9,7 +9,7 @@ import ThemedSelect from '../components/ThemedSelect';
 import { useUiPreferences } from '../context/useUiPreferences';
 
 const ReceiptCard = ({ title, receipt, t }) => (
-  <article className="surface-card p-6">
+  <article className="p-4 border-l-2 border-[#1f66f4]">
     <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-2">{title}</p>
     <h3 className="text-lg text-[#12305c] mb-1">{receipt.electionName}</h3>
     <p className="text-sm text-[#4f6994] mb-4">
@@ -285,7 +285,7 @@ const ReceiptVerification = () => {
                 <span className="metric-pill">{t('receipt.metrics.pdfExport', 'PDF Export')}</span>
               </div>
             </div>
-            <div className="rounded-2xl border border-[#c8d8f6] bg-white overflow-hidden">
+            <div className="rounded-2xl overflow-hidden">
               <img
                 src={receiptIllustration}
                 alt={t('receipt.header.imageAlt', 'Vote receipt verification dashboard')}
@@ -296,7 +296,7 @@ const ReceiptVerification = () => {
           </div>
         </header>
 
-        <section className="surface-card p-6 mb-6">
+        <section className="mb-8 border-b border-[#d2def6] pb-6">
           <div className="flex flex-col sm:flex-row gap-3">
             <input
               type="text"
@@ -376,7 +376,7 @@ const ReceiptVerification = () => {
                 t={t}
               />
             ) : (
-              <div className="rounded-2xl border border-dashed border-[#bfd1f8] bg-[#f7fbff] p-5">
+              <div className="border-b border-dashed border-[#bfd1f8] pb-4">
                 <p className="text-sm text-[#60759b]">
                   {myError || t('receipt.myReceipt.empty', 'Sign in and cast your vote to generate a personal receipt code.')}
                 </p>
@@ -401,7 +401,7 @@ const ReceiptVerification = () => {
                 <ReceiptCard title={t('receipt.verify.cardTitle', 'Ledger Verification')} receipt={verifiedReceipt} t={t} />
               </div>
             ) : (
-              <div className="rounded-2xl border border-dashed border-[#bfd1f8] bg-[#f7fbff] p-5">
+              <div className="border-b border-dashed border-[#bfd1f8] pb-4">
                 <p className="text-sm text-[#60759b]">
                   {t('receipt.verify.empty', 'Enter a receipt code to verify vote submission status.')}
                 </p>

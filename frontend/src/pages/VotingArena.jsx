@@ -452,7 +452,7 @@ const VotingArena = () => {
               )}
             </div>
 
-            <div className="rounded-2xl border border-[#cddaf5] bg-white px-5 py-4 min-w-[220px]">
+            <div className="border-b border-[#cddaf5] pb-3 min-w-[220px]">
               <p className="text-xs uppercase tracking-[0.12em] text-[#61769b] mb-2">{t('vote.statusTitle', 'Voting Status')}</p>
               <p className={`text-sm font-semibold ${hasVoted ? 'text-[#1f9c4c]' : 'text-[#17386f]'}`}>
                 {hasVoted ? t('vote.status.submitted', 'Vote already submitted') : t('vote.status.awaiting', 'Awaiting your vote')}
@@ -481,7 +481,7 @@ const VotingArena = () => {
                 </div>
 
                 {selectedElection && (
-                  <div className="rounded-2xl border border-[#d2def6] bg-white px-4 py-3">
+                  <div className="border-b border-[#d2def6] pb-3">
                     <p className="text-xs text-[#60739a] inline-flex items-center gap-2">
                       <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status, t)}
                     </p>
@@ -641,7 +641,7 @@ const VotingArena = () => {
 
               {activeStep?.key === 'verification' && (
                 <div className="space-y-4">
-                  <div className="rounded-2xl border border-[#d2def6] bg-white p-4">
+                  <div className="border-b border-[#d2def6] pb-4">
                     <p className="text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2 inline-flex items-center gap-2">
                       <KeyRound className="w-3.5 h-3.5" /> {t('vote.verification.title', 'Strong Voter Verification')}
                     </p>
@@ -708,7 +708,7 @@ const VotingArena = () => {
               {activeStep?.key === 'review' && (
                 <div className="space-y-4">
                   {selectedElection && (
-                    <div className="rounded-2xl border border-[#cad8f3] bg-white p-4">
+                    <div className="border-b border-[#cad8f3] pb-3">
                       <p className="text-sm text-[#5f7298] mb-1">{t('vote.summary.election', 'Election')}</p>
                       <p className="font-semibold text-[#122f5d]">{selectedElection.name}</p>
                       <p className="text-xs text-[#4f6590] mt-1">{t('vote.statusLabel', 'Status')}: {formatElectionStatus(selectedElection.status, t)}</p>
@@ -716,18 +716,18 @@ const VotingArena = () => {
                   )}
 
                   {selectedCandidate ? (
-                    <div className="rounded-2xl border border-[#cad8f3] bg-white p-4">
+                    <div className="border-b border-[#cad8f3] pb-3">
                       <p className="text-sm text-[#5f7298] mb-1">{t('vote.summary.selectedCandidate', 'Selected Candidate')}</p>
                       <p className="font-semibold text-[#122f5d]">{selectedCandidate.name}</p>
                       <p className="text-sm text-[#4f6590]">{selectedCandidate.party}</p>
                     </div>
                   ) : (
-                    <div className="rounded-2xl border border-dashed border-[#bfd1f8] bg-[#f8fbff] p-4">
+                    <div className="border-b border-dashed border-[#bfd1f8] pb-3">
                       <p className="text-sm text-[#5e7196]">{t('vote.summary.noneSelected', 'No candidate selected yet.')}</p>
                     </div>
                   )}
 
-                  <div className="rounded-2xl border border-[#d2def6] bg-white p-4">
+                  <div className="border-b border-[#d2def6] pb-3">
                     <p className="text-sm text-[#4f6691] leading-relaxed">
                       {t('vote.summary.oneVote', 'One account can cast only one vote per election. Review your selection carefully before submitting.')}
                     </p>
@@ -776,7 +776,7 @@ const VotingArena = () => {
                       </p>
 
                       {receipt && (
-                        <div className="mt-3 rounded-2xl border border-[#bcd0f5] bg-[#f4f8ff] p-4">
+                        <div className="mt-3 border-t border-[#bcd0f5] pt-3">
                           <p className="text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-1">{t('vote.receipt.title', 'Vote Receipt')}</p>
                           <p className="text-sm font-semibold text-[#1f66f4] break-all">{receiptCode}</p>
                           <p className="text-xs text-[#56709a] mt-2">{t('vote.statusLabel', 'Status')}: {receipt.status}</p>
@@ -848,7 +848,7 @@ const VotingArena = () => {
             <aside className="glass-panel p-6 h-fit lg:sticky lg:top-28">
               <p className="text-xs uppercase tracking-[0.12em] text-[#60739a] mb-3">{t('vote.summary.title', 'Vote Summary')}</p>
 
-              <div className="rounded-2xl border border-[#cad8f3] bg-white overflow-hidden mb-4 shadow-sm">
+              <div className="rounded-2xl overflow-hidden mb-4 shadow-sm">
                 <img
                   src={votingBallotIllustration}
                   alt={t('vote.summary.imageAlt', 'Digital ballot and secure vote confirmation')}
@@ -858,7 +858,7 @@ const VotingArena = () => {
               </div>
 
               {selectedElection && (
-                <div className="rounded-2xl border border-[#cad8f3] bg-white p-4 mb-4">
+                <div className="border-b border-[#cad8f3] pb-3 mb-4">
                   <p className="text-sm text-[#5f7298] mb-1">{t('vote.summary.election', 'Election')}</p>
                   <p className="font-semibold text-[#122f5d]">{selectedElection.name}</p>
                   <p className="text-xs text-[#4f6590] mt-1">{t('vote.statusLabel', 'Status')}: {formatElectionStatus(selectedElection.status, t)}</p>
@@ -866,24 +866,24 @@ const VotingArena = () => {
               )}
 
               {selectedCandidate ? (
-                <div className="rounded-2xl border border-[#cad8f3] bg-white p-4 mb-4">
+                <div className="border-b border-[#cad8f3] pb-3 mb-4">
                   <p className="text-sm text-[#5f7298] mb-1">{t('vote.summary.selectedCandidate', 'Selected Candidate')}</p>
                   <p className="font-semibold text-[#122f5d]">{selectedCandidate.name}</p>
                   <p className="text-sm text-[#4f6590]">{selectedCandidate.party}</p>
                 </div>
               ) : (
-                <div className="rounded-2xl border border-dashed border-[#bfd1f8] bg-[#f8fbff] p-4 mb-4">
+                <div className="border-b border-dashed border-[#bfd1f8] pb-3 mb-4">
                   <p className="text-sm text-[#5e7196]">{t('vote.summary.noneSelected', 'No candidate selected yet.')}</p>
                 </div>
               )}
 
-              <div className="rounded-2xl border border-[#d2def6] bg-white p-4 mb-5">
+              <div className="border-b border-[#d2def6] pb-3 mb-5">
                 <p className="text-sm text-[#4f6691] leading-relaxed">
                   {t('vote.summary.oneVote', 'One account can cast only one vote per election. Review your selection carefully before submitting.')}
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-[#d2def6] bg-white p-4 mb-5">
+              <div className="border-b border-[#d2def6] pb-3 mb-5">
                 <p className="text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2 inline-flex items-center gap-2">
                   <KeyRound className="w-3.5 h-3.5" /> {t('vote.verification.title', 'Strong Voter Verification')}
                 </p>
@@ -988,7 +988,7 @@ const VotingArena = () => {
                   </p>
 
                   {receipt && (
-                    <div className="mt-3 rounded-2xl border border-[#bcd0f5] bg-[#f4f8ff] p-4">
+                    <div className="mt-3 border-t border-[#bcd0f5] pt-3">
                       <p className="text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-1">{t('vote.receipt.title', 'Vote Receipt')}</p>
                       <p className="text-sm font-semibold text-[#1f66f4] break-all">{receiptCode}</p>
                       <p className="text-xs text-[#56709a] mt-2">{t('vote.statusLabel', 'Status')}: {receipt.status}</p>
