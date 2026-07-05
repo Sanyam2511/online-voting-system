@@ -129,7 +129,7 @@ const Login = () => {
           <aside className="glass-panel p-6 sm:p-7 lg:p-8 relative overflow-hidden">
             <div className="absolute inset-x-8 top-8 h-28 rounded-full bg-[#d7e6ff] blur-3xl" aria-hidden="true"></div>
             <div className="relative z-10">
-              <div className="rounded-2xl border border-[#cfdcf6] bg-white overflow-hidden mb-6 shadow-sm">
+              <div className="rounded-2xl overflow-hidden mb-6 shadow-sm">
                 <img
                   src={loginSecurityIllustration}
                   alt={t('login.imageAlt', 'Secure voter login with shield and lock protection')}
@@ -145,19 +145,19 @@ const Login = () => {
               </p>
 
               <div className="space-y-4">
-                <div className="rounded-2xl border border-[#cfdcf6] bg-white p-4">
+                <div className="border-b border-[#cfdcf6] pb-4">
                   <p className="text-sm font-semibold text-[#17386f] mb-1">{t('login.assurance.identityTitle', 'Identity Verification')}</p>
                   <p className="text-sm text-[#60739a]">{t('login.assurance.identityBody', 'Only authenticated users can access the ballot interface.')}</p>
                 </div>
 
-                <div className="rounded-2xl border border-[#cfdcf6] bg-white p-4">
+                <div className="border-b border-[#cfdcf6] pb-4">
                   <p className="text-sm font-semibold text-[#17386f] mb-1">{t('login.assurance.sessionTitle', 'Session Security')}</p>
                   <p className="text-sm text-[#60739a]">{t('login.assurance.sessionBody', 'Authenticated state is synced across the app for controlled access.')}</p>
                 </div>
 
-                <div className="rounded-2xl border border-[#cfdcf6] bg-[#1f66f4] p-4">
-                  <p className="text-sm font-semibold text-white mb-1">{t('login.assurance.readyTitle', 'Governance Ready')}</p>
-                  <p className="text-sm text-[#d9e7ff]">{t('login.assurance.readyBody', 'A refined citizen experience built for credible public participation.')}</p>
+                <div className="pt-2">
+                  <p className="text-sm font-semibold text-[#1f66f4] mb-1">{t('login.assurance.readyTitle', 'Governance Ready')}</p>
+                  <p className="text-sm text-[#60739a]">{t('login.assurance.readyBody', 'A refined citizen experience built for credible public participation.')}</p>
                 </div>
               </div>
             </div>

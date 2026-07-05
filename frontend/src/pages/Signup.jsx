@@ -184,7 +184,7 @@ const Signup = () => {
           </section>
 
           <aside className="glass-panel p-6 sm:p-7 lg:p-8">
-            <div className="rounded-2xl border border-[#cfdcf6] bg-white overflow-hidden mb-6 shadow-sm">
+            <div className="rounded-2xl overflow-hidden mb-6 shadow-sm">
               <img
                 src={signupOnboardingIllustration}
                 alt={t('signup.imageAlt', 'Citizen onboarding and identity verification for voting platform')}
@@ -200,7 +200,7 @@ const Signup = () => {
             </p>
 
             <div className="space-y-4">
-              <div className="rounded-2xl border border-[#cfdcf6] bg-white p-4">
+              <div className="border-b border-[#cfdcf6] pb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle2 className="w-5 h-5 text-[#1f66f4]" />
                   <p className="font-semibold text-[#17386f]">{t('signup.onboarding.identityTitle', 'Citizen Identity Ready')}</p>
@@ -208,7 +208,7 @@ const Signup = () => {
                 <p className="text-sm text-[#60739a]">{t('signup.onboarding.identityBody', 'Users are onboarded before they can access ballots.')}</p>
               </div>
 
-              <div className="rounded-2xl border border-[#cfdcf6] bg-white p-4">
+              <div className="border-b border-[#cfdcf6] pb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle2 className="w-5 h-5 text-[#1f66f4]" />
                   <p className="font-semibold text-[#17386f]">{t('signup.onboarding.credentialsTitle', 'Protected Credentials')}</p>
@@ -216,7 +216,7 @@ const Signup = () => {
                 <p className="text-sm text-[#60739a]">{t('signup.onboarding.credentialsBody', 'Passwords are validated before account creation is accepted.')}</p>
               </div>
 
-              <div className="rounded-2xl border border-[#cfdcf6] bg-white p-4">
+              <div className="border-b border-[#cfdcf6] pb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle2 className="w-5 h-5 text-[#1f66f4]" />
                   <p className="font-semibold text-[#17386f]">{t('signup.onboarding.ballotTitle', 'Direct Ballot Access')}</p>
@@ -224,12 +224,12 @@ const Signup = () => {
                 <p className="text-sm text-[#60739a]">{t('signup.onboarding.ballotBody', 'After registration, users move directly to the secure voting arena.')}</p>
               </div>
 
-              <div className="rounded-2xl border border-[#bfd1f8] bg-[#1f66f4] p-5 mt-5">
+              <div className="pt-2">
                 <div className="flex items-center gap-2 mb-2">
-                  <UserPlus className="w-5 h-5 text-white" />
-                  <p className="font-semibold text-white">{t('signup.onboarding.integrityTitle', 'Platform Integrity')}</p>
+                  <UserPlus className="w-5 h-5 text-[#1f66f4]" />
+                  <p className="font-semibold text-[#1f66f4]">{t('signup.onboarding.integrityTitle', 'Platform Integrity')}</p>
                 </div>
-                <p className="text-sm text-[#d9e7ff]">{t('signup.onboarding.integrityBody', 'Reliable onboarding is the first layer of election credibility.')}</p>
+                <p className="text-sm text-[#60739a]">{t('signup.onboarding.integrityBody', 'Reliable onboarding is the first layer of election credibility.')}</p>
               </div>
             </div>
           </aside>
