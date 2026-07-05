@@ -300,7 +300,7 @@ const CandidateManagement = () => {
   const onDeleteCandidate = (candidateId) => {
     toast.custom(
       (toastInstance) => (
-        <div className="w-[min(92vw,420px)] rounded-2xl border border-[#bfd1f8] bg-white p-4 shadow-[0_18px_42px_rgba(16,38,79,0.22)]">
+        <div className="w-[min(92vw,420px)] border-t-4 border-[#1f66f4] bg-white p-6 shadow-xl">
           <p className="text-sm font-semibold text-[#122f5d] mb-1">
             {t('manage.modal.deleteCandidateTitle', 'Delete Candidate')}
           </p>
@@ -460,25 +460,25 @@ const CandidateManagement = () => {
         </header>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          <article className="surface-card p-4">
+          <article className="p-4 border-l-2 border-[#1f66f4]">
             <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-1">
               {t('manage.metrics.totalElections', 'Total Elections')}
             </p>
             <p className="text-2xl font-semibold text-[#12305d]">{managementSummary.totalElections}</p>
           </article>
-          <article className="surface-card p-4">
+          <article className="p-4 border-l-2 border-[#1f66f4]">
             <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-1">
               {t('manage.metrics.liveElections', 'Live Elections')}
             </p>
             <p className="text-2xl font-semibold text-[#12305d]">{managementSummary.liveElections}</p>
           </article>
-          <article className="surface-card p-4">
+          <article className="p-4 border-l-2 border-[#1f66f4]">
             <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-1">
               {t('manage.metrics.registeredCandidates', 'Registered Candidates')}
             </p>
             <p className="text-2xl font-semibold text-[#12305d]">{managementSummary.totalCandidates}</p>
           </article>
-          <article className="surface-card p-4">
+          <article className="p-4 border-l-2 border-[#1f66f4]">
             <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-1">
               {t('manage.metrics.trackedVotes', 'Tracked Votes')}
             </p>
@@ -625,7 +625,7 @@ const CandidateManagement = () => {
                     return (
                       <article
                         key={election._id}
-                        className={`rounded-2xl border p-4 ${isSelected ? 'border-[#1f66f4] bg-[#f4f8ff]' : 'border-[#d6e2f6] bg-white'}`}
+                        className={`border-b p-4 ${isSelected ? 'border-l-4 border-l-[#1f66f4] bg-[#f4f8ff]' : 'border-l-4 border-l-transparent'}`}
                       >
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                           <div>
@@ -709,7 +709,7 @@ const CandidateManagement = () => {
               </div>
 
               {selectedElection && (
-                <div className="rounded-2xl border border-[#d2def6] bg-[#f7fbff] p-4 mb-5">
+                <div className="border-b border-[#d2def6] pb-4 mb-5">
                   <p className="text-sm text-[#12305d] inline-flex items-center gap-2">
                     <CalendarDays className="w-4 h-4" /> {selectedElection.name}
                   </p>
@@ -857,7 +857,7 @@ const CandidateManagement = () => {
               ) : (
                 <div className="space-y-3">
                   {candidates.map((candidate) => (
-                    <div key={candidate._id} className="rounded-xl border border-[#e1e8f8] p-3">
+                    <div key={candidate._id} className="border-b border-[#e1e8f8] py-3 last:border-b-0">
                       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                         <div>
                           <p className="font-semibold text-[#12305d]">{candidate.name}</p>

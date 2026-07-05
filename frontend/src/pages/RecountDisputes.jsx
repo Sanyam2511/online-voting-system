@@ -402,7 +402,7 @@ const RecountDisputes = () => {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#c8d8f6] bg-white overflow-hidden">
+            <div className="rounded-2xl overflow-hidden">
               <img
                 src={disputeModuleIllustration}
                 alt={t('disputes.imageAlt', 'Dispute resolution dashboard illustration')}
@@ -414,7 +414,7 @@ const RecountDisputes = () => {
         </header>
 
         {error && (
-          <div className="surface-card p-4 border border-[#f1c6c6] bg-[#fff1f1] text-[#a43a3a] flex items-start gap-2">
+          <div className="p-4 border-l-4 border-[#c73939] bg-[#fff1f1] text-[#a43a3a] flex items-start gap-2">
             <AlertCircle className="w-4 h-4 mt-0.5" />
             <p className="text-sm">{error}</p>
           </div>
@@ -427,7 +427,7 @@ const RecountDisputes = () => {
           </section>
         ) : (
           <>
-            <section className="surface-card p-5">
+            <section className="border-b border-[#d2def6] pb-5">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
                   <label htmlFor="case-election" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
@@ -487,7 +487,7 @@ const RecountDisputes = () => {
             </section>
 
             <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6">
-              <section className="surface-card p-6">
+              <section className="lg:pr-6 lg:border-r border-[#d2def6] pb-6 lg:pb-0">
                 <div className="flex items-center justify-between gap-3 mb-4">
                   <h2 className="text-xl text-[#102347]">{t('disputes.form.title', 'File New Case')}</h2>
                   {loadingCandidates && <LoaderCircle className="w-4 h-4 animate-spin text-[#1f66f4]" />}
@@ -593,7 +593,7 @@ const RecountDisputes = () => {
                 </form>
               </section>
 
-              <section className="glass-panel p-6">
+              <section className="lg:pl-6 pb-6 lg:pb-0">
                 <div className="flex items-center justify-between gap-3 mb-4">
                   <h2 className="text-xl text-[#102347]">{t('disputes.myCases.title', 'My Cases')}</h2>
                   <button
@@ -617,7 +617,7 @@ const RecountDisputes = () => {
                 ) : (
                   <div className="space-y-3 max-h-[520px] overflow-auto pr-1">
                     {myCases.map((item) => (
-                      <article key={item._id} className="rounded-2xl border border-[#d5e1f5] bg-white p-4">
+                      <article key={item._id} className="border-b border-[#d5e1f5] pb-4 mb-4 last:border-0">
                         <div className="flex items-start justify-between gap-3 mb-2">
                           <div>
                             <p className="text-sm font-semibold text-[#12305d]">{item.subject}</p>
@@ -663,7 +663,7 @@ const RecountDisputes = () => {
             </div>
 
             {isAdmin && (
-              <section className="surface-card p-6">
+              <section className="border-t border-[#d2def6] pt-6 mt-6">
                 <div className="flex items-center justify-between gap-3 mb-4">
                   <h2 className="text-xl text-[#102347]">{t('disputes.admin.title', 'Admin Review Queue')}</h2>
                   <button
@@ -687,7 +687,7 @@ const RecountDisputes = () => {
                 ) : (
                   <div className="space-y-4">
                     {adminCases.map((item) => (
-                      <article key={item._id} className="rounded-2xl border border-[#d5e1f5] bg-white p-4">
+                      <article key={item._id} className="border-b border-[#d5e1f5] pb-4 mb-4 last:border-0">
                         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 mb-2">
                           <div>
                             <p className="text-sm font-semibold text-[#12305d]">{item.subject}</p>
@@ -755,7 +755,7 @@ const RecountDisputes = () => {
             )}
 
             {!isAdmin && (
-              <section className="glass-panel p-6">
+              <section className="border-t border-[#d2def6] pt-6 mt-6">
                 <p className="eyebrow mb-3">
                   <ClipboardList className="w-4 h-4" /> {t('disputes.notes.title', 'Workflow Notes')}
                 </p>
