@@ -299,7 +299,7 @@ const CandidateProfiles = () => {
                 </div>
 
                 {selectedElection && (
-                  <div className="rounded-2xl border border-[#d2def6] bg-white px-4 py-3">
+                  <div className="border-b border-[#d2def6] pb-3 mb-2">
                     <p className="text-xs text-[#60739a] inline-flex items-center gap-2">
                       <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status, t)}
                     </p>
@@ -308,7 +308,7 @@ const CandidateProfiles = () => {
               </div>
             </div>
 
-            <div className="rounded-2xl overflow-hidden border border-[#c8d8f6] bg-white">
+            <div className="rounded-2xl overflow-hidden mb-6">
               <img
                 src={candidateCompareIllustration}
                 alt={t('candidates.imageAlt', 'Candidate comparison board')}
@@ -320,19 +320,19 @@ const CandidateProfiles = () => {
         </header>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-          <article className="surface-card p-4">
+          <article className="p-4 border-l-2 border-[#1f66f4]">
             <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">{t('candidates.stats.election', 'Election')}</p>
             <p className="text-sm font-semibold text-[#12305d] truncate">{selectedElection?.name || t('candidates.noElectionSelected', 'No election selected')}</p>
           </article>
-          <article className="surface-card p-4">
+          <article className="p-4 border-l-2 border-[#1f66f4]">
             <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">{t('candidates.stats.visible', 'Visible Candidates')}</p>
             <p className="text-2xl font-semibold text-[#12305d]">{filteredCandidates.length}</p>
           </article>
-          <article className="surface-card p-4">
+          <article className="p-4 border-l-2 border-[#1f66f4]">
             <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">{t('candidates.stats.parties', 'Participating Parties')}</p>
             <p className="text-2xl font-semibold text-[#12305d]">{totalParties}</p>
           </article>
-          <article className="surface-card p-4">
+          <article className="p-4 border-l-2 border-[#1f66f4]">
             <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">{t('candidates.stats.compareQueue', 'Compare Queue')}</p>
             <p className="text-2xl font-semibold text-[#12305d]">{compareIds.length}</p>
           </article>
@@ -340,7 +340,7 @@ const CandidateProfiles = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
           <section>
-            <div className="surface-card p-6 mb-6">
+            <div className="mb-6">
               <div className="relative">
                 <Search className="w-4 h-4 text-[#6f84aa] absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
@@ -354,35 +354,35 @@ const CandidateProfiles = () => {
             </div>
 
             {loading ? (
-              <div className="surface-card p-10 text-center">
+              <div className="py-10 text-center">
                 <LoaderCircle className="w-7 h-7 animate-spin text-[#1f66f4] mx-auto mb-3" />
                 <p className="text-[#597098]">{t('candidates.loading', 'Loading candidate profiles...')}</p>
               </div>
             ) : error ? (
-              <div className="surface-card p-6 border border-[#f1c6c6] bg-[#fff1f1]">
+              <div className="p-6 border border-[#f1c6c6] bg-[#fff1f1]">
                 <p className="text-[#a73939]">{error}</p>
               </div>
             ) : Object.keys(groupedCandidates).length === 0 ? (
-              <div className="surface-card p-8 text-center">
+              <div className="py-8 text-center">
                 <p className="text-[#5f7398]">{t('candidates.none', 'No candidates found for this election.')}</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {Object.entries(groupedCandidates).map(([partyName, partyCandidates]) => (
-                  <article key={partyName} className="surface-card p-6">
-                    <h2 className="text-2xl text-[#112a56] mb-4">{partyName}</h2>
+                  <article key={partyName} className="mb-8">
+                    <h2 className="text-2xl text-[#112a56] mb-4 pb-2 border-b border-[#d5e0f4]">{partyName}</h2>
                     <div className="space-y-4">
                       {partyCandidates.map((candidate) => {
                         const isCompared = compareIds.includes(candidate._id);
                         const isProfileSelected = selectedProfileId === candidate._id;
 
                         return (
-                          <div key={candidate._id} className="rounded-2xl border border-[#d5e0f4] bg-white p-4">
+                          <div key={candidate._id} className="border-b border-[#d5e0f4] py-4 last:border-b-0">
                             <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                               <img
                                 src={candidate.imageUrl}
                                 alt={candidate.name}
-                                className="w-16 h-16 rounded-2xl border border-[#c5d7f6] object-cover"
+                                className="w-16 h-16 rounded-xl object-cover"
                               />
 
                               <div className="flex-1 min-w-0">
@@ -459,7 +459,7 @@ const CandidateProfiles = () => {
                   <img
                     src={profile.imageUrl}
                     alt={profile.name}
-                    className="w-full h-44 rounded-2xl object-cover border border-[#c8d8f6] mb-4"
+                    className="w-full h-44 rounded-xl object-cover mb-4"
                   />
                   <p className="text-lg font-semibold text-[#12305d]">{profile.name}</p>
                   <p className="text-sm text-[#5f7398] mb-2">{profile.party}</p>
