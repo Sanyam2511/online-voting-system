@@ -223,7 +223,7 @@ const SecurityCenter = () => {
           </div>
         )}
 
-        <section className="border-b border-[#d2def6] pb-5">
+        <section className="border-[#d2def6] pb-5">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
               <label htmlFor="security-election-filter" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
@@ -265,26 +265,26 @@ const SecurityCenter = () => {
         </section>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          <article className="border-l-2 border-[#1f66f4] pl-4 py-2">
+          <article className="border-[#1f66f4] pl-4 py-2">
             <p className="text-xs uppercase tracking-[0.1em] text-[#647aa1] mb-2">{t('security.severity.low', 'Low')}</p>
             <p className="text-2xl text-[#102347] font-semibold">{summary.severityCounts?.low || 0}</p>
           </article>
-          <article className="border-l-2 border-[#1f66f4] pl-4 py-2">
+          <article className="border-[#1f66f4] pl-4 py-2">
             <p className="text-xs uppercase tracking-[0.1em] text-[#647aa1] mb-2">{t('security.severity.medium', 'Medium')}</p>
             <p className="text-2xl text-[#102347] font-semibold">{summary.severityCounts?.medium || 0}</p>
           </article>
-          <article className="border-l-2 border-[#1f66f4] pl-4 py-2">
+          <article className="border-[#1f66f4] pl-4 py-2">
             <p className="text-xs uppercase tracking-[0.1em] text-[#647aa1] mb-2">{t('security.severity.high', 'High')}</p>
             <p className="text-2xl text-[#102347] font-semibold">{summary.severityCounts?.high || 0}</p>
           </article>
-          <article className="border-l-2 border-[#1f66f4] pl-4 py-2">
+          <article className="border-[#1f66f4] pl-4 py-2">
             <p className="text-xs uppercase tracking-[0.1em] text-[#647aa1] mb-2">{t('security.severity.critical', 'Critical')}</p>
             <p className="text-2xl text-[#102347] font-semibold">{summary.severityCounts?.critical || 0}</p>
           </article>
         </section>
 
         <section className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <article className="lg:pr-6 lg:border-r border-[#d2def6]">
+          <article className="lg:pr-6 lg: border-[#d2def6]">
             <h2 className="text-xl text-[#102347] mb-4">{t('security.recentAnomalies', 'Recent Anomalies')}</h2>
             {loadingEvents ? (
               <div className="text-center py-6">
@@ -296,7 +296,7 @@ const SecurityCenter = () => {
             ) : (
               <div className="space-y-3 max-h-[520px] overflow-auto pr-1">
                 {recentAnomalies.map((event) => (
-                  <article key={event._id} className="border-b border-[#d2def4] pb-4 mb-4 last:border-0">
+                  <article key={event._id} className="border-[#d2def4] pb-4 mb-4">
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <p className="text-sm font-semibold text-[#13305f]">{event.message}</p>
                       <span className={`text-[11px] rounded-full border px-2.5 py-1 font-semibold ${severityPillClass(event.severity)}`}>
@@ -325,7 +325,7 @@ const SecurityCenter = () => {
             ) : (
               <div className="space-y-2 max-h-[520px] overflow-auto pr-1">
                 {events.map((event) => (
-                  <div key={event._id} className="border-b border-[#d6e1f3] pb-3 mb-3 last:border-0">
+                  <div key={event._id} className="border-[#d6e1f3] pb-3 mb-3">
                     <div className="flex items-start justify-between gap-2">
                       <p className="text-sm text-[#173563] font-medium">{event.eventType}</p>
                       <span className={`text-[10px] rounded-full border px-2 py-0.5 font-semibold ${severityPillClass(event.severity)}`}>

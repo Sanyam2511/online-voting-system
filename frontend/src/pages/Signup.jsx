@@ -200,7 +200,7 @@ const Signup = () => {
             </p>
 
             <div className="space-y-4">
-              <div className="border-b border-[#cfdcf6] pb-4">
+              <div className="border-[#cfdcf6] pb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle2 className="w-5 h-5 text-[#1f66f4]" />
                   <p className="font-semibold text-[#17386f]">{t('signup.onboarding.identityTitle', 'Citizen Identity Ready')}</p>
@@ -208,7 +208,7 @@ const Signup = () => {
                 <p className="text-sm text-[#60739a]">{t('signup.onboarding.identityBody', 'Users are onboarded before they can access ballots.')}</p>
               </div>
 
-              <div className="border-b border-[#cfdcf6] pb-4">
+              <div className="border-[#cfdcf6] pb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle2 className="w-5 h-5 text-[#1f66f4]" />
                   <p className="font-semibold text-[#17386f]">{t('signup.onboarding.credentialsTitle', 'Protected Credentials')}</p>
@@ -216,7 +216,7 @@ const Signup = () => {
                 <p className="text-sm text-[#60739a]">{t('signup.onboarding.credentialsBody', 'Passwords are validated before account creation is accepted.')}</p>
               </div>
 
-              <div className="border-b border-[#cfdcf6] pb-4">
+              <div className="border-[#cfdcf6] pb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle2 className="w-5 h-5 text-[#1f66f4]" />
                   <p className="font-semibold text-[#17386f]">{t('signup.onboarding.ballotTitle', 'Direct Ballot Access')}</p>

@@ -147,7 +147,7 @@ const TransparencyDashboard = () => {
                 </div>
 
                 {selectedElection && (
-                  <div className="border-b border-[#d2def6] pb-3 mb-2">
+                  <div className="border-[#d2def6] pb-3 mb-2">
                     <p className="text-xs text-[#60739a] inline-flex items-center gap-2">
                       <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status, t)}
                     </p>
@@ -188,23 +188,23 @@ const TransparencyDashboard = () => {
         ) : (
           <>
             <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 mb-8">
-              <div className="p-4 border-l-2 border-[#1f66f4]">
+              <div className="p-4 border-[#1f66f4]">
                 <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">{t('transparency.table.election', 'Election')}</p>
                 <p className="text-sm font-semibold text-[#12305f]">{data.summary.electionName}</p>
               </div>
-              <div className="p-4 border-l-2 border-[#1f66f4]">
+              <div className="p-4 border-[#1f66f4]">
                 <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">{t('transparency.table.registered', 'Registered Voters')}</p>
                 <p className="text-2xl font-semibold text-[#12305f]">{data.summary.totalRegisteredVoters}</p>
               </div>
-              <div className="p-4 border-l-2 border-[#1f66f4]">
+              <div className="p-4 border-[#1f66f4]">
                 <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">{t('transparency.table.votes', 'Votes Cast')}</p>
                 <p className="text-2xl font-semibold text-[#12305f]">{data.summary.totalVotesCast}</p>
               </div>
-              <div className="p-4 border-l-2 border-[#1f66f4]">
+              <div className="p-4 border-[#1f66f4]">
                 <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">{t('transparency.table.turnout', 'Turnout')}</p>
                 <p className="text-2xl font-semibold text-[#12305f]">{data.summary.turnoutPercentage}%</p>
               </div>
-              <div className="p-4 border-l-2 border-[#1f66f4]">
+              <div className="p-4 border-[#1f66f4]">
                 <p className="text-xs uppercase tracking-[0.1em] text-[#62769d] mb-2">{t('transparency.table.parties', 'Active Parties')}</p>
                 <p className="text-2xl font-semibold text-[#12305f]">{data.summary.totalParties}</p>
               </div>
@@ -222,7 +222,7 @@ const TransparencyDashboard = () => {
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {data.electionResults.map((result) => (
-                      <div key={result.electionName} className="border-b border-[#d5e1f5] pb-4 mb-4 last:border-b-0">
+                      <div key={result.electionName} className="border-[#d5e1f5] pb-4 mb-4 last:">
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div>
                             <p className="text-sm text-[#60759b]">Election</p>
@@ -237,7 +237,7 @@ const TransparencyDashboard = () => {
                         <div className="overflow-x-auto">
                           <table className="w-full text-sm">
                             <thead>
-                              <tr className="text-left border-b border-[#e3ebfa]">
+                              <tr className="text-left border-[#e3ebfa]">
                                 <th className="pb-2 text-[#6d82a8] font-semibold">{t('transparency.results.rank', 'Rank')}</th>
                                 <th className="pb-2 text-[#6d82a8] font-semibold">{t('transparency.results.candidate', 'Candidate')}</th>
                                 <th className="pb-2 text-[#6d82a8] font-semibold">{t('transparency.results.party', 'Party')}</th>
@@ -246,7 +246,7 @@ const TransparencyDashboard = () => {
                             </thead>
                             <tbody>
                               {result.topCandidates.map((candidate, index) => (
-                                <tr key={`${result.electionName}-${candidate._id}`} className="border-b border-[#edf2fb]">
+                                <tr key={`${result.electionName}-${candidate._id}`} className="border-[#edf2fb]">
                                   <td className="py-2 text-[#345584]">#{index + 1}</td>
                                   <td className="py-2 text-[#12305d] font-semibold">{candidate.name}</td>
                                   <td className="py-2 text-[#567098]">{candidate.party}</td>
@@ -311,7 +311,7 @@ const TransparencyDashboard = () => {
 
                     <div className="space-y-3">
                       {partyChartData.map((party) => (
-                        <div key={party.party} className="border-b border-[#dce6fa] pb-3 mb-3 last:border-b-0">
+                        <div key={party.party} className="border-[#dce6fa] pb-3 mb-3 last:">
                           <div className="flex items-center justify-between text-sm mb-1.5 gap-2">
                             <p className="text-[#12305f] font-semibold inline-flex items-center gap-2">
                               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: party.fill }}></span>
@@ -399,7 +399,7 @@ const TransparencyDashboard = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="text-left border-b border-[#d5e0f4]">
+                      <tr className="text-left border-[#d5e0f4]">
                         <th className="pb-3 text-[#6980a7] font-semibold">Candidate</th>
                         <th className="pb-3 text-[#6980a7] font-semibold">Party</th>
                         <th className="pb-3 text-[#6980a7] font-semibold">Votes</th>
@@ -408,7 +408,7 @@ const TransparencyDashboard = () => {
                     </thead>
                     <tbody>
                       {data.candidateRanking.map((candidate) => (
-                        <tr key={candidate._id} className="border-b border-[#edf2fb]">
+                        <tr key={candidate._id} className="border-[#edf2fb]">
                           <td className="py-3 text-[#14305f] font-semibold">{candidate.name}</td>
                           <td className="py-3 text-[#567098]">{candidate.party}</td>
                           <td className="py-3 text-[#14305f]">{candidate.voteCount}</td>
@@ -435,7 +435,7 @@ const TransparencyDashboard = () => {
                     <p className="text-sm text-[#60759b]">No verified receipts yet.</p>
                   ) : (
                     data.recentReceipts.map((receipt) => (
-                      <div key={receipt.receiptCode} className="border-b border-[#ccdaf4] pb-3 mb-3 last:border-b-0">
+                      <div key={receipt.receiptCode} className="border-[#ccdaf4] pb-3 mb-3 last:">
                         <p className="text-xs text-[#5f7398]">{receipt.electionName}</p>
                         <p className="text-sm font-semibold text-[#12305d] mt-1">{receipt.receiptCode}</p>
                         <p className="text-xs text-[#58719a] mt-1">

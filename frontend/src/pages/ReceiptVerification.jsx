@@ -9,7 +9,7 @@ import ThemedSelect from '../components/ThemedSelect';
 import { useUiPreferences } from '../context/useUiPreferences';
 
 const ReceiptCard = ({ title, receipt, t }) => (
-  <article className="p-4 border-l-2 border-[#1f66f4]">
+  <article className="p-4 border-[#1f66f4]">
     <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-2">{title}</p>
     <h3 className="text-lg text-[#12305c] mb-1">{receipt.electionName}</h3>
     <p className="text-sm text-[#4f6994] mb-4">
@@ -296,7 +296,7 @@ const ReceiptVerification = () => {
           </div>
         </header>
 
-        <section className="mb-8 border-b border-[#d2def6] pb-6">
+        <section className="mb-8 border-[#d2def6] pb-6">
           <div className="flex flex-col sm:flex-row gap-3">
             <input
               type="text"
@@ -376,7 +376,7 @@ const ReceiptVerification = () => {
                 t={t}
               />
             ) : (
-              <div className="border-b border-dashed border-[#bfd1f8] pb-4">
+              <div className="border-[#bfd1f8] pb-4">
                 <p className="text-sm text-[#60759b]">
                   {myError || t('receipt.myReceipt.empty', 'Sign in and cast your vote to generate a personal receipt code.')}
                 </p>
@@ -401,7 +401,7 @@ const ReceiptVerification = () => {
                 <ReceiptCard title={t('receipt.verify.cardTitle', 'Ledger Verification')} receipt={verifiedReceipt} t={t} />
               </div>
             ) : (
-              <div className="border-b border-dashed border-[#bfd1f8] pb-4">
+              <div className="border-[#bfd1f8] pb-4">
                 <p className="text-sm text-[#60759b]">
                   {t('receipt.verify.empty', 'Enter a receipt code to verify vote submission status.')}
                 </p>

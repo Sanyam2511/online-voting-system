@@ -124,11 +124,11 @@ const Home = () => {
                 <p className="text-xs uppercase tracking-[0.1em] text-[#60759a] mb-1">{t('home.hero.liveElections', 'Live Elections')}</p>
                 <p className="text-2xl font-semibold text-[#102347]">{electionSummary.statusCounts.live}</p>
               </div>
-              <div className="p-2 border-t sm:border-t-0 sm:border-l border-[#d6e1f6]">
+              <div className="p-2 sm: sm: border-[#d6e1f6]">
                 <p className="text-xs uppercase tracking-[0.1em] text-[#60759a] mb-1">{t('home.hero.trackedVotes', 'Tracked Votes')}</p>
                 <p className="text-2xl font-semibold text-[#102347]">{countValue(electionSummary.totalElectionVotes)}</p>
               </div>
-              <div className="p-2 border-t sm:border-t-0 sm:border-l border-[#d6e1f6]">
+              <div className="p-2 sm: sm: border-[#d6e1f6]">
                 <p className="text-xs uppercase tracking-[0.1em] text-[#60759a] mb-1">{t('home.hero.electionCandidates', 'Election Candidates')}</p>
                 <p className="text-2xl font-semibold text-[#102347]">{countValue(electionSummary.totalElectionCandidates)}</p>
               </div>
@@ -148,7 +148,7 @@ const Home = () => {
 
             <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4">
               {statCards.map((stat) => (
-                <div key={stat.title} className="p-3 border-l-2 border-[#1f66f4]">
+                <div key={stat.title} className="p-3 border-[#1f66f4]">
                   <p className="text-xs uppercase tracking-[0.08em] text-[#5f7298] mb-1">{stat.title}</p>
                   <p className="text-2xl font-semibold text-[#102347]">{stat.value}</p>
                   <p className="text-xs text-[#7285a9] mt-1">{stat.hint}</p>
@@ -181,21 +181,21 @@ const Home = () => {
                 />
               </div>
 
-              <div className="border-b border-[#bfd1f8] pb-5 mb-5">
+              <div className="border-[#bfd1f8] pb-5 mb-5">
                 <p className="text-xs uppercase tracking-[0.12em] text-[#35598e] mb-2">{t('home.snapshot.title', 'Multi-Election Snapshot')}</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="p-2">
                     <p className="text-xs text-[#60759a] uppercase tracking-[0.08em]">{t('home.snapshot.registration', 'Registration')}</p>
                     <p className="text-lg font-semibold text-[#102347]">{electionSummary.statusCounts.registration}</p>
                   </div>
-                  <div className="p-2 border-l border-[#bfd1f8]">
+                  <div className="p-2 border-[#bfd1f8]">
                     <p className="text-xs text-[#60759a] uppercase tracking-[0.08em]">{t('home.snapshot.counting', 'Counting')}</p>
                     <p className="text-lg font-semibold text-[#102347]">{electionSummary.statusCounts.counting}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="border-b border-[#bfd1f8] pb-5 mb-5">
+              <div className="border-[#bfd1f8] pb-5 mb-5">
                 <p className="text-xs uppercase tracking-[0.12em] text-[#35598e] mb-2">{t('home.focus.title', 'Current Focus Election')}</p>
                 {electionSummary.highlightedElection ? (
                   <>
@@ -234,28 +234,28 @@ const Home = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <article className="border-l-2 border-[#1f66f4] pl-4">
+                <article className="border-[#1f66f4] pl-4">
                   <p className="text-xs text-[#4f6793] uppercase tracking-[0.1em] mb-3">{t('home.steps.step1.label', 'Step 01')}</p>
                   <UserRoundCheck className="w-6 h-6 text-[#1f66f4] mb-3" />
                   <h3 className="text-xl text-[#102347] mb-2">{t('home.steps.step1.title', 'Register Securely')}</h3>
                   <p className="text-sm text-[#5d7298]">{t('home.steps.step1.body', 'Create your voter profile with verified identity details and secure credentials.')}</p>
                 </article>
 
-                <article className="border-l-2 border-[#1f66f4] pl-4">
+                <article className="border-[#1f66f4] pl-4">
                   <p className="text-xs text-[#4f6793] uppercase tracking-[0.1em] mb-3">{t('home.steps.step2.label', 'Step 02')}</p>
                   <Shield className="w-6 h-6 text-[#1f66f4] mb-3" />
                   <h3 className="text-xl text-[#102347] mb-2">{t('home.steps.step2.title', 'Sign In & Verify')}</h3>
                   <p className="text-sm text-[#5d7298]">{t('home.steps.step2.body', 'Authenticate once and receive access to eligible election ballots.')}</p>
                 </article>
 
-                <article className="border-l-2 border-[#1f66f4] pl-4">
+                <article className="border-[#1f66f4] pl-4">
                   <p className="text-xs text-[#4f6793] uppercase tracking-[0.1em] mb-3">{t('home.steps.step3.label', 'Step 03')}</p>
                   <Vote className="w-6 h-6 text-[#1f66f4] mb-3" />
                   <h3 className="text-xl text-[#102347] mb-2">{t('home.steps.step3.title', 'Cast Election-Scoped Vote')}</h3>
                   <p className="text-sm text-[#5d7298]">{t('home.steps.step3.body', 'Submit your decision per election context with strict one-vote enforcement.')}</p>
                 </article>
 
-                <article className="border-l-2 border-[#1f66f4] pl-4">
+                <article className="border-[#1f66f4] pl-4">
                   <p className="text-xs text-[#4f6793] uppercase tracking-[0.1em] mb-3">{t('home.steps.step4.label', 'Step 04')}</p>
                   <BadgeCheck className="w-6 h-6 text-[#1f66f4] mb-3" />
                   <h3 className="text-xl text-[#102347] mb-2">{t('home.steps.step4.title', 'Verify Receipt Integrity')}</h3>
@@ -264,7 +264,7 @@ const Home = () => {
               </div>
             </div>
 
-            <aside className="border-l border-[#cfdef9] pl-6 md:pl-7">
+            <aside className="border-[#cfdef9] pl-6 md:pl-7">
               <p className="eyebrow mb-4">
                 <CalendarDays className="w-4 h-4" /> {t('home.lifecycle.title', 'Multi-Election Lifecycle')}
               </p>
@@ -275,7 +275,7 @@ const Home = () => {
 
               <div className="space-y-3">
                 {lifecycleStages.map((stage, index) => (
-                  <article key={stage.key} className="border-b border-[#d7e2f7] py-3.5 last:border-b-0">
+                  <article key={stage.key} className="border-[#d7e2f7] py-3.5 last:">
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 shrink-0 rounded-full bg-[#1f66f4]/10 text-[#1f66f4] text-xs font-semibold inline-flex items-center justify-center">
                         {index + 1}
@@ -310,11 +310,11 @@ const Home = () => {
             </p>
 
             <div className="space-y-4">
-              <div className="border-b border-[#d4e0f6] pb-4 flex items-start gap-3">
+              <div className="border-[#d4e0f6] pb-4 flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#1f66f4] mt-0.5" />
                 <p className="text-sm text-[#4f6691]">{t('home.why.point1', 'Voting legitimizes public leadership through citizen consent.')}</p>
               </div>
-              <div className="border-b border-[#d4e0f6] pb-4 flex items-start gap-3">
+              <div className="border-[#d4e0f6] pb-4 flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-[#1f66f4] mt-0.5" />
                 <p className="text-sm text-[#4f6691]">{t('home.why.point2', 'It aligns public spending with real community priorities.')}</p>
               </div>
@@ -334,11 +334,11 @@ const Home = () => {
               </p>
 
               <div className="mt-6 space-y-3">
-                <div className="border-b border-[#d6e1f4] pb-3 flex items-start gap-2">
+                <div className="border-[#d6e1f4] pb-3 flex items-start gap-2">
                   <BadgeCheck className="w-4 h-4 text-[#1f66f4] mt-0.5 shrink-0" />
                   <p className="text-sm text-[#4f6691]">{t('home.evolution.point1', 'One vote per user per election with separate receipt records.')}</p>
                 </div>
-                <div className="border-b border-[#d6e1f4] pb-3 flex items-start gap-2">
+                <div className="border-[#d6e1f4] pb-3 flex items-start gap-2">
                   <BadgeCheck className="w-4 h-4 text-[#1f66f4] mt-0.5 shrink-0" />
                   <p className="text-sm text-[#4f6691]">{t('home.evolution.point2', 'Election-specific candidate pools and independent transparency metrics.')}</p>
                 </div>

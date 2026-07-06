@@ -299,7 +299,7 @@ const CandidateProfiles = () => {
                 </div>
 
                 {selectedElection && (
-                  <div className="border-b border-[#d2def6] pb-3 mb-2">
+                  <div className="border-[#d2def6] pb-3 mb-2">
                     <p className="text-xs text-[#60739a] inline-flex items-center gap-2">
                       <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status, t)}
                     </p>
@@ -320,19 +320,19 @@ const CandidateProfiles = () => {
         </header>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-          <article className="p-4 border-l-2 border-[#1f66f4]">
+          <article className="p-4 border-[#1f66f4]">
             <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">{t('candidates.stats.election', 'Election')}</p>
             <p className="text-sm font-semibold text-[#12305d] truncate">{selectedElection?.name || t('candidates.noElectionSelected', 'No election selected')}</p>
           </article>
-          <article className="p-4 border-l-2 border-[#1f66f4]">
+          <article className="p-4 border-[#1f66f4]">
             <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">{t('candidates.stats.visible', 'Visible Candidates')}</p>
             <p className="text-2xl font-semibold text-[#12305d]">{filteredCandidates.length}</p>
           </article>
-          <article className="p-4 border-l-2 border-[#1f66f4]">
+          <article className="p-4 border-[#1f66f4]">
             <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">{t('candidates.stats.parties', 'Participating Parties')}</p>
             <p className="text-2xl font-semibold text-[#12305d]">{totalParties}</p>
           </article>
-          <article className="p-4 border-l-2 border-[#1f66f4]">
+          <article className="p-4 border-[#1f66f4]">
             <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">{t('candidates.stats.compareQueue', 'Compare Queue')}</p>
             <p className="text-2xl font-semibold text-[#12305d]">{compareIds.length}</p>
           </article>
@@ -370,14 +370,14 @@ const CandidateProfiles = () => {
               <div className="space-y-6">
                 {Object.entries(groupedCandidates).map(([partyName, partyCandidates]) => (
                   <article key={partyName} className="mb-8">
-                    <h2 className="text-2xl text-[#112a56] mb-4 pb-2 border-b border-[#d5e0f4]">{partyName}</h2>
+                    <h2 className="text-2xl text-[#112a56] mb-4 pb-2 border-[#d5e0f4]">{partyName}</h2>
                     <div className="space-y-4">
                       {partyCandidates.map((candidate) => {
                         const isCompared = compareIds.includes(candidate._id);
                         const isProfileSelected = selectedProfileId === candidate._id;
 
                         return (
-                          <div key={candidate._id} className="border-b border-[#d5e0f4] py-4 last:border-b-0">
+                          <div key={candidate._id} className="border-[#d5e0f4] py-4 last:">
                             <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                               <img
                                 src={candidate.imageUrl}

@@ -145,12 +145,12 @@ const Login = () => {
               </p>
 
               <div className="space-y-4">
-                <div className="border-b border-[#cfdcf6] pb-4">
+                <div className="border-[#cfdcf6] pb-4">
                   <p className="text-sm font-semibold text-[#17386f] mb-1">{t('login.assurance.identityTitle', 'Identity Verification')}</p>
                   <p className="text-sm text-[#60739a]">{t('login.assurance.identityBody', 'Only authenticated users can access the ballot interface.')}</p>
                 </div>
 
-                <div className="border-b border-[#cfdcf6] pb-4">
+                <div className="border-[#cfdcf6] pb-4">
                   <p className="text-sm font-semibold text-[#17386f] mb-1">{t('login.assurance.sessionTitle', 'Session Security')}</p>
                   <p className="text-sm text-[#60739a]">{t('login.assurance.sessionBody', 'Authenticated state is synced across the app for controlled access.')}</p>
                 </div>
