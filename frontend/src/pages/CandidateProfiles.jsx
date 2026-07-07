@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import ThemedSelect from '../components/ThemedSelect';
 import api from '../lib/api';
 import { formatElectionStatus } from '../lib/formatting';
-import candidateCompareIllustration from '../assets/illustrations/candidate-compare.svg';
+import candidateCompareIllustration from '../assets/illustrations/candidate-compare.png';
 import { useUiPreferences } from '../context/useUiPreferences';
 
 const normalizeToken = (value) => value.trim().replace(/\.+$/, '');
@@ -25,18 +25,18 @@ const getCandidateFocusPoints = (candidate) => {
     .filter(Boolean);
 };
 
-const getCandidateRegion = (candidate, t) => {
+const getCandidateRegion = (candidate) => {
   if (candidate.region?.trim()) {
     return candidate.region;
   }
 
   const focusPoints = getCandidateFocusPoints(candidate);
   return focusPoints[0]
-    ? t('candidates.region.district', '{region} District').replace('{region}', focusPoints[0])
-    : t('candidates.region.national', 'National Civic District');
+    ? '{region} District'.replace('{region}', focusPoints[0])
+    : 'National Civic District';
 };
 
-const getCandidateExperience = (candidate, t) => {
+const getCandidateExperience = (candidate) => {
   if (candidate.experience?.trim()) {
     return candidate.experience;
   }
@@ -44,20 +44,20 @@ const getCandidateExperience = (candidate, t) => {
   const focusPoints = getCandidateFocusPoints(candidate);
 
   if (focusPoints.length >= 2) {
-    return t('candidates.experience.double', 'Policy leadership in {area1} and {area2}')
+    return 'Policy leadership in {area1} and {area2}'
       .replace('{area1}', focusPoints[0])
       .replace('{area2}', focusPoints[1]);
   }
 
   if (focusPoints.length === 1) {
-    return t('candidates.experience.single', 'Policy leadership in {area}')
+    return 'Policy leadership in {area}'
       .replace('{area}', focusPoints[0]);
   }
 
-  return t('candidates.experience.default', 'Public administration and civic policy leadership');
+  return 'Public administration and civic policy leadership';
 };
 
-const getCandidatePrioritiesText = (candidate, t) => {
+const getCandidatePrioritiesText = (candidate) => {
   const focusPoints = getCandidateFocusPoints(candidate);
 
   if (focusPoints.length >= 2) {
@@ -65,13 +65,13 @@ const getCandidatePrioritiesText = (candidate, t) => {
   }
 
   if (focusPoints.length === 1) {
-    return `${focusPoints[0]}, ${t('candidates.priorities.citizenService', 'Citizen service delivery')}`;
+    return `${focusPoints[0]}, ${'Citizen service delivery'}`;
   }
 
-  return `${t('candidates.priorities.citizenService', 'Citizen service delivery')}, ${t('candidates.priorities.accountability', 'Policy accountability')}`;
+  return `${'Citizen service delivery'}, ${'Policy accountability'}`;
 };
 
-const getCandidatePriorityTags = (candidate, t) => {
+const getCandidatePriorityTags = (candidate) => {
   const focusPoints = getCandidateFocusPoints(candidate);
 
   if (focusPoints.length >= 3) {
@@ -79,26 +79,26 @@ const getCandidatePriorityTags = (candidate, t) => {
   }
 
   if (focusPoints.length === 2) {
-    return [...focusPoints, t('candidates.priorities.transparent', 'Transparent governance')];
+    return [...focusPoints, 'Transparent governance'];
   }
 
   if (focusPoints.length === 1) {
     return [
       focusPoints[0],
-      t('candidates.priorities.citizenService', 'Citizen service delivery'),
-      t('candidates.priorities.transparent', 'Transparent governance')
+      'Citizen service delivery',
+      'Transparent governance'
     ];
   }
 
   return [
-    t('candidates.priorities.citizenService', 'Citizen service delivery'),
-    t('candidates.priorities.accountability', 'Policy accountability'),
-    t('candidates.priorities.transparent', 'Transparent governance')
+    'Citizen service delivery',
+    'Policy accountability',
+    'Transparent governance'
   ];
 };
 
 const CandidateProfiles = () => {
-  const { t, withLanguagePath } = useUiPreferences();
+  
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -133,13 +133,13 @@ const CandidateProfiles = () => {
           setSelectedElectionId(liveElection?._id || electionList[0]._id);
         }
       } catch {
-        setError(t('candidates.errors.loadElections', 'Unable to load elections. Please try again.'));
+        setError('Unable to load elections. Please try again.');
         setLoading(false);
       }
     };
 
     fetchElections();
-  }, [t]);
+  }, []);
 
   useEffect(() => {
     const fetchCandidates = async () => {
@@ -164,14 +164,14 @@ const CandidateProfiles = () => {
 
         setCandidates(response.data?.candidates || []);
       } catch {
-        setError(t('candidates.errors.loadCandidates', 'Unable to load candidate profiles for this election. Please try again.'));
+        setError('Unable to load candidate profiles for this election. Please try again.');
       } finally {
         setLoading(false);
       }
     };
 
     fetchCandidates();
-  }, [selectedElectionId, t]);
+  }, [selectedElectionId]);
 
   useEffect(() => {
     const fetchComparedCandidates = async () => {
@@ -194,14 +194,14 @@ const CandidateProfiles = () => {
 
         setCompareCandidates(response.data.candidates || []);
       } catch (requestError) {
-        setCompareError(requestError.response?.data?.message || t('candidates.errors.compareFailed', 'Failed to load comparison data.'));
+        setCompareError(requestError.response?.data?.message || 'Failed to load comparison data.');
       } finally {
         setCompareLoading(false);
       }
     };
 
     fetchComparedCandidates();
-  }, [compareIds, selectedElectionId, t]);
+  }, [compareIds, selectedElectionId]);
 
   const filteredCandidates = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -252,7 +252,7 @@ const CandidateProfiles = () => {
       }
 
       if (currentIds.length >= 3) {
-        setCompareError(t('candidates.errors.compareLimit', 'You can compare up to 3 candidates at once.'));
+        setCompareError('You can compare up to 3 candidates at once.');
         return currentIds;
       }
 
@@ -269,28 +269,28 @@ const CandidateProfiles = () => {
   return (
     <main className="min-h-screen page-shell pt-20 pb-14">
       <div className="section-wrap">
-        <header className="glass-panel p-6 md:p-7 mb-7">
+        <header className="bento-card p-6 md:p-7 mb-7">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-center">
             <div>
               <p className="eyebrow mb-4">
-                <ArrowRightLeft className="w-4 h-4" /> {t('candidates.eyebrow', 'Candidate Profiles + Compare')}
+                <ArrowRightLeft className="w-4 h-4" /> {'Candidate Profiles + Compare'}
               </p>
-              <h1 className="text-2xl sm:text-3xl text-[#102347] mb-2">{t('candidates.title', 'Explore Candidates Deeply')}</h1>
-              <p className="text-[#5d7298] leading-relaxed max-w-3xl">
-                {t('candidates.subtitle', 'Review verified candidate profiles and compare up to three candidates side-by-side before entering the ballot arena.')}
+              <h1 className="font-display text-2xl sm:text-3xl text-slate-900 mb-2">{'Explore Candidates Deeply'}</h1>
+              <p className="text-slate-700 leading-relaxed max-w-3xl">
+                {'Review verified candidate profiles and compare up to three candidates side-by-side before entering the ballot arena.'}
               </p>
 
               <div className="mt-5 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 items-end">
                 <div>
-                  <label htmlFor="candidate-election" className="block text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
-                    {t('candidates.electionContext', 'Election Context')}
+                  <label htmlFor="candidate-election" className="block text-xs uppercase tracking-[0.12em] text-slate-500 mb-2">
+                    {'Election Context'}
                   </label>
                   <ThemedSelect
                     id="candidate-election"
                     value={selectedElectionId}
                     onValueChange={setSelectedElectionId}
                     disabled={elections.length === 0}
-                    placeholder={elections.length === 0 ? t('candidates.noElections', 'No elections available') : t('candidates.selectElection', 'Select election')}
+                    placeholder={elections.length === 0 ? 'No elections available' : 'Select election'}
                     options={elections.map((election) => ({
                       value: election._id,
                       label: election.name
@@ -299,9 +299,9 @@ const CandidateProfiles = () => {
                 </div>
 
                 {selectedElection && (
-                  <div className="border-[#d2def6] pb-3 mb-2">
-                    <p className="text-xs text-[#60739a] inline-flex items-center gap-2">
-                      <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status, t)}
+                  <div className="border-slate-200 pb-3 mb-2">
+                    <p className="text-xs text-slate-500 inline-flex items-center gap-2">
+                      <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status)}
                     </p>
                   </div>
                 )}
@@ -311,7 +311,7 @@ const CandidateProfiles = () => {
             <div className="rounded-2xl overflow-hidden mb-6">
               <img
                 src={candidateCompareIllustration}
-                alt={t('candidates.imageAlt', 'Candidate comparison board')}
+                alt={'Candidate comparison board'}
                 className="w-full h-44 object-cover"
                 loading="lazy"
               />
@@ -320,21 +320,21 @@ const CandidateProfiles = () => {
         </header>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-          <article className="p-4 border-[#1f66f4]">
-            <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">{t('candidates.stats.election', 'Election')}</p>
-            <p className="text-sm font-semibold text-[#12305d] truncate">{selectedElection?.name || t('candidates.noElectionSelected', 'No election selected')}</p>
+          <article className="p-4 border-slate-200">
+            <p className="text-xs uppercase tracking-[0.1em] text-slate-700 mb-1">{'Election'}</p>
+            <p className="text-sm font-semibold text-slate-700 truncate">{selectedElection?.name || 'No election selected'}</p>
           </article>
-          <article className="p-4 border-[#1f66f4]">
-            <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">{t('candidates.stats.visible', 'Visible Candidates')}</p>
-            <p className="text-2xl font-semibold text-[#12305d]">{filteredCandidates.length}</p>
+          <article className="p-4 border-slate-200">
+            <p className="text-xs uppercase tracking-[0.1em] text-slate-700 mb-1">{'Visible Candidates'}</p>
+            <p className="text-2xl font-semibold text-slate-700">{filteredCandidates.length}</p>
           </article>
-          <article className="p-4 border-[#1f66f4]">
-            <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">{t('candidates.stats.parties', 'Participating Parties')}</p>
-            <p className="text-2xl font-semibold text-[#12305d]">{totalParties}</p>
+          <article className="p-4 border-slate-200">
+            <p className="text-xs uppercase tracking-[0.1em] text-slate-700 mb-1">{'Participating Parties'}</p>
+            <p className="text-2xl font-semibold text-slate-700">{totalParties}</p>
           </article>
-          <article className="p-4 border-[#1f66f4]">
-            <p className="text-xs uppercase tracking-[0.1em] text-[#60749a] mb-1">{t('candidates.stats.compareQueue', 'Compare Queue')}</p>
-            <p className="text-2xl font-semibold text-[#12305d]">{compareIds.length}</p>
+          <article className="p-4 border-slate-200">
+            <p className="text-xs uppercase tracking-[0.1em] text-slate-700 mb-1">{'Compare Queue'}</p>
+            <p className="text-2xl font-semibold text-slate-700">{compareIds.length}</p>
           </article>
         </section>
 
@@ -342,12 +342,12 @@ const CandidateProfiles = () => {
           <section>
             <div className="mb-6">
               <div className="relative">
-                <Search className="w-4 h-4 text-[#6f84aa] absolute left-4 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-slate-700 absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
-                  placeholder={t('candidates.searchPlaceholder', 'Search by candidate, party, region, or manifesto')}
+                  placeholder={'Search by candidate, party, region, or manifesto'}
                   className="form-field form-field-with-icon"
                 />
               </div>
@@ -355,29 +355,29 @@ const CandidateProfiles = () => {
 
             {loading ? (
               <div className="py-10 text-center">
-                <LoaderCircle className="w-7 h-7 animate-spin text-[#1f66f4] mx-auto mb-3" />
-                <p className="text-[#597098]">{t('candidates.loading', 'Loading candidate profiles...')}</p>
+                <LoaderCircle className="w-7 h-7 animate-spin text-emerald-600 mx-auto mb-3" />
+                <p className="text-slate-700">{'Loading candidate profiles...'}</p>
               </div>
             ) : error ? (
-              <div className="p-6 border border-[#f1c6c6] bg-[#fff1f1]">
-                <p className="text-[#a73939]">{error}</p>
+              <div className="p-6 border border-red-200 bg-red-50">
+                <p className="text-slate-700">{error}</p>
               </div>
             ) : Object.keys(groupedCandidates).length === 0 ? (
               <div className="py-8 text-center">
-                <p className="text-[#5f7398]">{t('candidates.none', 'No candidates found for this election.')}</p>
+                <p className="text-slate-500">{'No candidates found for this election.'}</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {Object.entries(groupedCandidates).map(([partyName, partyCandidates]) => (
                   <article key={partyName} className="mb-8">
-                    <h2 className="text-2xl text-[#112a56] mb-4 pb-2 border-[#d5e0f4]">{partyName}</h2>
+                    <h2 className="font-display text-2xl text-slate-700 mb-4 pb-2 border-slate-200">{partyName}</h2>
                     <div className="space-y-4">
                       {partyCandidates.map((candidate) => {
                         const isCompared = compareIds.includes(candidate._id);
                         const isProfileSelected = selectedProfileId === candidate._id;
 
                         return (
-                          <div key={candidate._id} className="border-[#d5e0f4] py-4 last:">
+                          <div key={candidate._id} className="border-slate-200 py-4 last:">
                             <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                               <img
                                 src={candidate.imageUrl}
@@ -388,22 +388,22 @@ const CandidateProfiles = () => {
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-start justify-between gap-3">
                                   <div>
-                                    <p className="text-lg font-semibold text-[#14305f]">{candidate.name}</p>
-                                    <p className="text-sm text-[#5f7398]">{getCandidateRegion(candidate, t)}</p>
+                                    <p className="text-lg font-semibold text-slate-700">{candidate.name}</p>
+                                    <p className="text-sm text-slate-500">{getCandidateRegion(candidate)}</p>
                                   </div>
                                   {candidate.isVerified && (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#eaf2ff] border border-[#c4d6f6] px-3 py-1 text-xs text-[#1f66f4] font-semibold">
-                                      <BadgeCheck className="w-3.5 h-3.5" /> {t('candidates.verified', 'Verified')}
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-slate-200 px-3 py-1 text-xs text-emerald-600 font-semibold">
+                                      <BadgeCheck className="w-3.5 h-3.5" /> {'Verified'}
                                     </span>
                                   )}
                                 </div>
 
-                                <p className="text-sm text-[#20406f] mt-2">{candidate.campaignTagline || candidate.manifesto}</p>
-                                <p className="text-xs text-[#60759b] mt-2 line-clamp-2">{candidate.manifesto}</p>
+                                <p className="text-sm text-slate-700 mt-2">{candidate.campaignTagline || candidate.manifesto}</p>
+                                <p className="text-xs text-slate-700 mt-2 line-clamp-2">{candidate.manifesto}</p>
 
                                 <div className="mt-3 flex flex-wrap gap-2">
-                                  {getCandidatePriorityTags(candidate, t).map((priority) => (
-                                    <span key={`${candidate._id}-${priority}`} className="text-xs rounded-full border border-[#c6d7f6] bg-[#f4f8ff] px-3 py-1 text-[#436395]">
+                                  {getCandidatePriorityTags(candidate).map((priority) => (
+                                    <span key={`${candidate._id}-${priority}`} className="text-xs rounded-full border border-slate-200 bg-emerald-50 px-3 py-1 text-slate-700">
                                       {priority}
                                     </span>
                                   ))}
@@ -413,11 +413,11 @@ const CandidateProfiles = () => {
                                   <button
                                     type="button"
                                     onClick={() => fetchCandidateProfile(candidate._id)}
-                                    className={`btn-secondary !px-4 !py-2 text-xs ${isProfileSelected ? '!border-[#1f66f4] !text-[#1f66f4]' : ''}`}
+                                    className={`btn-secondary !px-4 !py-2 text-xs ${isProfileSelected ? '!border-slate-200 !text-emerald-600' : ''}`}
                                   >
                                     {isProfileSelected
-                                      ? t('candidates.profileOpen', 'Profile Open')
-                                      : t('candidates.viewProfile', 'View Profile')}
+                                      ? 'Profile Open'
+                                      : 'View Profile'}
                                   </button>
 
                                   <button
@@ -425,13 +425,13 @@ const CandidateProfiles = () => {
                                     onClick={() => toggleCompareCandidate(candidate._id)}
                                     className={`text-xs rounded-full px-4 py-2 font-semibold border transition ${
                                       isCompared
-                                        ? 'border-[#1f66f4] bg-[#1f66f4] text-white'
-                                        : 'border-[#bfd1f8] bg-[#eaf2ff] text-[#1f66f4]'
+                                        ? 'border-slate-200 bg-emerald-600 text-white'
+                                        : 'border-slate-200 bg-emerald-50 text-emerald-600'
                                     }`}
                                   >
                                     {isCompared
-                                      ? t('candidates.removeCompare', 'Remove Compare')
-                                      : t('candidates.addCompare', 'Add To Compare')}
+                                      ? 'Remove Compare'
+                                      : 'Add To Compare'}
                                   </button>
                                 </div>
                               </div>
@@ -447,12 +447,12 @@ const CandidateProfiles = () => {
           </section>
 
           <aside className="space-y-6 lg:sticky lg:top-28 h-fit">
-            <section className="glass-panel p-6">
-              <h3 className="text-xl text-[#12305c] mb-4">{t('candidates.profile.title', 'Candidate Profile')}</h3>
+            <section className="bento-card p-6">
+              <h3 className="font-display text-xl text-slate-700 mb-4">{'Candidate Profile'}</h3>
               {profileLoading ? (
                 <div className="text-center py-8">
-                  <LoaderCircle className="w-6 h-6 animate-spin text-[#1f66f4] mx-auto mb-2" />
-                  <p className="text-sm text-[#5f7398]">{t('candidates.profile.loading', 'Loading profile...')}</p>
+                  <LoaderCircle className="w-6 h-6 animate-spin text-emerald-600 mx-auto mb-2" />
+                  <p className="text-sm text-slate-500">{'Loading profile...'}</p>
                 </div>
               ) : profile ? (
                 <div>
@@ -461,97 +461,97 @@ const CandidateProfiles = () => {
                     alt={profile.name}
                     className="w-full h-44 rounded-xl object-cover mb-4"
                   />
-                  <p className="text-lg font-semibold text-[#12305d]">{profile.name}</p>
-                  <p className="text-sm text-[#5f7398] mb-2">{profile.party}</p>
-                  <p className="text-sm text-[#24416f] mb-3">{profile.campaignTagline || profile.manifesto}</p>
-                  <p className="text-sm text-[#60759b] leading-relaxed mb-3">{profile.bio || profile.manifesto}</p>
+                  <p className="text-lg font-semibold text-slate-700">{profile.name}</p>
+                  <p className="text-sm text-slate-500 mb-2">{profile.party}</p>
+                  <p className="text-sm text-slate-700 mb-3">{profile.campaignTagline || profile.manifesto}</p>
+                  <p className="text-sm text-slate-700 leading-relaxed mb-3">{profile.bio || profile.manifesto}</p>
 
-                  <div className="space-y-1 text-xs text-[#4f6791]">
-                    <p><span className="font-semibold">{t('candidates.profile.region', 'Region')}:</span> {getCandidateRegion(profile, t)}</p>
-                    <p><span className="font-semibold">{t('candidates.profile.education', 'Education')}:</span> {profile.education || t('candidates.profile.na', 'N/A')}</p>
-                    <p><span className="font-semibold">{t('candidates.profile.experience', 'Experience')}:</span> {getCandidateExperience(profile, t)}</p>
+                  <div className="space-y-1 text-xs text-slate-700">
+                    <p><span className="font-semibold">{'Region'}:</span> {getCandidateRegion(profile)}</p>
+                    <p><span className="font-semibold">{'Education'}:</span> {profile.education || 'N/A'}</p>
+                    <p><span className="font-semibold">{'Experience'}:</span> {getCandidateExperience(profile)}</p>
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-[#60759b]">{t('candidates.profile.empty', 'Pick any candidate to view a full profile.')}</p>
+                <p className="text-sm text-slate-700">{'Pick any candidate to view a full profile.'}</p>
               )}
             </section>
 
-            <section className="glass-panel p-6">
+            <section className="bento-card p-6">
               <div className="flex items-center justify-between gap-3 mb-4">
-                <h3 className="text-xl text-[#12305c]">{t('candidates.compare.title', 'Compare Board')}</h3>
+                <h3 className="font-display text-xl text-slate-700">{'Compare Board'}</h3>
                 {compareIds.length > 0 && (
                   <button
                     type="button"
                     onClick={resetComparison}
-                    className="text-xs inline-flex items-center gap-1 text-[#456796] hover:text-[#1f66f4]"
+                    className="text-xs inline-flex items-center gap-1 text-slate-700 hover:text-emerald-600"
                   >
-                    <X className="w-3.5 h-3.5" /> {t('candidates.compare.reset', 'Reset')}
+                    <X className="w-3.5 h-3.5" /> {'Reset'}
                   </button>
                 )}
               </div>
 
-              <p className="text-xs text-[#5f7398] mb-3">{t('candidates.compare.instructions', 'Select 2 to 3 candidates for side-by-side comparison.')}</p>
+              <p className="text-xs text-slate-500 mb-3">{'Select 2 to 3 candidates for side-by-side comparison.'}</p>
 
               <div className="flex flex-wrap gap-2 mb-4">
                 {compareIds.length === 0 ? (
-                  <span className="text-xs text-[#6a7fa6]">{t('candidates.compare.noneSelected', 'No candidates selected.')}</span>
+                  <span className="text-xs text-slate-700">{'No candidates selected.'}</span>
                 ) : (
                   compareIds.map((id) => {
                     const candidate = candidates.find((item) => item._id === id);
                     return (
-                      <span key={id} className="text-xs rounded-full border border-[#bfd1f8] bg-[#eaf2ff] text-[#1f66f4] px-3 py-1">
-                        {candidate?.name || t('candidates.compare.selected', 'Selected')}
+                      <span key={id} className="text-xs rounded-full border border-slate-200 bg-emerald-50 text-emerald-600 px-3 py-1">
+                        {candidate?.name || 'Selected'}
                       </span>
                     );
                   })
                 )}
               </div>
 
-              {compareError && <p className="text-xs text-[#b63f3f] mb-3">{compareError}</p>}
+              {compareError && <p className="text-xs text-slate-700 mb-3">{compareError}</p>}
 
               {compareLoading ? (
                 <div className="text-center py-6">
-                  <LoaderCircle className="w-5 h-5 animate-spin text-[#1f66f4] mx-auto mb-2" />
-                  <p className="text-xs text-[#60759b]">{t('candidates.compare.loading', 'Loading comparison...')}</p>
+                  <LoaderCircle className="w-5 h-5 animate-spin text-emerald-600 mx-auto mb-2" />
+                  <p className="text-xs text-slate-700">{'Loading comparison...'}</p>
                 </div>
               ) : compareCandidates.length >= 2 ? (
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs border-separate border-spacing-y-2">
                     <tbody>
                       <tr>
-                        <th className="text-left text-[#6d81a8] font-semibold pr-3">{t('candidates.compare.field', 'Field')}</th>
+                        <th className="text-left text-slate-700 font-semibold pr-3">{'Field'}</th>
                         {compareCandidates.map((candidate) => (
-                          <th key={candidate._id} className="text-left text-[#12305d] font-semibold min-w-[130px]">{candidate.name}</th>
+                          <th key={candidate._id} className="text-left text-slate-700 font-semibold min-w-[130px]">{candidate.name}</th>
                         ))}
                       </tr>
                       <tr>
-                        <td className="text-[#6d81a8]">{t('candidates.compare.party', 'Party')}</td>
-                        {compareCandidates.map((candidate) => <td key={`${candidate._id}-party`} className="text-[#345584] align-top whitespace-normal break-words">{candidate.party}</td>)}
+                        <td className="text-slate-700">{'Party'}</td>
+                        {compareCandidates.map((candidate) => <td key={`${candidate._id}-party`} className="text-slate-700 align-top whitespace-normal break-words">{candidate.party}</td>)}
                       </tr>
                       <tr>
-                        <td className="text-[#6d81a8]">{t('candidates.compare.region', 'Region')}</td>
-                        {compareCandidates.map((candidate) => <td key={`${candidate._id}-region`} className="text-[#345584] align-top whitespace-normal break-words">{getCandidateRegion(candidate, t)}</td>)}
+                        <td className="text-slate-700">{'Region'}</td>
+                        {compareCandidates.map((candidate) => <td key={`${candidate._id}-region`} className="text-slate-700 align-top whitespace-normal break-words">{getCandidateRegion(candidate)}</td>)}
                       </tr>
                       <tr>
-                        <td className="text-[#6d81a8]">{t('candidates.compare.experience', 'Experience')}</td>
-                        {compareCandidates.map((candidate) => <td key={`${candidate._id}-exp`} className="text-[#345584] align-top whitespace-normal break-words">{getCandidateExperience(candidate, t)}</td>)}
+                        <td className="text-slate-700">{'Experience'}</td>
+                        {compareCandidates.map((candidate) => <td key={`${candidate._id}-exp`} className="text-slate-700 align-top whitespace-normal break-words">{getCandidateExperience(candidate)}</td>)}
                       </tr>
                       <tr>
-                        <td className="text-[#6d81a8]">{t('candidates.compare.priorities', 'Priorities')}</td>
+                        <td className="text-slate-700">{'Priorities'}</td>
                         {compareCandidates.map((candidate) => (
-                          <td key={`${candidate._id}-pri`} className="text-[#345584] align-top whitespace-normal break-words">{getCandidatePrioritiesText(candidate, t)}</td>
+                          <td key={`${candidate._id}-pri`} className="text-slate-700 align-top whitespace-normal break-words">{getCandidatePrioritiesText(candidate)}</td>
                         ))}
                       </tr>
                     </tbody>
                   </table>
                 </div>
               ) : (
-                <p className="text-xs text-[#60759b]">{t('candidates.compare.empty', 'Comparison table appears once you select at least 2 candidates.')}</p>
+                <p className="text-xs text-slate-700">{'Comparison table appears once you select at least 2 candidates.'}</p>
               )}
 
-              <Link to={withLanguagePath('/vote')} className="btn-primary mt-5 inline-flex items-center justify-center w-full !py-2.5 text-sm">
-                {t('candidates.compare.cta', 'Continue To Ballot')}
+              <Link to={'/vote'} className="btn-black-pill mt-5 inline-flex items-center justify-center w-full !py-2.5 text-sm">
+                {'Continue To Ballot'}
               </Link>
             </section>
           </aside>

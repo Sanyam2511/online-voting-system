@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 import api from '../lib/api';
 import { clearAuthSession, getAuthToken } from '../lib/auth';
 import { formatDateTime } from '../lib/formatting';
-import disputeModuleIllustration from '../assets/illustrations/dispute-module.svg';
+import disputeModuleIllustration from '../assets/illustrations/dispute-module.png';
 import ThemedSelect from '../components/ThemedSelect';
 import { useUiPreferences } from '../context/useUiPreferences';
 
@@ -26,12 +26,12 @@ const defaultFormData = {
   candidateId: ''
 };
 
-const formatCaseStatus = (status, t) => {
+const formatCaseStatus = (status) => {
   const map = {
-    open: t('disputes.status.open', 'Open'),
-    under_review: t('disputes.status.underReview', 'Under Review'),
-    resolved: t('disputes.status.resolved', 'Resolved'),
-    rejected: t('disputes.status.rejected', 'Rejected')
+    open: 'Open',
+    under_review: 'Under Review',
+    resolved: 'Resolved',
+    rejected: 'Rejected'
   };
 
   return map[status] || status;
@@ -39,25 +39,25 @@ const formatCaseStatus = (status, t) => {
 
 const getStatusPillClass = (status) => {
   if (status === 'resolved') {
-    return 'bg-[#eefcf3] text-[#1f7d3f] border-[#b9e5c6]';
+    return 'bg-emerald-50 text-emerald-600 border-slate-200';
   }
 
   if (status === 'rejected') {
-    return 'bg-[#fff1f1] text-[#aa3d3d] border-[#efc7c7]';
+    return 'bg-red-50 text-slate-700 border-slate-200';
   }
 
   if (status === 'under_review') {
-    return 'bg-[#fff8e8] text-[#9b6a17] border-[#f2ddae]';
+    return 'bg-slate-50 text-slate-700 border-slate-200';
   }
 
-  return 'bg-[#edf4ff] text-[#1f66f4] border-[#bfd4fa]';
+  return 'bg-slate-50 text-emerald-600 border-slate-200';
 };
 
-const formatCaseType = (type, t) => (type === 'recount' ? t('disputes.type.recount', 'Recount') : t('disputes.type.dispute', 'Dispute'));
+const formatCaseType = (type) => (type === 'recount' ? 'Recount' : 'Dispute');
 
 const RecountDisputes = () => {
   const navigate = useNavigate();
-  const { t, withLanguagePath } = useUiPreferences();
+  
 
   const [bootstrapping, setBootstrapping] = useState(true);
   const [loadingMyCases, setLoadingMyCases] = useState(false);
@@ -96,35 +96,35 @@ const RecountDisputes = () => {
 
   const disputeTypeOptions = useMemo(
     () => [
-      { value: 'dispute', label: t('disputes.form.type.disputeCase', 'Dispute Case') },
-      { value: 'recount', label: t('disputes.form.type.recountRequest', 'Recount Request') }
+      { value: 'dispute', label: 'Dispute Case' },
+      { value: 'recount', label: 'Recount Request' }
     ],
-    [t]
+    []
   );
 
   const statusFilterOptions = useMemo(
     () => [
-      { value: 'all', label: t('disputes.filters.status.all', 'All Statuses') },
-      { value: 'open', label: t('disputes.status.open', 'Open') },
-      { value: 'under_review', label: t('disputes.status.underReview', 'Under Review') },
-      { value: 'resolved', label: t('disputes.status.resolved', 'Resolved') },
-      { value: 'rejected', label: t('disputes.status.rejected', 'Rejected') }
+      { value: 'all', label: 'All Statuses' },
+      { value: 'open', label: 'Open' },
+      { value: 'under_review', label: 'Under Review' },
+      { value: 'resolved', label: 'Resolved' },
+      { value: 'rejected', label: 'Rejected' }
     ],
-    [t]
+    []
   );
 
   const typeFilterOptions = useMemo(
     () => [
-      { value: 'all', label: t('disputes.filters.type.all', 'All Types') },
-      { value: 'dispute', label: t('disputes.type.dispute', 'Dispute') },
-      { value: 'recount', label: t('disputes.type.recount', 'Recount') }
+      { value: 'all', label: 'All Types' },
+      { value: 'dispute', label: 'Dispute' },
+      { value: 'recount', label: 'Recount' }
     ],
-    [t]
+    []
   );
 
   const bootstrap = async () => {
     if (!getAuthToken()) {
-      navigate(withLanguagePath('/login'));
+      navigate('/login');
       return;
     }
 
@@ -156,11 +156,11 @@ const RecountDisputes = () => {
     } catch (requestError) {
       if (requestError.response?.status === 401) {
         clearAuthSession();
-        navigate(withLanguagePath('/login'));
+        navigate('/login');
         return;
       }
 
-      setError(t('disputes.errors.bootstrap', 'Unable to load recount and dispute module right now.'));
+      setError('Unable to load recount and dispute module right now.');
     } finally {
       setBootstrapping(false);
     }
@@ -184,11 +184,11 @@ const RecountDisputes = () => {
     } catch (requestError) {
       if (requestError.response?.status === 401) {
         clearAuthSession();
-        navigate(withLanguagePath('/login'));
+        navigate('/login');
         return;
       }
 
-      toast.error(requestError.response?.data?.message || t('disputes.errors.loadMyCases', 'Could not load your dispute records.'));
+      toast.error(requestError.response?.data?.message || 'Could not load your dispute records.');
     } finally {
       setLoadingMyCases(false);
     }
@@ -215,11 +215,11 @@ const RecountDisputes = () => {
     } catch (requestError) {
       if (requestError.response?.status === 401) {
         clearAuthSession();
-        navigate(withLanguagePath('/login'));
+        navigate('/login');
         return;
       }
 
-      toast.error(requestError.response?.data?.message || t('disputes.errors.loadAdminCases', 'Could not load admin dispute queue.'));
+      toast.error(requestError.response?.data?.message || 'Could not load admin dispute queue.');
     } finally {
       setLoadingAdminCases(false);
     }
@@ -280,22 +280,22 @@ const RecountDisputes = () => {
     event.preventDefault();
 
     if (!formData.electionId) {
-      setError(t('disputes.errors.selectElection', 'Select an election before filing a case.'));
+      setError('Select an election before filing a case.');
       return;
     }
 
     if (!formData.subject.trim() || formData.subject.trim().length < 8) {
-      setError(t('disputes.errors.subjectLength', 'Subject must be at least 8 characters.'));
+      setError('Subject must be at least 8 characters.');
       return;
     }
 
     if (!formData.description.trim() || formData.description.trim().length < 20) {
-      setError(t('disputes.errors.descriptionLength', 'Description must be at least 20 characters.'));
+      setError('Description must be at least 20 characters.');
       return;
     }
 
     if (formData.type === 'recount' && !formData.receiptCode.trim() && !formData.candidateId) {
-      setError(t('disputes.errors.recountNeedsEvidence', 'Recount requests require a receipt code or candidate selection.'));
+      setError('Recount requests require a receipt code or candidate selection.');
       return;
     }
 
@@ -312,7 +312,7 @@ const RecountDisputes = () => {
         candidateId: formData.candidateId || ''
       });
 
-      toast.success(t('disputes.toast.caseSubmitted', 'Case submitted successfully.'));
+      toast.success('Case submitted successfully.');
 
       setFormData((current) => ({
         ...defaultFormData,
@@ -326,7 +326,7 @@ const RecountDisputes = () => {
         await loadAdminCases(selectedElectionId);
       }
     } catch (requestError) {
-      const message = requestError.response?.data?.message || t('disputes.errors.submitCase', 'Failed to submit dispute case.');
+      const message = requestError.response?.data?.message || 'Failed to submit dispute case.';
       setError(message);
       toast.error(message);
     } finally {
@@ -346,7 +346,7 @@ const RecountDisputes = () => {
     const note = String(resolutionDrafts[disputeId] ?? disputeRecord?.resolutionNote ?? '').trim();
 
     if ((nextStatus === 'resolved' || nextStatus === 'rejected') && note.length < 10) {
-      toast.error(t('disputes.errors.resolutionNoteLength', 'Add at least 10 characters in resolution note for final updates.'));
+      toast.error('Add at least 10 characters in resolution note for final updates.');
       return;
     }
 
@@ -357,47 +357,44 @@ const RecountDisputes = () => {
       });
 
       toast.success(
-        t('disputes.toast.caseStatusUpdated', 'Case marked as {status}.')
-          .replace('{status}', formatCaseStatus(nextStatus, t))
+        'Case marked as {status}.'
+          .replace('{status}', formatCaseStatus(nextStatus))
       );
       await loadAdminCases(selectedElectionId);
       await loadMyCases(selectedElectionId);
     } catch (requestError) {
-      toast.error(requestError.response?.data?.message || t('disputes.errors.updateStatus', 'Could not update case status.'));
+      toast.error(requestError.response?.data?.message || 'Could not update case status.');
     }
   };
 
   return (
     <main className="min-h-screen page-shell pt-20 pb-14">
       <div className="section-wrap space-y-6">
-        <header className="glass-panel p-6 md:p-7">
+        <header className="bento-card p-6 md:p-7">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-center">
             <div>
               <p className="eyebrow mb-4">
-                <Gavel className="w-4 h-4" /> {t('disputes.header.eyebrow', 'Recount and Dispute Module')}
+                <Gavel className="w-4 h-4" /> {'Recount and Dispute Module'}
               </p>
-              <h1 className="text-2xl sm:text-3xl text-[#102347] mb-2">
-                {t('disputes.header.title', 'Election Case Management')}
+              <h1 className="font-display text-2xl sm:text-3xl text-slate-900 mb-2">
+                {'Election Case Management'}
               </h1>
-              <p className="text-[#5e7398] max-w-3xl">
-                {t(
-                  'disputes.header.subtitle',
-                  'File recount requests and integrity disputes in a separate workflow, then track case review and outcomes.'
-                )}
+              <p className="text-slate-600 max-w-3xl">
+                {'File recount requests and integrity disputes in a separate workflow, then track case review and outcomes.'}
               </p>
 
               <div className="mt-4 flex flex-wrap gap-2">
                 <span className="metric-pill">
-                  {t('disputes.metrics.role', 'Role: {role}')
-                    .replace('{role}', profile?.role || t('common.ellipsis', '...'))}
+                  {'Role: {role}'
+                    .replace('{role}', profile?.role || '...')}
                 </span>
                 <span className="metric-pill">
-                  {t('disputes.metrics.totalCases', 'Election Cases: {count}')
+                  {'Election Cases: {count}'
                     .replace('{count}', String((mySummary?.totalCases || 0) + (adminSummary?.totalCases || 0)))}
                 </span>
                 <span className="metric-pill">
-                  {t('disputes.metrics.currentElection', 'Current Election: {name}')
-                    .replace('{name}', selectedElection?.name || t('disputes.metrics.notSelected', 'Not selected'))}
+                  {'Current Election: {name}'
+                    .replace('{name}', selectedElection?.name || 'Not selected')}
                 </span>
               </div>
             </div>
@@ -405,7 +402,7 @@ const RecountDisputes = () => {
             <div className="rounded-2xl overflow-hidden">
               <img
                 src={disputeModuleIllustration}
-                alt={t('disputes.imageAlt', 'Dispute resolution dashboard illustration')}
+                alt={'Dispute resolution dashboard illustration'}
                 className="w-full h-44 object-cover"
                 loading="lazy"
               />
@@ -414,24 +411,24 @@ const RecountDisputes = () => {
         </header>
 
         {error && (
-          <div className="p-4 border-[#c73939] bg-[#fff1f1] text-[#a43a3a] flex items-start gap-2">
+          <div className="p-4 border-slate-200 bg-red-50 text-red-600 flex items-start gap-2">
             <AlertCircle className="w-4 h-4 mt-0.5" />
             <p className="text-sm">{error}</p>
           </div>
         )}
 
         {bootstrapping ? (
-          <section className="surface-card p-8 text-center">
-            <LoaderCircle className="w-6 h-6 animate-spin text-[#1f66f4] mx-auto mb-2" />
-            <p className="text-sm text-[#60759b]">{t('disputes.state.loadingModule', 'Loading module...')}</p>
+          <section className="bento-card p-8 text-center">
+            <LoaderCircle className="w-6 h-6 animate-spin text-emerald-600 mx-auto mb-2" />
+            <p className="text-sm text-slate-700">{'Loading module...'}</p>
           </section>
         ) : (
           <>
-            <section className="border-[#d2def6] pb-5">
+            <section className="border-slate-200 pb-5">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
-                  <label htmlFor="case-election" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
-                    {t('disputes.filters.electionScope', 'Election Scope')}
+                  <label htmlFor="case-election" className="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">
+                    {'Election Scope'}
                   </label>
                   <ThemedSelect
                     id="case-election"
@@ -446,8 +443,8 @@ const RecountDisputes = () => {
                     }}
                     placeholder={
                       elections.length === 0
-                        ? t('disputes.filters.noElections', 'No elections available')
-                        : t('disputes.filters.selectElection', 'Select election')
+                        ? 'No elections available'
+                        : 'Select election'
                     }
                     options={elections.map((election) => ({
                       value: election._id,
@@ -459,8 +456,8 @@ const RecountDisputes = () => {
                 {isAdmin && (
                   <>
                     <div>
-                      <label htmlFor="admin-status-filter" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
-                        {t('disputes.filters.status.label', 'Status Filter')}
+                      <label htmlFor="admin-status-filter" className="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">
+                        {'Status Filter'}
                       </label>
                       <ThemedSelect
                         id="admin-status-filter"
@@ -471,8 +468,8 @@ const RecountDisputes = () => {
                     </div>
 
                     <div>
-                      <label htmlFor="admin-type-filter" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
-                        {t('disputes.filters.type.label', 'Type Filter')}
+                      <label htmlFor="admin-type-filter" className="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">
+                        {'Type Filter'}
                       </label>
                       <ThemedSelect
                         id="admin-type-filter"
@@ -487,17 +484,17 @@ const RecountDisputes = () => {
             </section>
 
             <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6">
-              <section className="lg:pr-6 lg: border-[#d2def6] pb-6 lg:pb-0">
+              <section className="lg:pr-6 lg: border-slate-200 pb-6 lg:pb-0">
                 <div className="flex items-center justify-between gap-3 mb-4">
-                  <h2 className="text-xl text-[#102347]">{t('disputes.form.title', 'File New Case')}</h2>
-                  {loadingCandidates && <LoaderCircle className="w-4 h-4 animate-spin text-[#1f66f4]" />}
+                  <h2 className="font-display text-xl text-slate-900">{'File New Case'}</h2>
+                  {loadingCandidates && <LoaderCircle className="w-4 h-4 animate-spin text-emerald-600" />}
                 </div>
 
                 <form onSubmit={onSubmitCase} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label htmlFor="case-type" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
-                        {t('disputes.form.type.label', 'Case Type')}
+                      <label htmlFor="case-type" className="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">
+                        {'Case Type'}
                       </label>
                       <ThemedSelect
                         id="case-type"
@@ -509,8 +506,8 @@ const RecountDisputes = () => {
                     </div>
 
                     <div>
-                      <label htmlFor="case-candidate" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
-                        {t('disputes.form.candidate.label', 'Candidate (Optional)')}
+                      <label htmlFor="case-candidate" className="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">
+                        {'Candidate (Optional)'}
                       </label>
                       <ThemedSelect
                         id="case-candidate"
@@ -518,7 +515,7 @@ const RecountDisputes = () => {
                         value={formData.candidateId}
                         onChange={onFormChange}
                         options={[
-                          { value: '', label: t('disputes.form.candidate.placeholder', 'Select candidate') },
+                          { value: '', label: 'Select candidate' },
                           ...candidateOptions.map((candidate) => ({
                             value: candidate._id,
                             label: `${candidate.name} (${candidate.party})`
@@ -529,8 +526,8 @@ const RecountDisputes = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="case-subject" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
-                      {t('disputes.form.subject.label', 'Subject')}
+                    <label htmlFor="case-subject" className="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">
+                      {'Subject'}
                     </label>
                     <input
                       id="case-subject"
@@ -538,13 +535,13 @@ const RecountDisputes = () => {
                       value={formData.subject}
                       onChange={onFormChange}
                       className="form-field"
-                      placeholder={t('disputes.form.subject.placeholder', 'Example: Request recount for receipt mismatch')}
+                      placeholder={'Example: Request recount for receipt mismatch'}
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="case-receipt" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
-                      {t('disputes.form.receipt.label', 'Receipt Code (Optional)')}
+                    <label htmlFor="case-receipt" className="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">
+                      {'Receipt Code (Optional)'}
                     </label>
                     <input
                       id="case-receipt"
@@ -552,13 +549,13 @@ const RecountDisputes = () => {
                       value={formData.receiptCode}
                       onChange={onFormChange}
                       className="form-field"
-                      placeholder={t('disputes.form.receipt.placeholder', 'CV-2026-AB12EF')}
+                      placeholder={'CV-2026-AB12EF'}
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="case-description" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
-                      {t('disputes.form.description.label', 'Description')}
+                    <label htmlFor="case-description" className="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">
+                      {'Description'}
                     </label>
                     <textarea
                       id="case-description"
@@ -566,28 +563,25 @@ const RecountDisputes = () => {
                       value={formData.description}
                       onChange={onFormChange}
                       className="form-field min-h-[120px]"
-                      placeholder={t(
-                        'disputes.form.description.placeholder',
-                        'Describe what happened, why recount or investigation is needed, and relevant timeline details.'
-                      )}
+                      placeholder={'Describe what happened, why recount or investigation is needed, and relevant timeline details.'}
                     />
                   </div>
 
                   {selectedCandidate && (
-                    <div className="rounded-xl border border-[#d8e3f8] bg-[#f6f9ff] px-3 py-2 text-xs text-[#56709a]">
-                      {t('disputes.form.candidate.linked', 'Candidate linked to this case:')}{' '}
-                      <span className="font-semibold text-[#14305f]">{selectedCandidate.name}</span>
+                    <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+                      {'Candidate linked to this case:'}{' '}
+                      <span className="font-semibold text-slate-700">{selectedCandidate.name}</span>
                     </div>
                   )}
 
                   <button
                     type="submit"
                     disabled={submittingCase}
-                    className="btn-primary inline-flex items-center gap-2 disabled:opacity-60"
+                    className="btn-black-pill inline-flex items-center gap-2 disabled:opacity-60"
                   >
                     {submittingCase
-                      ? t('disputes.form.submitting', 'Submitting...')
-                      : t('disputes.form.submit', 'Submit Case')}
+                      ? 'Submitting...'
+                      : 'Submit Case'}
                     {!submittingCase && <ShieldAlert className="w-4 h-4" />}
                   </button>
                 </form>
@@ -595,64 +589,64 @@ const RecountDisputes = () => {
 
               <section className="lg:pl-6 pb-6 lg:pb-0">
                 <div className="flex items-center justify-between gap-3 mb-4">
-                  <h2 className="text-xl text-[#102347]">{t('disputes.myCases.title', 'My Cases')}</h2>
+                  <h2 className="font-display text-xl text-slate-900">{'My Cases'}</h2>
                   <button
                     type="button"
                     onClick={() => loadMyCases(selectedElectionId)}
-                    className="text-xs rounded-full border border-[#bfd1f8] bg-[#eaf2ff] text-[#1f66f4] px-3 py-1.5 inline-flex items-center gap-1"
+                    className="text-xs rounded-full border border-slate-200 bg-emerald-50 text-emerald-600 px-3 py-1.5 inline-flex items-center gap-1"
                   >
-                    <RefreshCw className="w-3.5 h-3.5" /> {t('common.refresh', 'Refresh')}
+                    <RefreshCw className="w-3.5 h-3.5" /> {'Refresh'}
                   </button>
                 </div>
 
                 {loadingMyCases ? (
                   <div className="text-center py-8">
-                    <LoaderCircle className="w-6 h-6 animate-spin text-[#1f66f4] mx-auto mb-2" />
-                    <p className="text-sm text-[#60759b]">{t('disputes.myCases.loading', 'Loading your cases...')}</p>
+                    <LoaderCircle className="w-6 h-6 animate-spin text-emerald-600 mx-auto mb-2" />
+                    <p className="text-sm text-slate-700">{'Loading your cases...'}</p>
                   </div>
                 ) : myCases.length === 0 ? (
-                  <p className="text-sm text-[#60759b]">
-                    {t('disputes.myCases.empty', 'No case records found for the selected election.')}
+                  <p className="text-sm text-slate-700">
+                    {'No case records found for the selected election.'}
                   </p>
                 ) : (
                   <div className="space-y-3 max-h-[520px] overflow-auto pr-1">
                     {myCases.map((item) => (
-                      <article key={item._id} className="border-[#d5e1f5] pb-4 mb-4">
+                      <article key={item._id} className="border-slate-200 pb-4 mb-4">
                         <div className="flex items-start justify-between gap-3 mb-2">
                           <div>
-                            <p className="text-sm font-semibold text-[#12305d]">{item.subject}</p>
-                            <p className="text-xs text-[#60759a] mt-1">{item.electionName}</p>
+                            <p className="text-sm font-semibold text-slate-700">{item.subject}</p>
+                            <p className="text-xs text-slate-500 mt-1">{item.electionName}</p>
                           </div>
                           <span className={`text-[11px] rounded-full border px-2.5 py-1 font-semibold ${getStatusPillClass(item.status)}`}>
-                            {formatCaseStatus(item.status, t)}
+                            {formatCaseStatus(item.status)}
                           </span>
                         </div>
 
-                        <p className="text-xs text-[#4f6794] mb-2">{item.description}</p>
+                        <p className="text-xs text-slate-700 mb-2">{item.description}</p>
 
-                        <div className="flex flex-wrap gap-2 text-[11px] text-[#60759b]">
-                          <span className="rounded-full border border-[#d5e1f5] bg-[#f8fbff] px-2 py-1">
-                            {t('disputes.myCases.type', 'Type: {type}')
-                              .replace('{type}', formatCaseType(item.type, t))}
+                        <div className="flex flex-wrap gap-2 text-[11px] text-slate-700">
+                          <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                            {'Type: {type}'
+                              .replace('{type}', formatCaseType(item.type))}
                           </span>
                           {item.receiptCode && (
-                            <span className="rounded-full border border-[#d5e1f5] bg-[#f8fbff] px-2 py-1">
-                              {t('disputes.myCases.receipt', 'Receipt: {code}')
+                            <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                              {'Receipt: {code}'
                                 .replace('{code}', item.receiptCode)}
                             </span>
                           )}
-                          <span className="rounded-full border border-[#d5e1f5] bg-[#f8fbff] px-2 py-1">
-                            {t('disputes.myCases.filed', 'Filed: {date}')
-                              .replace('{date}', formatDateTime(item.createdAt, t))}
+                          <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                            {'Filed: {date}'
+                              .replace('{date}', formatDateTime(item.createdAt))}
                           </span>
                         </div>
 
                         {item.resolutionNote && (
-                          <div className="mt-3 rounded-xl border border-[#d7e5ff] bg-[#f5f9ff] px-3 py-2">
-                            <p className="text-[11px] uppercase tracking-[0.08em] text-[#5f7398] mb-1">
-                              {t('disputes.myCases.resolutionNote', 'Resolution Note')}
+                          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                            <p className="text-[11px] uppercase tracking-[0.08em] text-slate-500 mb-1">
+                              {'Resolution Note'}
                             </p>
-                            <p className="text-xs text-[#4d6793]">{item.resolutionNote}</p>
+                            <p className="text-xs text-slate-700">{item.resolutionNote}</p>
                           </div>
                         )}
                       </article>
@@ -663,87 +657,84 @@ const RecountDisputes = () => {
             </div>
 
             {isAdmin && (
-              <section className="border-[#d2def6] pt-6 mt-6">
+              <section className="border-slate-200 pt-6 mt-6">
                 <div className="flex items-center justify-between gap-3 mb-4">
-                  <h2 className="text-xl text-[#102347]">{t('disputes.admin.title', 'Admin Review Queue')}</h2>
+                  <h2 className="font-display text-xl text-slate-900">{'Admin Review Queue'}</h2>
                   <button
                     type="button"
                     onClick={() => loadAdminCases(selectedElectionId)}
-                    className="text-xs rounded-full border border-[#bfd1f8] bg-[#eaf2ff] text-[#1f66f4] px-3 py-1.5 inline-flex items-center gap-1"
+                    className="text-xs rounded-full border border-slate-200 bg-emerald-50 text-emerald-600 px-3 py-1.5 inline-flex items-center gap-1"
                   >
-                    <RefreshCw className="w-3.5 h-3.5" /> {t('disputes.admin.refresh', 'Refresh Queue')}
+                    <RefreshCw className="w-3.5 h-3.5" /> {'Refresh Queue'}
                   </button>
                 </div>
 
                 {loadingAdminCases ? (
                   <div className="text-center py-8">
-                    <LoaderCircle className="w-6 h-6 animate-spin text-[#1f66f4] mx-auto mb-2" />
-                    <p className="text-sm text-[#60759b]">{t('disputes.admin.loading', 'Loading admin queue...')}</p>
+                    <LoaderCircle className="w-6 h-6 animate-spin text-emerald-600 mx-auto mb-2" />
+                    <p className="text-sm text-slate-700">{'Loading admin queue...'}</p>
                   </div>
                 ) : adminCases.length === 0 ? (
-                  <p className="text-sm text-[#60759b]">
-                    {t('disputes.admin.empty', 'No dispute cases match the selected filters.')}
+                  <p className="text-sm text-slate-700">
+                    {'No dispute cases match the selected filters.'}
                   </p>
                 ) : (
                   <div className="space-y-4">
                     {adminCases.map((item) => (
-                      <article key={item._id} className="border-[#d5e1f5] pb-4 mb-4">
+                      <article key={item._id} className="border-slate-200 pb-4 mb-4">
                         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 mb-2">
                           <div>
-                            <p className="text-sm font-semibold text-[#12305d]">{item.subject}</p>
-                            <p className="text-xs text-[#60759a] mt-1">
-                              {t('disputes.admin.filedBy', '{election} | Filed by {name}')
+                            <p className="text-sm font-semibold text-slate-700">{item.subject}</p>
+                            <p className="text-xs text-slate-500 mt-1">
+                              {'{election} | Filed by {name}'
                                 .replace('{election}', item.electionName)
                                 .replace(
                                   '{name}',
-                                  item.filedBy?.name || item.filedByName || t('disputes.admin.filedByFallback', 'Voter')
+                                  item.filedBy?.name || item.filedByName || 'Voter'
                                 )}
                             </p>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className={`text-[11px] rounded-full border px-2.5 py-1 font-semibold ${getStatusPillClass(item.status)}`}>
-                              {formatCaseStatus(item.status, t)}
+                              {formatCaseStatus(item.status)}
                             </span>
-                            <span className="text-[11px] rounded-full border border-[#d5e1f5] bg-[#f8fbff] px-2.5 py-1 text-[#577199] font-semibold">
-                              {formatCaseType(item.type, t)}
+                            <span className="text-[11px] rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-slate-700 font-semibold">
+                              {formatCaseType(item.type)}
                             </span>
                           </div>
                         </div>
 
-                        <p className="text-xs text-[#4f6794] mb-2">{item.description}</p>
+                        <p className="text-xs text-slate-700 mb-2">{item.description}</p>
 
                         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 items-start">
                           <textarea
                             value={resolutionDrafts[item._id] ?? item.resolutionNote ?? ''}
                             onChange={(event) => updateResolutionDraft(item._id, event.target.value)}
                             className="form-field min-h-[84px]"
-                            placeholder={t(
-                              'disputes.admin.resolutionPlaceholder',
-                              'Add investigation findings or final resolution note'
-                            )}
+                            placeholder={'Add investigation findings or final resolution note'}
                           />
 
                           <div className="flex flex-wrap md:flex-col gap-2">
                             <button
                               type="button"
                               onClick={() => onAdminStatusUpdate(item._id, 'under_review')}
-                              className="text-xs rounded-full border border-[#d5e1f5] bg-[#f8fbff] text-[#35598e] px-3 py-1.5"
+                              className="text-xs rounded-full border border-slate-200 bg-slate-50 text-slate-600 px-3 py-1.5"
                             >
-                              {t('disputes.admin.actions.underReview', 'Mark Under Review')}
+                              {'Mark Under Review'}
                             </button>
                             <button
                               type="button"
                               onClick={() => onAdminStatusUpdate(item._id, 'resolved')}
-                              className="text-xs rounded-full border border-[#b9e5c6] bg-[#eefcf3] text-[#1f7d3f] px-3 py-1.5"
+                              className="text-xs rounded-full border border-slate-200 bg-emerald-50 text-emerald-600 px-3 py-1.5"
                             >
-                              {t('disputes.admin.actions.resolve', 'Resolve')}
+                              {'Resolve'}
                             </button>
                             <button
                               type="button"
                               onClick={() => onAdminStatusUpdate(item._id, 'rejected')}
-                              className="text-xs rounded-full border border-[#efc7c7] bg-[#fff1f1] text-[#aa3d3d] px-3 py-1.5"
+                              className="text-xs rounded-full border border-slate-200 bg-red-50 text-slate-700 px-3 py-1.5"
                             >
-                              {t('disputes.admin.actions.reject', 'Reject')}
+                              {'Reject'}
                             </button>
                           </div>
                         </div>
@@ -755,20 +746,20 @@ const RecountDisputes = () => {
             )}
 
             {!isAdmin && (
-              <section className="border-[#d2def6] pt-6 mt-6">
+              <section className="border-slate-200 pt-6 mt-6">
                 <p className="eyebrow mb-3">
-                  <ClipboardList className="w-4 h-4" /> {t('disputes.notes.title', 'Workflow Notes')}
+                  <ClipboardList className="w-4 h-4" /> {'Workflow Notes'}
                 </p>
-                <ul className="space-y-2.5 text-sm text-[#5b7096] leading-relaxed">
-                  <li>{t('disputes.notes.item1', 'Use Dispute for ballot integrity, eligibility, or system behavior issues.')}</li>
-                  <li>{t('disputes.notes.item2', 'Use Recount when tally confidence needs a candidate- or receipt-linked review.')}</li>
-                  <li>{t('disputes.notes.item3', 'Case statuses update from Open to Under Review, then Resolved or Rejected.')}</li>
-                  <li>{t('disputes.notes.item4', 'You can track final notes and actions in the My Cases panel.')}</li>
+                <ul className="space-y-2.5 text-sm text-slate-700 leading-relaxed">
+                  <li>{'Use Dispute for ballot integrity, eligibility, or system behavior issues.'}</li>
+                  <li>{'Use Recount when tally confidence needs a candidate- or receipt-linked review.'}</li>
+                  <li>{'Case statuses update from Open to Under Review, then Resolved or Rejected.'}</li>
+                  <li>{'You can track final notes and actions in the My Cases panel.'}</li>
                 </ul>
 
-                <p className="text-xs text-[#60759a] mt-4 inline-flex items-center gap-2">
+                <p className="text-xs text-slate-500 mt-4 inline-flex items-center gap-2">
                   <BadgeCheck className="w-4 h-4" />
-                  {t('disputes.notes.footer', 'Case records are linked to election scope for transparent auditing.')}
+                  {'Case records are linked to election scope for transparent auditing.'}
                 </p>
               </section>
             )}

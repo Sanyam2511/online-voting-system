@@ -2,34 +2,20 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
-  BadgeCheck,
+  ShieldCheck,
   BarChart3,
-  CalendarDays,
+  Users,
+  Activity,
   CheckCircle2,
-  ClipboardCheck,
-  Landmark,
-  Shield,
-  UserRoundCheck,
-  Vote
+  AlertCircle
 } from 'lucide-react';
 import api from '../lib/api';
-import homeCivicVotingIllustration from '../assets/illustrations/home-civic-voting.svg';
-import { useUiPreferences } from '../context/useUiPreferences';
-
-const lifecycleStages = [
-  { key: 'draft', titleKey: 'home.lifecycle.draft.title', descriptionKey: 'home.lifecycle.draft.description' },
-  { key: 'registration', titleKey: 'home.lifecycle.registration.title', descriptionKey: 'home.lifecycle.registration.description' },
-  { key: 'live', titleKey: 'home.lifecycle.live.title', descriptionKey: 'home.lifecycle.live.description' },
-  { key: 'counting', titleKey: 'home.lifecycle.counting.title', descriptionKey: 'home.lifecycle.counting.description' },
-  { key: 'audited', titleKey: 'home.lifecycle.audited.title', descriptionKey: 'home.lifecycle.audited.description' },
-  { key: 'published', titleKey: 'home.lifecycle.published.title', descriptionKey: 'home.lifecycle.published.description' },
-  { key: 'archived', titleKey: 'home.lifecycle.archived.title', descriptionKey: 'home.lifecycle.archived.description' }
-];
+import torusImage from '../assets/illustrations/torus.png';
 
 const countValue = (value) => (value === null || value === undefined ? '...' : value);
 
 const Home = () => {
-  const { t, withLanguagePath } = useUiPreferences();
+  
   const [stats, setStats] = useState(null);
   const [elections, setElections] = useState([]);
 
@@ -57,11 +43,7 @@ const Home = () => {
   }, []);
 
   const electionSummary = useMemo(() => {
-    const statusCounts = lifecycleStages.reduce((acc, stage) => {
-      acc[stage.key] = 0;
-      return acc;
-    }, {});
-
+    const statusCounts = { live: 0, counting: 0, draft: 0, registration: 0, audited: 0, published: 0, archived: 0 };
     elections.forEach((election) => {
       const statusKey = election.status || 'draft';
       if (Object.prototype.hasOwnProperty.call(statusCounts, statusKey)) {
@@ -72,297 +54,183 @@ const Home = () => {
     return {
       totalElections: elections.length,
       totalElectionVotes: elections.reduce((sum, election) => sum + Number(election.totalVotesCast || 0), 0),
-      totalElectionCandidates: elections.reduce((sum, election) => sum + Number(election.totalCandidates || 0), 0),
-      statusCounts,
-      highlightedElection: elections[0] || null
+      statusCounts
     };
   }, [elections]);
 
-  const statCards = [
-    {
-      title: t('home.stats.registeredVoters', 'Registered Voters'),
-      value: countValue(stats?.totalRegisteredVoters),
-      hint: t('home.stats.registeredHint', 'Identity-verified access')
-    },
-    {
-      title: t('home.stats.votesCast', 'Votes Cast'),
-      value: countValue(stats?.totalVotesCast),
-      hint: t('home.stats.votesHint', 'Current election scope')
-    },
-    {
-      title: t('home.stats.activeElections', 'Active Elections'),
-      value: countValue(electionSummary.totalElections),
-      hint: t('home.stats.electionsHint', 'Concurrent civic tracks')
-    },
-    {
-      title: t('home.stats.turnout', 'Turnout'),
-      value: stats ? `${stats.turnoutPercentage}%` : '...',
-      hint: t('home.stats.turnoutHint', 'Participation health')
-    }
-  ];
-
   return (
-    <main className="min-h-screen page-shell pt-20 pb-16">
-      <section className="section-wrap">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 items-start">
-          <div className="surface-card px-8 pb-8 pt-3 md:px-12 md:pb-10 md:pt-5 relative overflow-hidden">
+    <main className="min-h-screen pt-28 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Two-Panel Hero */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Left Panel */}
+          <div className="bento-card relative overflow-hidden flex flex-col justify-center min-h-[500px] p-8 md:p-12">
+            <img src={torusImage} alt="Glossy Torus" className="absolute top-8 right-8 w-32 h-32 object-contain opacity-90 drop-shadow-2xl animate-pulse" />
+            
+            <div className="relative z-10 max-w-lg mt-8">
+              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-6 text-slate-900">
+                Every vote, <br/>
+                <span className="italic text-emerald-600">verified.</span>
+              </h1>
+              <p className="text-lg text-slate-600 mb-8 max-w-md">
+                Secure, transparent, and effortlessly accessible. The next-generation civic voting platform trusted by modern institutions.
+              </p>
+              <div className="flex gap-4 items-center mb-16">
+                <Link to={'/signup'} className="btn-black-pill gap-2">
+                  Sign Up <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link to={'/vote'} className="text-sm font-semibold text-slate-700 hover:text-emerald-600 transition-colors">
+                  Open Ballot Arena &rarr;
+                </Link>
+              </div>
+            </div>
+
+            {/* Embedded Mini Dashboard Preview */}
+            <div className="absolute bottom-6 right-6 left-6 md:left-auto md:w-80 bg-slate-50 border border-slate-100 rounded-2xl p-4 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Live Turnout</span>
+                <span className="flex items-center gap-1 text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-0.5 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Live
+                </span>
+              </div>
+              <div className="flex items-end gap-3">
+                <div className="text-3xl font-bold font-display text-slate-900">{stats ? `${stats.turnoutPercentage}%` : '...'}</div>
+                <div className="w-full bg-slate-200 rounded-full h-2 mb-2">
+                  <div className="bg-emerald-500 h-2 rounded-full" style={{ width: `${stats?.turnoutPercentage || 0}%` }}></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Panel */}
+          <div className="bento-accent-card flex flex-col justify-end p-8 md:p-12 min-h-[500px] relative overflow-hidden bg-emerald-600">
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+            <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500 rounded-full blur-3xl opacity-50"></div>
+            
             <div className="relative z-10">
-            <div className="eyebrow mb-6">
-              <Landmark className="w-4 h-4" /> {t('home.hero.eyebrow', 'Public Decision Infrastructure')}
-            </div>
-
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl text-[#0f1f3d] leading-[1.05] mb-5">
-              {t('home.hero.title', 'Secure digital voting with multi-election governance precision.')}
-            </h1>
-
-            <p className="text-base sm:text-lg text-[#4f6691] max-w-2xl mb-10 leading-relaxed">
-              {t('home.hero.body', 'CivicBallot enables institutions to run multiple elections at once while preserving strict ballot scope, lifecycle control, transparent counting, and receipt-driven trust for every voter.')}
-            </p>
-
-            <div className="mb-8 grid grid-cols-1 sm:grid-cols-3 gap-3 border-y border-[#d6e1f6] py-5">
-              <div className="p-2">
-                <p className="text-xs uppercase tracking-[0.1em] text-[#60759a] mb-1">{t('home.hero.liveElections', 'Live Elections')}</p>
-                <p className="text-2xl font-semibold text-[#102347]">{electionSummary.statusCounts.live}</p>
-              </div>
-              <div className="p-2 sm: sm: border-[#d6e1f6]">
-                <p className="text-xs uppercase tracking-[0.1em] text-[#60759a] mb-1">{t('home.hero.trackedVotes', 'Tracked Votes')}</p>
-                <p className="text-2xl font-semibold text-[#102347]">{countValue(electionSummary.totalElectionVotes)}</p>
-              </div>
-              <div className="p-2 sm: sm: border-[#d6e1f6]">
-                <p className="text-xs uppercase tracking-[0.1em] text-[#60759a] mb-1">{t('home.hero.electionCandidates', 'Election Candidates')}</p>
-                <p className="text-2xl font-semibold text-[#102347]">{countValue(electionSummary.totalElectionCandidates)}</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link to={withLanguagePath('/signup')} className="btn-primary inline-flex items-center justify-center gap-2">
-                {t('home.hero.primaryCta', 'Create Voter Account')}
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-
-              <Link to={withLanguagePath('/vote')} className="btn-secondary inline-flex items-center justify-center gap-2">
-                {t('home.hero.secondaryCta', 'Open Ballot Arena')}
-                <Vote className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {statCards.map((stat) => (
-                <div key={stat.title} className="p-3 border-[#1f66f4]">
-                  <p className="text-xs uppercase tracking-[0.08em] text-[#5f7298] mb-1">{stat.title}</p>
-                  <p className="text-2xl font-semibold text-[#102347]">{stat.value}</p>
-                  <p className="text-xs text-[#7285a9] mt-1">{stat.hint}</p>
+              <h2 className="font-display text-5xl md:text-6xl font-bold italic text-white mb-4 leading-tight">
+                Trusted by <br/> millions.
+              </h2>
+              <p className="text-emerald-50 text-lg max-w-sm mb-6">
+                Redefining digital trust with cryptographic receipts and uncompromising transparency.
+              </p>
+              
+              <div className="grid grid-cols-2 gap-4 border-t border-emerald-400/30 pt-6">
+                <div>
+                  <p className="text-emerald-100 text-xs uppercase tracking-widest font-semibold mb-1">Votes Cast</p>
+                  <p className="text-3xl font-bold text-white">{countValue(electionSummary.totalElectionVotes)}</p>
                 </div>
-              ))}
+                <div>
+                  <p className="text-emerald-100 text-xs uppercase tracking-widest font-semibold mb-1">Active Elections</p>
+                  <p className="text-3xl font-bold text-white">{electionSummary.statusCounts.live}</p>
+                </div>
+              </div>
             </div>
+          </div>
+        </section>
 
-            <div className="mt-5 flex flex-wrap gap-2">
-              <Link to={withLanguagePath('/candidates')} className="text-xs rounded-full border border-[#bfd2f8] bg-[#eaf2ff] px-4 py-2 text-[#1f66f4] font-semibold">
-                {t('home.hero.linkCandidates', 'Candidate Profiles & Compare')}
-              </Link>
-              <Link to={withLanguagePath('/transparency')} className="text-xs rounded-full border border-[#bfd2f8] bg-[#eaf2ff] px-4 py-2 text-[#1f66f4] font-semibold">
-                {t('home.hero.linkTransparency', 'Public Transparency Dashboard')}
-              </Link>
-              <Link to={withLanguagePath('/receipt')} className="text-xs rounded-full border border-[#bfd2f8] bg-[#eaf2ff] px-4 py-2 text-[#1f66f4] font-semibold">
-                {t('home.hero.linkReceipt', 'Vote Receipt Verification')}
-              </Link>
-            </div>
+        {/* Asymmetric Bento Grid */}
+        <section className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          
+          {/* Card 1: Rhetorical Question (Span 2) */}
+          <div className="bento-card col-span-1 md:col-span-2 flex flex-col justify-center items-start p-8 bg-slate-900 text-white">
+            <h3 className="font-display text-3xl md:text-4xl italic font-bold mb-4 text-white">
+              Ready to trust your vote?
+            </h3>
+            <p className="text-slate-300 text-sm mb-6 max-w-md leading-relaxed">
+              Our verifiable receipt system ensures your vote is cast exactly as intended, and counted exactly as cast.
+            </p>
+            <Link to={'/receipt'} className="inline-flex items-center justify-center bg-white text-slate-900 rounded-full px-5 py-2 text-sm font-semibold hover:bg-slate-100 transition-colors">
+              Verify a Receipt
+            </Link>
+          </div>
+
+          {/* Card 2: Live Election Overview (Span 2) */}
+          <div className="bento-card col-span-1 md:col-span-2 lg:col-span-2 flex flex-col p-6">
+            <h4 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-6 flex items-center gap-2">
+              <Activity className="w-4 h-4" /> Live Overview
+            </h4>
+            <div className="space-y-4 flex-1">
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <div>
+                  <p className="font-semibold text-slate-900">Voter Turnout</p>
+                  <p className="text-xs text-slate-500">Overall participation</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-lg">{stats?.turnoutPercentage || 0}%</span>
+                  <span className="bg-emerald-100 text-emerald-700 text-xs px-2 py-1 rounded font-bold">GOOD</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+                <div>
+                  <p className="font-semibold text-slate-900">Dispute Rate</p>
+                  <p className="text-xs text-slate-500">Active verification flags</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-lg">0.2%</span>
+                  <span className="bg-amber-100 text-amber-700 text-xs px-2 py-1 rounded font-bold">ATTENTION</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <aside className="surface-card px-5 pb-6 pt-2 sm:px-6 sm:pb-6 sm:pt-3 relative overflow-hidden">
-            <div className="relative z-10 space-y-4">
-              <div className="rounded-2xl overflow-hidden mb-6">
-                <img
-                  src={homeCivicVotingIllustration}
-                  alt={t('home.hero.imageAlt', 'Citizens participating in a secure online voting ecosystem')}
-                  className="w-full h-48 object-cover"
-                  loading="lazy"
-                />
-              </div>
-
-              <div className="border-[#bfd1f8] pb-5 mb-5">
-                <p className="text-xs uppercase tracking-[0.12em] text-[#35598e] mb-2">{t('home.snapshot.title', 'Multi-Election Snapshot')}</p>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-2">
-                    <p className="text-xs text-[#60759a] uppercase tracking-[0.08em]">{t('home.snapshot.registration', 'Registration')}</p>
-                    <p className="text-lg font-semibold text-[#102347]">{electionSummary.statusCounts.registration}</p>
-                  </div>
-                  <div className="p-2 border-[#bfd1f8]">
-                    <p className="text-xs text-[#60759a] uppercase tracking-[0.08em]">{t('home.snapshot.counting', 'Counting')}</p>
-                    <p className="text-lg font-semibold text-[#102347]">{electionSummary.statusCounts.counting}</p>
-                  </div>
+          {/* Card 3: Advanced Analytics */}
+          <div className="bento-card col-span-1 md:col-span-2 lg:col-span-1 flex flex-col p-6 relative overflow-hidden">
+            <h4 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">
+              Advanced Analytics
+            </h4>
+            <div className="flex-1 flex items-center justify-center relative">
+              <div className="w-32 h-32 rounded-full border-[12px] border-emerald-500 border-r-slate-100 transform rotate-45 relative">
+                <div className="absolute inset-0 flex items-center justify-center -rotate-45">
+                  <span className="text-2xl font-bold text-slate-900">75%</span>
                 </div>
               </div>
-
-              <div className="border-[#bfd1f8] pb-5 mb-5">
-                <p className="text-xs uppercase tracking-[0.12em] text-[#35598e] mb-2">{t('home.focus.title', 'Current Focus Election')}</p>
-                {electionSummary.highlightedElection ? (
-                  <>
-                    <p className="text-lg text-[#102347] font-semibold leading-snug">{electionSummary.highlightedElection.name}</p>
-                    <p className="text-sm text-[#5a6f96] mt-1 inline-flex items-center gap-1.5">
-                      <CalendarDays className="w-4 h-4" /> {t('home.focus.status', 'Status')}: {electionSummary.highlightedElection.status}
-                    </p>
-                    <p className="text-xs text-[#6c7fa5] mt-2">
-                      {t('home.focus.candidates', 'Candidates')}: {electionSummary.highlightedElection.totalCandidates || 0} | {t('home.focus.votes', 'Votes')}: {electionSummary.highlightedElection.totalVotesCast || 0}
-                    </p>
-                  </>
-                ) : (
-                  <p className="text-sm text-[#5a6f96]">{t('home.focus.empty', 'No active election is available yet.')}</p>
-                )}
-              </div>
-
-              <div className="pt-2">
-                <p className="text-xs uppercase tracking-[0.12em] text-[#35598e] mb-2">{t('home.standard.title', 'Governance Standard')}</p>
-                <p className="text-lg font-semibold leading-snug text-[#102347]">{t('home.standard.body', 'Scoped ballots plus lifecycle controls create stronger democratic trust.')}</p>
-              </div>
             </div>
-          </aside>
-        </div>
-      </section>
+            <p className="text-xs text-slate-500 text-center mt-4">Verified vote density</p>
+          </div>
 
-      <section className="section-wrap mt-12">
-        <div className="glass-panel p-6 md:p-7">
-          <div className="grid grid-cols-1 xl:grid-cols-[1.05fr_0.95fr] gap-6">
+          {/* Card 4: Governance Flow (Accent) */}
+          <div className="bento-accent-card col-span-1 md:col-span-2 lg:col-span-1 p-6 flex flex-col justify-between">
             <div>
-              <div className="mb-8">
-                <p className="eyebrow mb-4">
-                  <ClipboardCheck className="w-4 h-4" /> {t('home.steps.eyebrow', 'Steps To Use The Platform')}
-                </p>
-                <h2 className="text-2xl sm:text-3xl text-[#102347] mb-3">{t('home.steps.title', 'A clear, citizen-first voting journey')}</h2>
-                <p className="text-[#5a6f95] max-w-3xl">{t('home.steps.subtitle', 'From registration to final vote confirmation, each step is designed for integrity, accessibility, and accountability.')}</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <article className="border-[#1f66f4] pl-4">
-                  <p className="text-xs text-[#4f6793] uppercase tracking-[0.1em] mb-3">{t('home.steps.step1.label', 'Step 01')}</p>
-                  <UserRoundCheck className="w-6 h-6 text-[#1f66f4] mb-3" />
-                  <h3 className="text-xl text-[#102347] mb-2">{t('home.steps.step1.title', 'Register Securely')}</h3>
-                  <p className="text-sm text-[#5d7298]">{t('home.steps.step1.body', 'Create your voter profile with verified identity details and secure credentials.')}</p>
-                </article>
-
-                <article className="border-[#1f66f4] pl-4">
-                  <p className="text-xs text-[#4f6793] uppercase tracking-[0.1em] mb-3">{t('home.steps.step2.label', 'Step 02')}</p>
-                  <Shield className="w-6 h-6 text-[#1f66f4] mb-3" />
-                  <h3 className="text-xl text-[#102347] mb-2">{t('home.steps.step2.title', 'Sign In & Verify')}</h3>
-                  <p className="text-sm text-[#5d7298]">{t('home.steps.step2.body', 'Authenticate once and receive access to eligible election ballots.')}</p>
-                </article>
-
-                <article className="border-[#1f66f4] pl-4">
-                  <p className="text-xs text-[#4f6793] uppercase tracking-[0.1em] mb-3">{t('home.steps.step3.label', 'Step 03')}</p>
-                  <Vote className="w-6 h-6 text-[#1f66f4] mb-3" />
-                  <h3 className="text-xl text-[#102347] mb-2">{t('home.steps.step3.title', 'Cast Election-Scoped Vote')}</h3>
-                  <p className="text-sm text-[#5d7298]">{t('home.steps.step3.body', 'Submit your decision per election context with strict one-vote enforcement.')}</p>
-                </article>
-
-                <article className="border-[#1f66f4] pl-4">
-                  <p className="text-xs text-[#4f6793] uppercase tracking-[0.1em] mb-3">{t('home.steps.step4.label', 'Step 04')}</p>
-                  <BadgeCheck className="w-6 h-6 text-[#1f66f4] mb-3" />
-                  <h3 className="text-xl text-[#102347] mb-2">{t('home.steps.step4.title', 'Verify Receipt Integrity')}</h3>
-                  <p className="text-sm text-[#5d7298]">{t('home.steps.step4.body', 'Track your receipt status and validate election transparency in real time.')}</p>
-                </article>
-              </div>
+              <ShieldCheck className="w-8 h-8 text-emerald-100 mb-4" />
+              <h4 className="font-display text-2xl font-bold mb-2">Governance Flow</h4>
+              <p className="text-emerald-50 text-sm mb-6">Automated lifecycle from draft to verified archive.</p>
             </div>
-
-            <aside className="border-[#cfdef9] pl-6 md:pl-7">
-              <p className="eyebrow mb-4">
-                <CalendarDays className="w-4 h-4" /> {t('home.lifecycle.title', 'Multi-Election Lifecycle')}
-              </p>
-              <h3 className="text-2xl text-[#102347] mb-2">{t('home.lifecycle.subtitle', 'Every election follows a governed progression.')}</h3>
-              <p className="text-sm text-[#5a6f95] mb-5">
-                {t('home.lifecycle.body', 'The platform supports parallel elections while keeping each one independently scoped from setup to archive.')}
-              </p>
-
-              <div className="space-y-3">
-                {lifecycleStages.map((stage, index) => (
-                  <article key={stage.key} className="border-[#d7e2f7] py-3.5 last:">
-                    <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 shrink-0 rounded-full bg-[#1f66f4]/10 text-[#1f66f4] text-xs font-semibold inline-flex items-center justify-center">
-                        {index + 1}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="font-semibold text-[#12305d]">{t(stage.titleKey)}</p>
-                          <p className="text-xs text-[#5f7398]">
-                            {electionSummary.statusCounts[stage.key]} {t('home.lifecycle.elections', 'elections')}
-                          </p>
-                        </div>
-                        <p className="text-xs text-[#5f7398] mt-1 leading-relaxed">{t(stage.descriptionKey)}</p>
-                      </div>
-                    </div>
-                  </article>
-                ))}
+            <div className="space-y-2">
+              <div className="flex gap-2 items-center text-sm text-white font-medium">
+                <CheckCircle2 className="w-4 h-4 text-emerald-200" /> Transparent Counting
               </div>
-            </aside>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-wrap mt-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-6">
-          <div className="surface-card p-6 md:p-7">
-            <p className="eyebrow mb-5">
-              <BarChart3 className="w-4 h-4" /> {t('home.why.eyebrow', 'Why Voting Is Needed')}
-            </p>
-            <h2 className="text-2xl sm:text-3xl text-[#102347] mb-4">{t('home.why.title', 'Voting turns public needs into enforceable priorities.')}</h2>
-            <p className="text-[#5b7096] leading-relaxed mb-6">
-              {t('home.why.body', 'Elections are not a ritual. They are an accountability mechanism that determines who allocates budgets, writes policy, and represents citizen concerns. High-quality participation leads to better institutions.')}
-            </p>
-
-            <div className="space-y-4">
-              <div className="border-[#d4e0f6] pb-4 flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-[#1f66f4] mt-0.5" />
-                <p className="text-sm text-[#4f6691]">{t('home.why.point1', 'Voting legitimizes public leadership through citizen consent.')}</p>
-              </div>
-              <div className="border-[#d4e0f6] pb-4 flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-[#1f66f4] mt-0.5" />
-                <p className="text-sm text-[#4f6691]">{t('home.why.point2', 'It aligns public spending with real community priorities.')}</p>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-[#1f66f4] mt-0.5" />
-                <p className="text-sm text-[#4f6691]">{t('home.why.point3', 'It creates peaceful transfer of power and policy continuity.')}</p>
+              <div className="flex gap-2 items-center text-sm text-white font-medium">
+                <CheckCircle2 className="w-4 h-4 text-emerald-200" /> Cryptographic Receipts
               </div>
             </div>
           </div>
 
-          <div className="glass-panel p-6 md:p-7 flex flex-col justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.12em] text-[#4f6793] mb-4">{t('home.evolution.eyebrow', 'Platform Evolution')}</p>
-              <h3 className="text-2xl text-[#112851] mb-4">{t('home.evolution.title', 'From one ballot to multi-election orchestration.')}</h3>
-              <p className="text-[#5f7298] leading-relaxed">
-                {t('home.evolution.body', 'A mature voting platform should reduce friction for voters while increasing confidence for regulators, observers, and election administrators.')}
-              </p>
-
-              <div className="mt-6 space-y-3">
-                <div className="border-[#d6e1f4] pb-3 flex items-start gap-2">
-                  <BadgeCheck className="w-4 h-4 text-[#1f66f4] mt-0.5 shrink-0" />
-                  <p className="text-sm text-[#4f6691]">{t('home.evolution.point1', 'One vote per user per election with separate receipt records.')}</p>
-                </div>
-                <div className="border-[#d6e1f4] pb-3 flex items-start gap-2">
-                  <BadgeCheck className="w-4 h-4 text-[#1f66f4] mt-0.5 shrink-0" />
-                  <p className="text-sm text-[#4f6691]">{t('home.evolution.point2', 'Election-specific candidate pools and independent transparency metrics.')}</p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <BadgeCheck className="w-4 h-4 text-[#1f66f4] mt-0.5 shrink-0" />
-                  <p className="text-sm text-[#4f6691]">{t('home.evolution.point3', 'Lifecycle transitions from draft to archive with governance checkpoints.')}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link to={withLanguagePath('/signup')} className="btn-primary inline-flex items-center gap-2">
-                {t('home.evolution.primaryCta', 'Join The Election')}
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-
-              <Link to={withLanguagePath('/transparency')} className="btn-secondary inline-flex items-center gap-2">
-                {t('home.evolution.secondaryCta', 'Explore Transparency')}
-                <ArrowRight className="w-4 h-4" />
+          {/* Card 5: Candidate Comparison */}
+          <div className="bento-card col-span-1 md:col-span-3 lg:col-span-2 flex flex-col p-6">
+            <div className="flex justify-between items-end mb-6">
+              <h4 className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                <Users className="w-4 h-4" /> Candidate Activity
+              </h4>
+              <Link to={'/candidates'} className="text-xs font-semibold text-emerald-600 hover:underline">
+                View all profiles
               </Link>
             </div>
+            <div className="flex items-end justify-around h-32 border-b border-slate-100 pb-2 mb-4">
+              <div className="w-12 bg-slate-200 rounded-t-lg h-[40%]"></div>
+              <div className="w-12 bg-emerald-500 rounded-t-lg h-[85%] relative">
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-emerald-100 border-2 border-white flex items-center justify-center text-xs font-bold text-emerald-700">A</div>
+              </div>
+              <div className="w-12 bg-slate-200 rounded-t-lg h-[60%]"></div>
+              <div className="w-12 bg-slate-200 rounded-t-lg h-[30%]"></div>
+            </div>
+            <p className="text-xs text-slate-500 text-center">Top candidates by engagement metric</p>
           </div>
-        </div>
-      </section>
+
+        </section>
+
+      </div>
     </main>
   );
 };

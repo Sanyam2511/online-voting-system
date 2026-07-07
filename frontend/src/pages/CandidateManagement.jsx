@@ -63,7 +63,7 @@ const toIsoOrNull = (value) => (value ? new Date(value).toISOString() : null);
 
 const CandidateManagement = () => {
   const navigate = useNavigate();
-  const { t, withLanguagePath } = useUiPreferences();
+  
 
   const [candidates, setCandidates] = useState([]);
   const [loadingCandidates, setLoadingCandidates] = useState(false);
@@ -123,7 +123,7 @@ const CandidateManagement = () => {
 
       setCandidates(response.data?.candidates || []);
     } catch (requestError) {
-      const message = requestError.response?.data?.message || t('manage.errors.loadCandidates', 'Unable to load candidate management data.');
+      const message = requestError.response?.data?.message || 'Unable to load candidate management data.';
       setError(message);
       toast.error(message);
     } finally {
@@ -133,7 +133,7 @@ const CandidateManagement = () => {
 
   const bootstrapManagement = async () => {
     if (!getAuthToken()) {
-      navigate(withLanguagePath('/login'));
+      navigate('/login');
       return;
     }
 
@@ -145,7 +145,7 @@ const CandidateManagement = () => {
 
       if (meResponse.data.role !== 'Admin') {
         setCanManage(false);
-        setError(t('manage.errors.adminOnly', 'Candidate and election management is restricted to admin accounts only.'));
+        setError('Candidate and election management is restricted to admin accounts only.');
         return;
       }
 
@@ -154,17 +154,17 @@ const CandidateManagement = () => {
       await loadCandidatesForElection(electionId);
     } catch (requestError) {
       if (requestError.response?.status === 401) {
-        navigate(withLanguagePath('/login'));
+        navigate('/login');
         return;
       }
 
       if (requestError.response?.status === 403) {
         setCanManage(false);
-        setError(t('manage.errors.adminOnly', 'Candidate and election management is restricted to admin accounts only.'));
+        setError('Candidate and election management is restricted to admin accounts only.');
         return;
       }
 
-      setError(requestError.response?.data?.message || t('manage.errors.loadAdmin', 'Unable to load admin management data.'));
+      setError(requestError.response?.data?.message || 'Unable to load admin management data.');
     } finally {
       setBootstrapping(false);
     }
@@ -217,21 +217,21 @@ const CandidateManagement = () => {
     event.preventDefault();
 
     if (!canManage) {
-      const message = t('manage.errors.candidateAdminOnly', 'Candidate management is restricted to admin accounts only.');
+      const message = 'Candidate management is restricted to admin accounts only.';
       setError(message);
       toast.error(message);
       return;
     }
 
     if (!selectedElectionId) {
-      const message = t('manage.errors.selectElectionForCandidate', 'Select an election before managing candidates.');
+      const message = 'Select an election before managing candidates.';
       setError(message);
       toast.error(message);
       return;
     }
 
     if (!candidateForm.name || !candidateForm.party || !candidateForm.manifesto) {
-      const message = t('manage.errors.candidateRequiredFields', 'Name, party, and manifesto are required.');
+      const message = 'Name, party, and manifesto are required.';
       setError(message);
       toast.error(message);
       return;
@@ -252,17 +252,17 @@ const CandidateManagement = () => {
     try {
       if (editingCandidateId) {
         await api.put(`/vote/candidates/manage/${editingCandidateId}`, payload);
-        toast.success(t('manage.toast.candidateUpdated', 'Candidate updated successfully.'));
+        toast.success('Candidate updated successfully.');
       } else {
         await api.post('/vote/candidates/manage', payload);
-        toast.success(t('manage.toast.candidateCreated', 'Candidate created successfully.'));
+        toast.success('Candidate created successfully.');
       }
 
       resetCandidateForm();
       await loadCandidatesForElection(selectedElectionId);
       await loadManagedElections(selectedElectionId);
     } catch (requestError) {
-      const message = requestError.response?.data?.message || t('manage.errors.saveCandidate', 'Failed to save candidate.');
+      const message = requestError.response?.data?.message || 'Failed to save candidate.';
       setError(message);
       toast.error(message);
     } finally {
@@ -280,7 +280,7 @@ const CandidateManagement = () => {
 
     try {
       await api.delete(`/vote/candidates/manage/${candidateId}`);
-      toast.success(t('manage.toast.candidateDeleted', 'Candidate removed successfully.'));
+      toast.success('Candidate removed successfully.');
 
       if (editingCandidateId === candidateId) {
         resetCandidateForm();
@@ -289,7 +289,7 @@ const CandidateManagement = () => {
       await loadCandidatesForElection(selectedElectionId);
       await loadManagedElections(selectedElectionId);
     } catch (requestError) {
-      const message = requestError.response?.data?.message || t('manage.errors.deleteCandidate', 'Failed to delete candidate.');
+      const message = requestError.response?.data?.message || 'Failed to delete candidate.';
       setError(message);
       toast.error(message);
     } finally {
@@ -300,12 +300,12 @@ const CandidateManagement = () => {
   const onDeleteCandidate = (candidateId) => {
     toast.custom(
       (toastInstance) => (
-        <div className="w-[min(92vw,420px)] border-[#1f66f4] bg-white p-6 shadow-xl">
-          <p className="text-sm font-semibold text-[#122f5d] mb-1">
-            {t('manage.modal.deleteCandidateTitle', 'Delete Candidate')}
+        <div className="w-[min(92vw,420px)] border-slate-200 bg-white p-6 shadow-xl">
+          <p className="text-sm font-semibold text-slate-900 mb-1">
+            {'Delete Candidate'}
           </p>
-          <p className="text-sm text-[#5f7398] leading-relaxed mb-4">
-            {t('manage.modal.deleteCandidateBody', 'Delete this candidate? This action cannot be undone.')}
+          <p className="text-sm text-slate-500 leading-relaxed mb-4">
+            {'Delete this candidate? This action cannot be undone.'}
           </p>
 
           <div className="flex items-center justify-end gap-2">
@@ -314,7 +314,7 @@ const CandidateManagement = () => {
               onClick={() => toast.dismiss(toastInstance.id)}
               className="btn-secondary !py-2 !px-4 text-xs"
             >
-              {t('common.cancel', 'Cancel')}
+              {'Cancel'}
             </button>
             <button
               type="button"
@@ -322,9 +322,9 @@ const CandidateManagement = () => {
                 toast.dismiss(toastInstance.id);
                 deleteCandidate(candidateId);
               }}
-              className="text-xs rounded-full border border-[#f3c8c8] bg-[#fff1f1] text-[#b13a3a] px-4 py-2 font-semibold"
+              className="text-xs rounded-full border border-slate-200 bg-red-50 text-slate-700 px-4 py-2 font-semibold"
             >
-              {t('common.delete', 'Delete')}
+              {'Delete'}
             </button>
           </div>
         </div>
@@ -366,14 +366,14 @@ const CandidateManagement = () => {
     event.preventDefault();
 
     if (!canManage) {
-      const message = t('manage.errors.electionAdminOnly', 'Election management is restricted to admin accounts only.');
+      const message = 'Election management is restricted to admin accounts only.';
       setError(message);
       toast.error(message);
       return;
     }
 
     if (!electionForm.name.trim()) {
-      const message = t('manage.errors.electionNameRequired', 'Election name is required.');
+      const message = 'Election name is required.';
       setError(message);
       toast.error(message);
       return;
@@ -394,10 +394,10 @@ const CandidateManagement = () => {
     try {
       if (editingElectionId) {
         await api.put(`/vote/elections/manage/${editingElectionId}`, payload);
-        toast.success(t('manage.toast.electionUpdated', 'Election updated successfully.'));
+        toast.success('Election updated successfully.');
       } else {
         await api.post('/vote/elections/manage', payload);
-        toast.success(t('manage.toast.electionCreated', 'Election created successfully.'));
+        toast.success('Election created successfully.');
       }
 
       const activeElectionId = editingElectionId || selectedElectionId;
@@ -409,7 +409,7 @@ const CandidateManagement = () => {
 
       resetElectionForm();
     } catch (requestError) {
-      const message = requestError.response?.data?.message || t('manage.errors.saveElection', 'Failed to save election.');
+      const message = requestError.response?.data?.message || 'Failed to save election.';
       setError(message);
       toast.error(message);
     } finally {
@@ -424,8 +424,8 @@ const CandidateManagement = () => {
     try {
       await api.post(`/vote/elections/manage/${electionId}/transition`, { nextStatus });
       toast.success(
-        t('manage.toast.electionTransition', 'Election moved to {status}.')
-          .replace('{status}', formatElectionStatus(nextStatus, t))
+        'Election moved to {status}.'
+          .replace('{status}', formatElectionStatus(nextStatus))
       );
 
       const nextElectionId = await loadManagedElections(selectedElectionId || electionId);
@@ -433,7 +433,7 @@ const CandidateManagement = () => {
         await loadCandidatesForElection(nextElectionId);
       }
     } catch (requestError) {
-      const message = requestError.response?.data?.message || t('manage.errors.transitionElection', 'Failed to transition election status.');
+      const message = requestError.response?.data?.message || 'Failed to transition election status.';
       setError(message);
       toast.error(message);
     } finally {
@@ -444,106 +444,103 @@ const CandidateManagement = () => {
   return (
     <main className="min-h-screen page-shell pt-20 pb-14">
       <div className="section-wrap space-y-6">
-        <header className="glass-panel p-6 md:p-7">
+        <header className="bento-card p-6 md:p-7">
           <p className="eyebrow mb-4">
-            <ShieldCheck className="w-4 h-4" /> {t('manage.header.eyebrow', 'Election + Candidate Management')}
+            <ShieldCheck className="w-4 h-4" /> {'Election + Candidate Management'}
           </p>
-          <h1 className="text-2xl sm:text-3xl text-[#102347] mb-2">
-            {t('manage.header.title', 'Run Election Lifecycle Operations')}
+          <h1 className="font-display text-2xl sm:text-3xl text-slate-900 mb-2">
+            {'Run Election Lifecycle Operations'}
           </h1>
-          <p className="text-[#5e7398] max-w-3xl">
-            {t(
-              'manage.header.subtitle',
-              'Create elections, move lifecycle states, and manage candidate records per election context.'
-            )}
+          <p className="text-slate-600 max-w-3xl">
+            {'Create elections, move lifecycle states, and manage candidate records per election context.'}
           </p>
         </header>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          <article className="p-4 border-[#1f66f4]">
-            <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-1">
-              {t('manage.metrics.totalElections', 'Total Elections')}
+          <article className="p-4 border-slate-200">
+            <p className="text-xs uppercase tracking-[0.1em] text-slate-700 mb-1">
+              {'Total Elections'}
             </p>
-            <p className="text-2xl font-semibold text-[#12305d]">{managementSummary.totalElections}</p>
+            <p className="text-2xl font-semibold text-slate-700">{managementSummary.totalElections}</p>
           </article>
-          <article className="p-4 border-[#1f66f4]">
-            <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-1">
-              {t('manage.metrics.liveElections', 'Live Elections')}
+          <article className="p-4 border-slate-200">
+            <p className="text-xs uppercase tracking-[0.1em] text-slate-700 mb-1">
+              {'Live Elections'}
             </p>
-            <p className="text-2xl font-semibold text-[#12305d]">{managementSummary.liveElections}</p>
+            <p className="text-2xl font-semibold text-slate-700">{managementSummary.liveElections}</p>
           </article>
-          <article className="p-4 border-[#1f66f4]">
-            <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-1">
-              {t('manage.metrics.registeredCandidates', 'Registered Candidates')}
+          <article className="p-4 border-slate-200">
+            <p className="text-xs uppercase tracking-[0.1em] text-slate-700 mb-1">
+              {'Registered Candidates'}
             </p>
-            <p className="text-2xl font-semibold text-[#12305d]">{managementSummary.totalCandidates}</p>
+            <p className="text-2xl font-semibold text-slate-700">{managementSummary.totalCandidates}</p>
           </article>
-          <article className="p-4 border-[#1f66f4]">
-            <p className="text-xs uppercase tracking-[0.1em] text-[#61759c] mb-1">
-              {t('manage.metrics.trackedVotes', 'Tracked Votes')}
+          <article className="p-4 border-slate-200">
+            <p className="text-xs uppercase tracking-[0.1em] text-slate-700 mb-1">
+              {'Tracked Votes'}
             </p>
-            <p className="text-2xl font-semibold text-[#12305d]">{managementSummary.totalVotes}</p>
+            <p className="text-2xl font-semibold text-slate-700">{managementSummary.totalVotes}</p>
           </article>
         </section>
 
         {error && (
-          <div className="surface-card p-4 border border-[#f1c6c6] bg-[#fff1f1] text-[#a43a3a] flex items-start gap-2">
+          <div className="bento-card p-4 border border-red-200 bg-red-50 text-red-600 flex items-start gap-2">
             <AlertCircle className="w-4 h-4 mt-0.5" />
             <p className="text-sm">{error}</p>
           </div>
         )}
 
         {bootstrapping ? (
-          <section className="surface-card p-8 text-center">
-            <LoaderCircle className="w-6 h-6 animate-spin text-[#1f66f4] mx-auto mb-2" />
-            <p className="text-sm text-[#60759b]">
-              {t('manage.state.loadingWorkspace', 'Loading admin management workspace...')}
+          <section className="bento-card p-8 text-center">
+            <LoaderCircle className="w-6 h-6 animate-spin text-emerald-600 mx-auto mb-2" />
+            <p className="text-sm text-slate-700">
+              {'Loading admin management workspace...'}
             </p>
           </section>
         ) : !canManage ? (
-          <section className="surface-card p-6">
-            <h2 className="text-2xl text-[#102347] mb-3">{t('manage.state.restrictedTitle', 'Restricted Access')}</h2>
-            <p className="text-sm text-[#5f7398]">
-              {t('manage.state.restrictedBody', 'Election and candidate management is available only for admin accounts.')}
+          <section className="bento-card p-6">
+            <h2 className="font-display text-2xl text-slate-900 mb-3">{'Restricted Access'}</h2>
+            <p className="text-sm text-slate-500">
+              {'Election and candidate management is available only for admin accounts.'}
             </p>
           </section>
         ) : (
           <>
-            <section className="surface-card p-6">
-              <h2 className="text-2xl text-[#102347] mb-4">
-                {t('manage.elections.title', 'Election Lifecycle Studio')}
+            <section className="bento-card p-6">
+              <h2 className="font-display text-2xl text-slate-900 mb-4">
+                {'Election Lifecycle Studio'}
               </h2>
 
               <form onSubmit={onSubmitElection} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.elections.form.name', 'Election Name')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Election Name'}
                   </label>
                   <input
                     name="name"
                     value={electionForm.name}
                     onChange={onElectionChange}
                     className="form-field"
-                    placeholder={t('manage.elections.form.namePlaceholder', 'National General Election 2027')}
+                    placeholder={'National General Election 2027'}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.elections.form.description', 'Description')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Description'}
                   </label>
                   <input
                     name="description"
                     value={electionForm.description}
                     onChange={onElectionChange}
                     className="form-field"
-                    placeholder={t('manage.elections.form.descriptionPlaceholder', 'Optional election description')}
+                    placeholder={'Optional election description'}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.elections.form.registrationStarts', 'Registration Starts')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Registration Starts'}
                   </label>
                   <input
                     type="datetime-local"
@@ -555,8 +552,8 @@ const CandidateManagement = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.elections.form.registrationEnds', 'Registration Ends')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Registration Ends'}
                   </label>
                   <input
                     type="datetime-local"
@@ -568,8 +565,8 @@ const CandidateManagement = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.elections.form.votingStarts', 'Voting Starts')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Voting Starts'}
                   </label>
                   <input
                     type="datetime-local"
@@ -581,8 +578,8 @@ const CandidateManagement = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.elections.form.votingEnds', 'Voting Ends')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Voting Ends'}
                   </label>
                   <input
                     type="datetime-local"
@@ -597,17 +594,17 @@ const CandidateManagement = () => {
                   <button
                     type="submit"
                     disabled={electionSaving}
-                    className="btn-primary inline-flex items-center gap-2 disabled:opacity-60"
+                    className="btn-black-pill inline-flex items-center gap-2 disabled:opacity-60"
                   >
                     <CirclePlus className="w-4 h-4" />
                     {editingElectionId
-                      ? t('manage.elections.form.update', 'Update Election')
-                      : t('manage.elections.form.create', 'Create Election')}
+                      ? 'Update Election'
+                      : 'Create Election'}
                   </button>
 
                   {editingElectionId && (
                     <button type="button" onClick={resetElectionForm} className="btn-secondary">
-                      {t('manage.elections.form.cancelEdit', 'Cancel Edit')}
+                      {'Cancel Edit'}
                     </button>
                   )}
                 </div>
@@ -615,7 +612,7 @@ const CandidateManagement = () => {
 
               <div className="space-y-4">
                 {elections.length === 0 ? (
-                  <p className="text-sm text-[#60759b]">{t('manage.elections.empty', 'No elections created yet.')}</p>
+                  <p className="text-sm text-slate-700">{'No elections created yet.'}</p>
                 ) : (
                   elections.map((election) => {
                     const transitions = lifecycleTransitions[election.status] || [];
@@ -625,17 +622,17 @@ const CandidateManagement = () => {
                     return (
                       <article
                         key={election._id}
-                        className={` p-4 ${isSelected ? '  -[#1f66f4] bg-[#f4f8ff]' : '  -transparent'}`}
+                        className={` p-4 ${isSelected ? '  -[#1f66f4] bg-emerald-50' : '  -transparent'}`}
                       >
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                           <div>
-                            <p className="font-semibold text-[#12305d]">{election.name}</p>
-                            <p className="text-xs text-[#5f7398] mt-1">
-                              {t('manage.elections.card.status', 'Status: {status}')
-                                .replace('{status}', formatElectionStatus(election.status, t))}
+                            <p className="font-semibold text-slate-700">{election.name}</p>
+                            <p className="text-xs text-slate-500 mt-1">
+                              {'Status: {status}'
+                                .replace('{status}', formatElectionStatus(election.status))}
                             </p>
-                            <p className="text-xs text-[#5f7398] mt-1">
-                              {t('manage.elections.card.stats', 'Candidates: {candidates} | Votes: {votes}')
+                            <p className="text-xs text-slate-500 mt-1">
+                              {'Candidates: {candidates} | Votes: {votes}'
                                 .replace('{candidates}', String(election.totalCandidates || 0))
                                 .replace('{votes}', String(election.totalVotesCast || 0))}
                             </p>
@@ -645,19 +642,19 @@ const CandidateManagement = () => {
                             <button
                               type="button"
                               onClick={() => setSelectedElectionId(election._id)}
-                              className={`text-xs rounded-full px-3 py-1.5 border ${isSelected ? 'border-[#1f66f4] bg-[#1f66f4] text-white' : 'border-[#bfd1f8] bg-[#eaf2ff] text-[#1f66f4]'}`}
+                              className={`text-xs rounded-full px-3 py-1.5 border ${isSelected ? 'border-slate-200 bg-emerald-600 text-white' : 'border-slate-200 bg-emerald-50 text-emerald-600'}`}
                             >
                               {isSelected
-                                ? t('manage.elections.card.selected', 'Selected')
-                                : t('manage.elections.card.select', 'Select')}
+                                ? 'Selected'
+                                : 'Select'}
                             </button>
 
                             <button
                               type="button"
                               onClick={() => onEditElection(election)}
-                              className="text-xs rounded-full border border-[#bfd1f8] bg-[#eaf2ff] text-[#1f66f4] px-3 py-1.5 inline-flex items-center gap-1"
+                              className="text-xs rounded-full border border-slate-200 bg-emerald-50 text-emerald-600 px-3 py-1.5 inline-flex items-center gap-1"
                             >
-                              <Pencil className="w-3.5 h-3.5" /> {t('common.edit', 'Edit')}
+                              <Pencil className="w-3.5 h-3.5" /> {'Edit'}
                             </button>
 
                             {transitions.map((nextStatus) => (
@@ -666,12 +663,12 @@ const CandidateManagement = () => {
                                 type="button"
                                 disabled={isTransitioning}
                                 onClick={() => onTransitionElection(election._id, nextStatus)}
-                                className="text-xs rounded-full border border-[#d4def3] bg-white text-[#35598e] px-3 py-1.5 disabled:opacity-60"
+                                className="text-xs rounded-full border border-slate-200 bg-white text-slate-600 px-3 py-1.5 disabled:opacity-60"
                               >
                                 {isTransitioning
-                                  ? t('manage.elections.card.transitioning', 'Transitioning...')
-                                  : t('manage.elections.card.moveTo', 'Move to {status}')
-                                      .replace('{status}', formatElectionStatus(nextStatus, t))}
+                                  ? 'Transitioning...'
+                                  : 'Move to {status}'
+                                      .replace('{status}', formatElectionStatus(nextStatus))}
                               </button>
                             ))}
                           </div>
@@ -683,12 +680,12 @@ const CandidateManagement = () => {
               </div>
             </section>
 
-            <section className="surface-card p-6">
+            <section className="bento-card p-6">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
-                <h2 className="text-2xl text-[#102347]">{t('manage.candidates.title', 'Candidate Studio')}</h2>
+                <h2 className="font-display text-2xl text-slate-900">{'Candidate Studio'}</h2>
                 <div className="w-full md:w-[360px]">
-                  <label htmlFor="candidate-election-picker" className="block text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
-                    {t('manage.candidates.activeElection', 'Active Election')}
+                  <label htmlFor="candidate-election-picker" className="block text-xs uppercase tracking-[0.12em] text-slate-500 mb-2">
+                    {'Active Election'}
                   </label>
                   <ThemedSelect
                     id="candidate-election-picker"
@@ -697,8 +694,8 @@ const CandidateManagement = () => {
                     disabled={elections.length === 0}
                     placeholder={
                       elections.length === 0
-                        ? t('manage.candidates.noElections', 'No elections available')
-                        : t('manage.candidates.selectElection', 'Select election')
+                        ? 'No elections available'
+                        : 'Select election'
                     }
                     options={elections.map((election) => ({
                       value: election._id,
@@ -709,119 +706,119 @@ const CandidateManagement = () => {
               </div>
 
               {selectedElection && (
-                <div className="border-[#d2def6] pb-4 mb-5">
-                  <p className="text-sm text-[#12305d] inline-flex items-center gap-2">
+                <div className="border-slate-200 pb-4 mb-5">
+                  <p className="text-sm text-slate-700 inline-flex items-center gap-2">
                     <CalendarDays className="w-4 h-4" /> {selectedElection.name}
                   </p>
-                  <p className="text-xs text-[#5f7398] mt-1">
-                    {t('manage.candidates.lifecycle', 'Lifecycle: {status}')
-                      .replace('{status}', formatElectionStatus(selectedElection.status, t))}
+                  <p className="text-xs text-slate-500 mt-1">
+                    {'Lifecycle: {status}'
+                      .replace('{status}', formatElectionStatus(selectedElection.status))}
                   </p>
                 </div>
               )}
 
               <form onSubmit={onSubmitCandidate} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.candidates.form.name', 'Candidate Name')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Candidate Name'}
                   </label>
                   <input
                     name="name"
                     value={candidateForm.name}
                     onChange={onCandidateChange}
                     className="form-field"
-                    placeholder={t('manage.candidates.form.namePlaceholder', 'Full name')}
+                    placeholder={'Full name'}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.candidates.form.party', 'Party')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Party'}
                   </label>
                   <input
                     name="party"
                     value={candidateForm.party}
                     onChange={onCandidateChange}
                     className="form-field"
-                    placeholder={t('manage.candidates.form.partyPlaceholder', 'Party name')}
+                    placeholder={'Party name'}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.candidates.form.tagline', 'Campaign Tagline')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Campaign Tagline'}
                   </label>
                   <input
                     name="campaignTagline"
                     value={candidateForm.campaignTagline}
                     onChange={onCandidateChange}
                     className="form-field"
-                    placeholder={t('manage.candidates.form.taglinePlaceholder', 'Short campaign line')}
+                    placeholder={'Short campaign line'}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.candidates.form.region', 'Region')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Region'}
                   </label>
                   <input
                     name="region"
                     value={candidateForm.region}
                     onChange={onCandidateChange}
                     className="form-field"
-                    placeholder={t('manage.candidates.form.regionPlaceholder', 'Region or district')}
+                    placeholder={'Region or district'}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.candidates.form.experience', 'Experience')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Experience'}
                   </label>
                   <input
                     name="experience"
                     value={candidateForm.experience}
                     onChange={onCandidateChange}
                     className="form-field"
-                    placeholder={t('manage.candidates.form.experiencePlaceholder', 'Experience summary')}
+                    placeholder={'Experience summary'}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.candidates.form.imageUrl', 'Image URL')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Image URL'}
                   </label>
                   <input
                     name="imageUrl"
                     value={candidateForm.imageUrl}
                     onChange={onCandidateChange}
                     className="form-field"
-                    placeholder={t('manage.candidates.form.imageUrlPlaceholder', 'https://example.com/candidate.jpg')}
+                    placeholder={'https://example.com/candidate.jpg'}
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.candidates.form.manifesto', 'Manifesto')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Manifesto'}
                   </label>
                   <textarea
                     name="manifesto"
                     value={candidateForm.manifesto}
                     onChange={onCandidateChange}
                     className="form-field min-h-[96px]"
-                    placeholder={t('manage.candidates.form.manifestoPlaceholder', 'Candidate manifesto')}
+                    placeholder={'Candidate manifesto'}
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-[#183769] mb-2">
-                    {t('manage.candidates.form.priorities', 'Priorities (comma separated)')}
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {'Priorities (comma separated)'}
                   </label>
                   <input
                     name="priorities"
                     value={candidateForm.priorities}
                     onChange={onCandidateChange}
                     className="form-field"
-                    placeholder={t('manage.candidates.form.prioritiesPlaceholder', 'Healthcare, education, transport')}
+                    placeholder={'Healthcare, education, transport'}
                   />
                 </div>
 
@@ -829,17 +826,17 @@ const CandidateManagement = () => {
                   <button
                     type="submit"
                     disabled={savingCandidate}
-                    className="btn-primary inline-flex items-center gap-2 disabled:opacity-60"
+                    className="btn-black-pill inline-flex items-center gap-2 disabled:opacity-60"
                   >
                     <CirclePlus className="w-4 h-4" />
                     {editingCandidateId
-                      ? t('manage.candidates.form.update', 'Update Candidate')
-                      : t('manage.candidates.form.add', 'Add Candidate')}
+                      ? 'Update Candidate'
+                      : 'Add Candidate'}
                   </button>
 
                   {editingCandidateId && (
                     <button type="button" onClick={resetCandidateForm} className="btn-secondary">
-                      {t('manage.candidates.form.cancelEdit', 'Cancel Edit')}
+                      {'Cancel Edit'}
                     </button>
                   )}
                 </div>
@@ -847,23 +844,23 @@ const CandidateManagement = () => {
 
               {loadingCandidates ? (
                 <div className="text-center py-8">
-                  <LoaderCircle className="w-6 h-6 animate-spin text-[#1f66f4] mx-auto mb-2" />
-                  <p className="text-sm text-[#60759b]">{t('manage.candidates.loading', 'Loading candidates...')}</p>
+                  <LoaderCircle className="w-6 h-6 animate-spin text-emerald-600 mx-auto mb-2" />
+                  <p className="text-sm text-slate-700">{'Loading candidates...'}</p>
                 </div>
               ) : candidates.length === 0 ? (
-                <p className="text-sm text-[#60759b]">
-                  {t('manage.candidates.empty', 'No candidates available for this election yet.')}
+                <p className="text-sm text-slate-700">
+                  {'No candidates available for this election yet.'}
                 </p>
               ) : (
                 <div className="space-y-3">
                   {candidates.map((candidate) => (
-                    <div key={candidate._id} className="border-[#e1e8f8] py-3 last:">
+                    <div key={candidate._id} className="border-slate-200 py-3 last:">
                       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                         <div>
-                          <p className="font-semibold text-[#12305d]">{candidate.name}</p>
-                          <p className="text-sm text-[#56719a]">{candidate.party}</p>
-                          <p className="text-xs text-[#6a7fa6] mt-1">
-                            {t('manage.candidates.card.votes', 'Votes: {count}')
+                          <p className="font-semibold text-slate-700">{candidate.name}</p>
+                          <p className="text-sm text-slate-700">{candidate.party}</p>
+                          <p className="text-xs text-slate-700 mt-1">
+                            {'Votes: {count}'
                               .replace('{count}', String(candidate.voteCount))}
                           </p>
                         </div>
@@ -872,18 +869,18 @@ const CandidateManagement = () => {
                           <button
                             type="button"
                             onClick={() => onEditCandidate(candidate)}
-                            className="text-xs rounded-full border border-[#bfd1f8] bg-[#eaf2ff] text-[#1f66f4] px-3 py-1.5 inline-flex items-center gap-1"
+                            className="text-xs rounded-full border border-slate-200 bg-emerald-50 text-emerald-600 px-3 py-1.5 inline-flex items-center gap-1"
                           >
-                            <Pencil className="w-3.5 h-3.5" /> {t('common.edit', 'Edit')}
+                            <Pencil className="w-3.5 h-3.5" /> {'Edit'}
                           </button>
 
                           <button
                             type="button"
                             onClick={() => onDeleteCandidate(candidate._id)}
                             disabled={savingCandidate}
-                            className="text-xs rounded-full border border-[#f3c8c8] bg-[#fff1f1] text-[#b13a3a] px-3 py-1.5 inline-flex items-center gap-1 disabled:opacity-60"
+                            className="text-xs rounded-full border border-slate-200 bg-red-50 text-slate-700 px-3 py-1.5 inline-flex items-center gap-1 disabled:opacity-60"
                           >
-                            <Trash2 className="w-3.5 h-3.5" /> {t('common.delete', 'Delete')}
+                            <Trash2 className="w-3.5 h-3.5" /> {'Delete'}
                           </button>
                         </div>
                       </div>

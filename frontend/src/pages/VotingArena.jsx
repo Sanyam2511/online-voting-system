@@ -15,15 +15,15 @@ import ThemedSelect from '../components/ThemedSelect';
 import api from '../lib/api';
 import { clearAuthSession } from '../lib/auth';
 import { formatElectionStatus } from '../lib/formatting';
-import votingBallotIllustration from '../assets/illustrations/voting-ballot.svg';
+import votingBallotIllustration from '../assets/illustrations/voting-ballot.png';
 import { useUiPreferences } from '../context/useUiPreferences';
 
 const VotingArena = () => {
   const navigate = useNavigate();
-  const { t, withLanguagePath, accessibilityMode } = useUiPreferences();
+  const { accessibilityMode } = useUiPreferences();
   const [candidates, setCandidates] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
-  const [voterName, setVoterName] = useState(t('vote.defaultVoter', 'Citizen'));
+  const [voterName, setVoterName] = useState('Citizen');
   const [hasVoted, setHasVoted] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
@@ -65,21 +65,21 @@ const VotingArena = () => {
   const isElectionLive = selectedElection?.status === 'live';
 
   const accessibilitySteps = useMemo(() => ([
-    { key: 'election', title: t('vote.accessibility.stepElection', 'Choose election') },
-    { key: 'candidate', title: t('vote.accessibility.stepCandidate', 'Select candidate') },
-    { key: 'verification', title: t('vote.accessibility.stepVerification', 'Verify identity') },
-    { key: 'review', title: t('vote.accessibility.stepReview', 'Review & submit') }
-  ]), [t]);
+    { key: 'election', title: 'Choose election' },
+    { key: 'candidate', title: 'Select candidate' },
+    { key: 'verification', title: 'Verify identity' },
+    { key: 'review', title: 'Review & submit' }
+  ]), []);
 
   const lastStepIndex = accessibilitySteps.length - 1;
   const activeStep = accessibilitySteps[activeStepIndex] || accessibilitySteps[0];
 
   const stepHints = useMemo(() => ({
-    election: t('vote.accessibility.instructions', 'Use Tab to move between fields and buttons. Press Enter or Space to activate.'),
-    candidate: t('vote.accessibility.candidateHint', 'Choose one candidate. Use Tab to move through the options.'),
-    verification: t('vote.accessibility.verificationHint', 'Request a 6-digit code and verify it to unlock submission.'),
-    review: t('vote.accessibility.reviewHint', 'Review your selection and confirm the voting terms before submitting.')
-  }), [t]);
+    election: 'Use Tab to move between fields and buttons. Press Enter or Space to activate.',
+    candidate: 'Choose one candidate. Use Tab to move through the options.',
+    verification: 'Request a 6-digit code and verify it to unlock submission.',
+    review: 'Review your selection and confirm the voting terms before submitting.'
+  }), []);
 
   const highestAvailableStep = useMemo(() => {
     if (hasVoted) {
@@ -102,10 +102,10 @@ const VotingArena = () => {
   }, [hasVoted, lastStepIndex, selectedCandidate, selectedElectionId, verificationToken]);
 
   const stepStatusText = useMemo(() => {
-    return t('vote.accessibility.stepStatus', 'Step {current} of {total}')
+    return 'Step {current} of {total}'
       .replace('{current}', String(activeStepIndex + 1))
       .replace('{total}', String(accessibilitySteps.length));
-  }, [accessibilitySteps.length, activeStepIndex, t]);
+  }, [accessibilitySteps.length, activeStepIndex]);
 
   const stepHint = stepHints[activeStep?.key] || stepHints.election;
   const stepHintId = `vote-step-hint-${activeStep?.key || 'election'}`;
@@ -118,7 +118,7 @@ const VotingArena = () => {
       const token = localStorage.getItem('token');
 
       if (!token) {
-        navigate(withLanguagePath('/login'));
+        navigate('/login');
         return;
       }
 
@@ -129,13 +129,13 @@ const VotingArena = () => {
         ]);
 
         if (meResponse.data.role === 'Admin') {
-          navigate(withLanguagePath('/manage-candidates'));
+          navigate('/manage-candidates');
           return;
         }
 
         const electionList = electionsResponse.data?.elections || [];
         setElections(electionList);
-        setVoterName(meResponse.data.name || t('vote.defaultVoter', 'Citizen'));
+        setVoterName(meResponse.data.name || 'Citizen');
 
         if (electionList.length > 0) {
           const liveElection = electionList.find((election) => election.status === 'live');
@@ -144,18 +144,18 @@ const VotingArena = () => {
       } catch (requestError) {
         if (requestError.response?.status === 401) {
           clearAuthSession();
-          navigate(withLanguagePath('/login'));
+          navigate('/login');
           return;
         }
 
-        setError(t('vote.errors.loadElections', 'Unable to load election data. Please refresh and try again.'));
+        setError('Unable to load election data. Please refresh and try again.');
       } finally {
         setPageLoading(false);
       }
     };
 
     bootstrapVotingData();
-  }, [navigate, t, withLanguagePath]);
+  }, [navigate]);
 
   useEffect(() => {
     const fetchElectionBallot = async () => {
@@ -197,7 +197,7 @@ const VotingArena = () => {
         } catch (receiptError) {
           if (receiptError.response?.status === 401) {
             clearAuthSession();
-            navigate(withLanguagePath('/login'));
+            navigate('/login');
             return;
           }
 
@@ -207,20 +207,20 @@ const VotingArena = () => {
           } else {
             setReceipt(null);
             setHasVoted(false);
-            setError(t('vote.errors.loadReceipt', 'Unable to load receipt status for this election.'));
+            setError('Unable to load receipt status for this election.');
           }
         }
       } catch (requestError) {
         if (requestError.response?.status === 401) {
           clearAuthSession();
-          navigate(withLanguagePath('/login'));
+          navigate('/login');
           return;
         }
 
         setCandidates([]);
         setReceipt(null);
         setHasVoted(false);
-        setError(t('vote.errors.loadBallot', 'Unable to load ballot data for this election. Please try again.'));
+        setError('Unable to load ballot data for this election. Please try again.');
       } finally {
         setBallotLoading(false);
       }
@@ -229,7 +229,7 @@ const VotingArena = () => {
     if (!pageLoading) {
       fetchElectionBallot();
     }
-  }, [navigate, pageLoading, selectedElectionId, t, withLanguagePath]);
+  }, [navigate, pageLoading, selectedElectionId]);
 
   useEffect(() => {
     if (!accessibilityMode) {
@@ -303,17 +303,17 @@ const VotingArena = () => {
 
   const requestStrongVerificationCode = async () => {
     if (!selectedElectionId) {
-      setVerificationError(t('vote.errors.selectElectionForCode', 'Select an election before requesting verification code.'));
+      setVerificationError('Select an election before requesting verification code.');
       return;
     }
 
     if (!isElectionLive) {
-      setVerificationError(t('vote.errors.verificationNotLive', 'Verification is available only while election status is live.'));
+      setVerificationError('Verification is available only while election status is live.');
       return;
     }
 
     if (hasVoted) {
-      setVerificationError(t('vote.errors.alreadyVoted', 'Vote is already cast for this election.'));
+      setVerificationError('Vote is already cast for this election.');
       return;
     }
 
@@ -326,11 +326,11 @@ const VotingArena = () => {
       });
 
       setVerificationToken('');
-      setVerificationMessage(response.data?.message || t('vote.verification.requested', 'Verification code requested successfully.'));
+      setVerificationMessage(response.data?.message || 'Verification code requested successfully.');
       setVerificationPreviewCode(response.data?.verificationCodePreview || '');
       setVerificationExpiresAt(response.data?.expiresAt || '');
     } catch (requestError) {
-      setVerificationError(requestError.response?.data?.message || t('vote.errors.requestCodeFailed', 'Could not request verification code.'));
+      setVerificationError(requestError.response?.data?.message || 'Could not request verification code.');
     } finally {
       setRequestingVerificationCode(false);
     }
@@ -340,7 +340,7 @@ const VotingArena = () => {
     const normalizedCode = verificationCode.trim();
 
     if (!/^\d{6}$/.test(normalizedCode)) {
-      setVerificationError(t('vote.errors.invalidCode', 'Enter a valid 6-digit verification code.'));
+      setVerificationError('Enter a valid 6-digit verification code.');
       return;
     }
 
@@ -354,10 +354,10 @@ const VotingArena = () => {
       });
 
       setVerificationToken(response.data?.verificationToken || '');
-      setVerificationMessage(response.data?.message || t('vote.verification.success', 'Verification completed. You can now cast your vote.'));
+      setVerificationMessage(response.data?.message || 'Verification completed. You can now cast your vote.');
     } catch (requestError) {
       setVerificationToken('');
-      setVerificationError(requestError.response?.data?.message || t('vote.errors.verifyFailed', 'Code verification failed.'));
+      setVerificationError(requestError.response?.data?.message || 'Code verification failed.');
     } finally {
       setVerifyingCode(false);
     }
@@ -365,32 +365,32 @@ const VotingArena = () => {
 
   const handleConfirmVote = async () => {
     if (!selectedElectionId) {
-      setError(t('vote.errors.selectElection', 'Select an election before voting.'));
+      setError('Select an election before voting.');
       return;
     }
 
     if (!isElectionLive) {
-      setError(t('vote.errors.notLive', 'This election is not currently accepting votes.'));
+      setError('This election is not currently accepting votes.');
       return;
     }
 
     if (hasVoted) {
-      setError(t('vote.errors.alreadyVoted', 'You have already cast your vote in this election.'));
+      setError('You have already cast your vote in this election.');
       return;
     }
 
     if (!agreeToTerms) {
-      setError(t('vote.errors.confirmTerms', 'Please confirm the voting terms to continue'));
+      setError('Please confirm the voting terms to continue');
       return;
     }
 
     if (!selectedCandidate) {
-      setError(t('vote.errors.selectCandidate', 'Please select one candidate to continue'));
+      setError('Please select one candidate to continue');
       return;
     }
 
     if (!verificationToken) {
-      setError(t('vote.errors.completeVerification', 'Complete strong voter verification before submitting your vote.'));
+      setError('Complete strong voter verification before submitting your vote.');
       return;
     }
 
@@ -405,7 +405,7 @@ const VotingArena = () => {
         verificationToken
       });
 
-      setSuccess(response.data?.message || t('vote.success', 'Vote submitted successfully!'));
+      setSuccess(response.data?.message || 'Vote submitted successfully!');
       setReceipt(response.data?.receipt || null);
       setHasVoted(true);
       setVerificationToken('');
@@ -423,7 +423,7 @@ const VotingArena = () => {
         })
       );
     } catch (err) {
-      const message = err.response?.data?.message || t('vote.errors.submitFailed', 'Failed to submit vote. Please try again.');
+      const message = err.response?.data?.message || 'Failed to submit vote. Please try again.';
       setError(message);
 
       if (message.toLowerCase().includes('verification')) {
@@ -437,25 +437,25 @@ const VotingArena = () => {
   return (
     <main className="min-h-screen page-shell pt-20 pb-14">
       <div className="section-wrap">
-        <header className="glass-panel p-6 sm:p-7 mb-7">
+        <header className="bento-card p-6 sm:p-7 mb-7">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
             <div>
               <p className="eyebrow mb-4">
-                <Vote className="w-4 h-4" /> {t('vote.eyebrow', 'Official Ballot Arena')}
+                <Vote className="w-4 h-4" /> {'Official Ballot Arena'}
               </p>
-              <h1 className="text-2xl sm:text-3xl text-[#102347] mb-2">{t('vote.title', 'Cast Your Vote')}</h1>
-              <p className="text-[#5c7197]">{t('vote.welcome', 'Welcome')}, {voterName}. {t('vote.subtitle', 'Select one candidate and confirm your ballot.')}</p>
+              <h1 className="font-display text-2xl sm:text-3xl text-slate-900 mb-2">{'Cast Your Vote'}</h1>
+              <p className="text-slate-600">{'Welcome'}, {voterName}. {'Select one candidate and confirm your ballot.'}</p>
               {accessibilityMode && (
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="metric-pill">{t('vote.accessibility.badge', 'Accessibility mode enabled')}</span>
+                  <span className="metric-pill">{'Accessibility mode enabled'}</span>
                 </div>
               )}
             </div>
 
-            <div className="border-[#cddaf5] pb-3 min-w-[220px]">
-              <p className="text-xs uppercase tracking-[0.12em] text-[#61769b] mb-2">{t('vote.statusTitle', 'Voting Status')}</p>
-              <p className={`text-sm font-semibold ${hasVoted ? 'text-[#1f9c4c]' : 'text-[#17386f]'}`}>
-                {hasVoted ? t('vote.status.submitted', 'Vote already submitted') : t('vote.status.awaiting', 'Awaiting your vote')}
+            <div className="border-slate-200 pb-3 min-w-[220px]">
+              <p className="text-xs uppercase tracking-[0.12em] text-slate-500 mb-2">{'Voting Status'}</p>
+              <p className={`text-sm font-semibold ${hasVoted ? 'text-emerald-600' : 'text-slate-900'}`}>
+                {hasVoted ? 'Vote already submitted' : 'Awaiting your vote'}
               </p>
             </div>
           </div>
@@ -464,15 +464,15 @@ const VotingArena = () => {
             <>
               <div className="mt-5 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 items-end">
                 <div>
-                  <label htmlFor="election-picker" className="block text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
-                    {t('vote.selectElection', 'Select Election')}
+                  <label htmlFor="election-picker" className="block text-xs uppercase tracking-[0.12em] text-slate-500 mb-2">
+                    {'Select Election'}
                   </label>
                   <ThemedSelect
                     id="election-picker"
                     value={selectedElectionId}
                     onValueChange={setSelectedElectionId}
                     disabled={pageLoading || ballotLoading || elections.length === 0}
-                    placeholder={elections.length === 0 ? t('vote.noElections', 'No elections available') : t('vote.selectElectionPlaceholder', 'Select election')}
+                    placeholder={elections.length === 0 ? 'No elections available' : 'Select election'}
                     options={elections.map((election) => ({
                       value: election._id,
                       label: election.name
@@ -481,63 +481,63 @@ const VotingArena = () => {
                 </div>
 
                 {selectedElection && (
-                  <div className="border-[#d2def6] pb-3">
-                    <p className="text-xs text-[#60739a] inline-flex items-center gap-2">
-                      <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status, t)}
+                  <div className="border-slate-200 pb-3">
+                    <p className="text-xs text-slate-500 inline-flex items-center gap-2">
+                      <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status)}
                     </p>
                   </div>
                 )}
               </div>
 
               <div className="mt-4 flex flex-wrap gap-2">
-                <span className="metric-pill">{t('vote.metric.candidates', 'Candidates')}: {candidates.length}</span>
-                <span className="metric-pill">{t('vote.metric.votes', 'Election Votes')}: {selectedElection?.totalVotesCast || 0}</span>
-                <span className="metric-pill">{t('vote.metric.electionCandidates', 'Election Candidates')}: {selectedElection?.totalCandidates || 0}</span>
+                <span className="metric-pill">{'Candidates'}: {candidates.length}</span>
+                <span className="metric-pill">{'Election Votes'}: {selectedElection?.totalVotesCast || 0}</span>
+                <span className="metric-pill">{'Election Candidates'}: {selectedElection?.totalCandidates || 0}</span>
               </div>
             </>
           )}
         </header>
 
         {error && (
-          <div className="mb-6 p-4 rounded-2xl bg-[#fff1f1] border border-[#f1c6c6] flex gap-3" role="alert" aria-live="assertive">
-            <AlertCircle className="w-5 h-5 text-[#c73939] flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-[#a62f2f]">{error}</p>
+          <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 flex gap-3" role="alert" aria-live="assertive">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-red-600">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="mb-6 p-4 rounded-2xl bg-[#eefcf3] border border-[#bde8cc] flex gap-3" role="status" aria-live="polite">
-            <CheckCircle2 className="w-5 h-5 text-[#1f9c4c] flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-[#1b7a3d]">{success}</p>
+          <div className="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex gap-3" role="status" aria-live="polite">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-emerald-600">{success}</p>
           </div>
         )}
 
         {pageLoading ? (
-          <div className="surface-card p-10 text-center">
-            <LoaderCircle className="w-7 h-7 animate-spin text-[#1f66f4] mx-auto mb-3" />
-            <p className="text-[#4e6692]">{t('vote.loading', 'Loading official ballot data...')}</p>
+          <div className="bento-card p-10 text-center">
+            <LoaderCircle className="w-7 h-7 animate-spin text-emerald-600 mx-auto mb-3" />
+            <p className="text-slate-600">{'Loading official ballot data...'}</p>
           </div>
         ) : elections.length === 0 ? (
-          <div className="surface-card p-8">
-            <h2 className="text-2xl text-[#102347] mb-2">{t('vote.noElectionTitle', 'No election is available')}</h2>
-            <p className="text-[#5e7398]">{t('vote.noElectionBody', 'Admin can create an election first, then voting will be enabled.')}</p>
+          <div className="bento-card p-8">
+            <h2 className="font-display text-2xl text-slate-900 mb-2">{'No election is available'}</h2>
+            <p className="text-slate-600">{'Admin can create an election first, then voting will be enabled.'}</p>
           </div>
         ) : accessibilityMode ? (
           <div className="space-y-6">
-            <section className="surface-card p-5">
+            <section className="bento-card p-5">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
-                    {t('vote.accessibility.stepperLabel', 'Voting steps')}
+                  <p className="text-xs uppercase tracking-[0.12em] text-slate-500 mb-2">
+                    {'Voting steps'}
                   </p>
-                  <p className="text-sm text-[#5f7398]">
-                    {t('vote.accessibility.instructions', 'Use Tab to move between fields and buttons. Press Enter or Space to activate.')}
+                  <p className="text-sm text-slate-500">
+                    {'Use Tab to move between fields and buttons. Press Enter or Space to activate.'}
                   </p>
                 </div>
                 <span className="metric-pill">{stepStatusText}</span>
               </div>
 
-              <nav aria-label={t('vote.accessibility.stepperLabel', 'Voting steps')} className="mt-4">
+              <nav aria-label={'Voting steps'} className="mt-4">
                 <div className="flex flex-wrap gap-2">
                   {accessibilitySteps.map((step, index) => {
                     const isActive = index === activeStepIndex;
@@ -564,21 +564,21 @@ const VotingArena = () => {
             <section
               ref={stepFocusRef}
               tabIndex="-1"
-              className="surface-card p-6"
+              className="bento-card p-6"
               aria-labelledby="vote-step-title"
               aria-describedby={`${stepHintId} vote-step-status`}
             >
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-                <h2 id="vote-step-title" className="text-2xl text-[#102347]">{activeStep?.title}</h2>
-                <span className="text-xs uppercase tracking-[0.12em] text-[#60739a]">{stepStatusText}</span>
+                <h2 id="vote-step-title" className="font-display text-2xl text-slate-900">{activeStep?.title}</h2>
+                <span className="text-xs uppercase tracking-[0.12em] text-slate-500">{stepStatusText}</span>
               </div>
-              <p id={stepHintId} className="text-sm text-[#5f7398] mb-4">{stepHint}</p>
+              <p id={stepHintId} className="text-sm text-slate-500 mb-4">{stepHint}</p>
 
               {activeStep?.key === 'election' && (
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="election-picker-accessible" className="block text-xs uppercase tracking-[0.12em] text-[#5f7398] mb-2">
-                      {t('vote.selectElection', 'Select Election')}
+                    <label htmlFor="election-picker-accessible" className="block text-xs uppercase tracking-[0.12em] text-slate-500 mb-2">
+                      {'Select Election'}
                     </label>
                     <ThemedSelect
                       id="election-picker-accessible"
@@ -586,7 +586,7 @@ const VotingArena = () => {
                       onValueChange={setSelectedElectionId}
                       ariaDescribedBy={stepHintId}
                       disabled={pageLoading || ballotLoading || elections.length === 0}
-                      placeholder={elections.length === 0 ? t('vote.noElections', 'No elections available') : t('vote.selectElectionPlaceholder', 'Select election')}
+                      placeholder={elections.length === 0 ? 'No elections available' : 'Select election'}
                       options={elections.map((election) => ({
                         value: election._id,
                         label: election.name
@@ -595,17 +595,17 @@ const VotingArena = () => {
                   </div>
 
                   {selectedElection && (
-                    <div className="rounded-2xl border border-[#d2def6] bg-white px-4 py-3">
-                      <p className="text-xs text-[#60739a] inline-flex items-center gap-2">
-                        <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status, t)}
+                    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                      <p className="text-xs text-slate-500 inline-flex items-center gap-2">
+                        <CalendarDays className="w-4 h-4" /> {formatElectionStatus(selectedElection.status)}
                       </p>
                     </div>
                   )}
 
                   <div className="flex flex-wrap gap-2">
-                    <span className="metric-pill">{t('vote.metric.candidates', 'Candidates')}: {candidates.length}</span>
-                    <span className="metric-pill">{t('vote.metric.votes', 'Election Votes')}: {selectedElection?.totalVotesCast || 0}</span>
-                    <span className="metric-pill">{t('vote.metric.electionCandidates', 'Election Candidates')}: {selectedElection?.totalCandidates || 0}</span>
+                    <span className="metric-pill">{'Candidates'}: {candidates.length}</span>
+                    <span className="metric-pill">{'Election Votes'}: {selectedElection?.totalVotesCast || 0}</span>
+                    <span className="metric-pill">{'Election Candidates'}: {selectedElection?.totalCandidates || 0}</span>
                   </div>
                 </div>
               )}
@@ -613,14 +613,14 @@ const VotingArena = () => {
               {activeStep?.key === 'candidate' && (
                 <div className="space-y-6">
                   {ballotLoading ? (
-                    <div className="surface-card p-10 text-center">
-                      <LoaderCircle className="w-7 h-7 animate-spin text-[#1f66f4] mx-auto mb-3" />
-                      <p className="text-[#4e6692]">{t('vote.loadingBallot', 'Loading selected election ballot...')}</p>
+                    <div className="bento-card p-10 text-center">
+                      <LoaderCircle className="w-7 h-7 animate-spin text-emerald-600 mx-auto mb-3" />
+                      <p className="text-slate-600">{'Loading selected election ballot...'}</p>
                     </div>
                   ) : Object.keys(groupedCandidates).length === 0 ? (
-                    <div className="surface-card p-8">
-                      <h2 className="text-2xl text-[#102347] mb-2">{t('vote.noCandidatesTitle', 'No candidates available')}</h2>
-                      <p className="text-[#5e7398]">{t('vote.noCandidatesBody', 'Candidates have not been configured for this election yet.')}</p>
+                    <div className="bento-card p-8">
+                      <h2 className="font-display text-2xl text-slate-900 mb-2">{'No candidates available'}</h2>
+                      <p className="text-slate-600">{'Candidates have not been configured for this election yet.'}</p>
                     </div>
                   ) : (
                     <div className="space-y-6">
@@ -641,12 +641,12 @@ const VotingArena = () => {
 
               {activeStep?.key === 'verification' && (
                 <div className="space-y-4">
-                  <div className="border-[#d2def6] pb-4">
-                    <p className="text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2 inline-flex items-center gap-2">
-                      <KeyRound className="w-3.5 h-3.5" /> {t('vote.verification.title', 'Strong Voter Verification')}
+                  <div className="border-slate-200 pb-4">
+                    <p className="text-xs uppercase tracking-[0.1em] text-slate-500 mb-2 inline-flex items-center gap-2">
+                      <KeyRound className="w-3.5 h-3.5" /> {'Strong Voter Verification'}
                     </p>
-                    <p className="text-xs text-[#597099] leading-relaxed mb-3">
-                      {t('vote.verification.body', 'Request a one-time 6-digit code, verify it, then submit your ballot.')}
+                    <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                      {'Request a one-time 6-digit code, verify it, then submit your ballot.'}
                     </p>
 
                     <div className="flex flex-wrap gap-2 mb-3">
@@ -654,9 +654,9 @@ const VotingArena = () => {
                         type="button"
                         onClick={requestStrongVerificationCode}
                         disabled={requestingVerificationCode || hasVoted || !isElectionLive}
-                        className="text-xs rounded-full border border-[#bfd1f8] bg-[#eaf2ff] text-[#1f66f4] px-3 py-1.5 font-semibold disabled:opacity-60"
+                        className="text-xs rounded-full border border-slate-200 bg-emerald-50 text-emerald-600 px-3 py-1.5 font-semibold disabled:opacity-60"
                       >
-                        {requestingVerificationCode ? t('vote.verification.requesting', 'Requesting...') : t('vote.verification.request', 'Request Code')}
+                        {requestingVerificationCode ? 'Requesting...' : 'Request Code'}
                       </button>
 
                       <input
@@ -664,7 +664,7 @@ const VotingArena = () => {
                         value={verificationCode}
                         onChange={(event) => setVerificationCode(event.target.value.replace(/\D/g, '').slice(0, 6))}
                         className="form-field !py-1.5 !px-3 max-w-[150px]"
-                        placeholder={t('vote.verification.placeholder', '6-digit code')}
+                        placeholder={'6-digit code'}
                         disabled={hasVoted || !isElectionLive}
                       />
 
@@ -672,34 +672,34 @@ const VotingArena = () => {
                         type="button"
                         onClick={verifyStrongCode}
                         disabled={verifyingCode || hasVoted || !isElectionLive}
-                        className="text-xs rounded-full border border-[#bfd1f8] bg-white text-[#35598e] px-3 py-1.5 font-semibold disabled:opacity-60"
+                        className="text-xs rounded-full border border-slate-200 bg-white text-slate-600 px-3 py-1.5 font-semibold disabled:opacity-60"
                       >
-                        {verifyingCode ? t('vote.verification.verifying', 'Verifying...') : t('vote.verification.verify', 'Verify Code')}
+                        {verifyingCode ? 'Verifying...' : 'Verify Code'}
                       </button>
                     </div>
 
                     {verificationPreviewCode && (
-                      <p className="text-xs text-[#5e7398] mb-2">
-                        {t('vote.verification.preview', 'Dev preview code')}: <span className="font-semibold text-[#1f66f4]">{verificationPreviewCode}</span>
+                      <p className="text-xs text-slate-600 mb-2">
+                        {'Dev preview code'}: <span className="font-semibold text-emerald-600">{verificationPreviewCode}</span>
                       </p>
                     )}
 
                     {verificationExpiresAt && (
-                      <p className="text-[11px] text-[#6b7fa6] mb-2">
-                        {t('vote.verification.expires', 'Code expires at')}: {new Date(verificationExpiresAt).toLocaleTimeString()}
+                      <p className="text-[11px] text-slate-500 mb-2">
+                        {'Code expires at'}: {new Date(verificationExpiresAt).toLocaleTimeString()}
                       </p>
                     )}
 
                     {verificationMessage && !verificationError && (
-                      <p className="text-xs text-[#1f7d3f]" role="status" aria-live="polite">{verificationMessage}</p>
+                      <p className="text-xs text-emerald-600" role="status" aria-live="polite">{verificationMessage}</p>
                     )}
 
                     {verificationError && (
-                      <p className="text-xs text-[#a43a3a]" role="alert" aria-live="assertive">{verificationError}</p>
+                      <p className="text-xs text-red-600" role="alert" aria-live="assertive">{verificationError}</p>
                     )}
 
                     {verificationToken && (
-                      <p className="text-xs text-[#1f66f4] mt-2 font-semibold">{t('vote.verification.active', 'Verification active for this election.')}</p>
+                      <p className="text-xs text-emerald-600 mt-2 font-semibold">{'Verification active for this election.'}</p>
                     )}
                   </div>
                 </div>
@@ -708,28 +708,28 @@ const VotingArena = () => {
               {activeStep?.key === 'review' && (
                 <div className="space-y-4">
                   {selectedElection && (
-                    <div className="border-[#cad8f3] pb-3">
-                      <p className="text-sm text-[#5f7298] mb-1">{t('vote.summary.election', 'Election')}</p>
-                      <p className="font-semibold text-[#122f5d]">{selectedElection.name}</p>
-                      <p className="text-xs text-[#4f6590] mt-1">{t('vote.statusLabel', 'Status')}: {formatElectionStatus(selectedElection.status, t)}</p>
+                    <div className="border-slate-200 pb-3">
+                      <p className="text-sm text-slate-700 mb-1">{'Election'}</p>
+                      <p className="font-semibold text-slate-900">{selectedElection.name}</p>
+                      <p className="text-xs text-slate-600 mt-1">{'Status'}: {formatElectionStatus(selectedElection.status)}</p>
                     </div>
                   )}
 
                   {selectedCandidate ? (
-                    <div className="border-[#cad8f3] pb-3">
-                      <p className="text-sm text-[#5f7298] mb-1">{t('vote.summary.selectedCandidate', 'Selected Candidate')}</p>
-                      <p className="font-semibold text-[#122f5d]">{selectedCandidate.name}</p>
-                      <p className="text-sm text-[#4f6590]">{selectedCandidate.party}</p>
+                    <div className="border-slate-200 pb-3">
+                      <p className="text-sm text-slate-700 mb-1">{'Selected Candidate'}</p>
+                      <p className="font-semibold text-slate-900">{selectedCandidate.name}</p>
+                      <p className="text-sm text-slate-600">{selectedCandidate.party}</p>
                     </div>
                   ) : (
-                    <div className="border-[#bfd1f8] pb-3">
-                      <p className="text-sm text-[#5e7196]">{t('vote.summary.noneSelected', 'No candidate selected yet.')}</p>
+                    <div className="border-slate-200 pb-3">
+                      <p className="text-sm text-slate-700">{'No candidate selected yet.'}</p>
                     </div>
                   )}
 
-                  <div className="border-[#d2def6] pb-3">
-                    <p className="text-sm text-[#4f6691] leading-relaxed">
-                      {t('vote.summary.oneVote', 'One account can cast only one vote per election. Review your selection carefully before submitting.')}
+                  <div className="border-slate-200 pb-3">
+                    <p className="text-sm text-slate-700 leading-relaxed">
+                      {'One account can cast only one vote per election. Review your selection carefully before submitting.'}
                     </p>
                   </div>
 
@@ -739,10 +739,10 @@ const VotingArena = () => {
                       checked={agreeToTerms}
                       onChange={(event) => setAgreeToTerms(event.target.checked)}
                       disabled={hasVoted || loading || !isElectionLive}
-                      className="mt-1 h-4 w-4 rounded border-[#abc1eb]"
+                      className="mt-1 h-4 w-4 rounded border-slate-200"
                     />
-                    <span className="text-sm text-[#56709a]">
-                      {t('vote.terms', 'I confirm this vote is my independent and final decision.')}
+                    <span className="text-sm text-slate-700">
+                      {'I confirm this vote is my independent and final decision.'}
                     </span>
                   </label>
 
@@ -750,41 +750,41 @@ const VotingArena = () => {
                     type="button"
                     onClick={handleConfirmVote}
                     disabled={loading || hasVoted || !selectedCandidate || !agreeToTerms || !isElectionLive || !verificationToken}
-                    className="btn-primary w-full disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="btn-black-pill w-full disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {loading
-                      ? t('vote.cta.submitting', 'Submitting vote...')
+                      ? 'Submitting vote...'
                       : hasVoted
-                        ? t('vote.cta.submitted', 'Vote Already Submitted')
+                        ? 'Vote Already Submitted'
                         : !isElectionLive
-                          ? t('vote.cta.notLive', 'Election Not Live')
+                          ? 'Election Not Live'
                           : !verificationToken
-                            ? t('vote.cta.completeVerification', 'Complete Verification First')
-                            : t('vote.cta.confirm', 'Confirm Vote')}
+                            ? 'Complete Verification First'
+                            : 'Confirm Vote'}
                   </button>
 
-                  <p className="text-xs text-[#60739a] inline-flex items-start gap-2">
+                  <p className="text-xs text-slate-500 inline-flex items-start gap-2">
                     <ShieldCheck className="w-4 h-4 mt-0.5" />
-                    {t('vote.footerNote', 'Submission is protected by authenticated session and single-vote enforcement.')}
+                    {'Submission is protected by authenticated session and single-vote enforcement.'}
                   </p>
 
                   {hasVoted && (
                     <div>
-                      <p className="text-xs text-[#1f9c4c] inline-flex items-center gap-2">
+                      <p className="text-xs text-emerald-600 inline-flex items-center gap-2">
                         <BadgeCheck className="w-4 h-4" />
-                        {t('vote.recorded', 'Your vote has been successfully recorded.')}
+                        {'Your vote has been successfully recorded.'}
                       </p>
 
                       {receipt && (
-                        <div className="mt-3 border-[#bcd0f5] pt-3">
-                          <p className="text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-1">{t('vote.receipt.title', 'Vote Receipt')}</p>
-                          <p className="text-sm font-semibold text-[#1f66f4] break-all">{receiptCode}</p>
-                          <p className="text-xs text-[#56709a] mt-2">{t('vote.statusLabel', 'Status')}: {receipt.status}</p>
+                        <div className="mt-3 border-slate-200 pt-3">
+                          <p className="text-xs uppercase tracking-[0.1em] text-slate-500 mb-1">{'Vote Receipt'}</p>
+                          <p className="text-sm font-semibold text-emerald-600 break-all">{receiptCode}</p>
+                          <p className="text-xs text-slate-700 mt-2">{'Status'}: {receipt.status}</p>
                           <Link
-                            to={withLanguagePath(`/receipt?code=${encodeURIComponent(receiptCode)}&electionId=${encodeURIComponent(selectedElectionId)}`)}
+                            to={`/receipt?code=${encodeURIComponent(receiptCode)}&electionId=${encodeURIComponent(selectedElectionId)}`}
                             className="btn-secondary mt-3 !py-2 !px-4 text-xs inline-flex"
                           >
-                            {t('vote.receipt.verify', 'Verify This Receipt')}
+                            {'Verify This Receipt'}
                           </Link>
                         </div>
                       )}
@@ -801,7 +801,7 @@ const VotingArena = () => {
                 disabled={!canGoBack}
                 className="btn-secondary"
               >
-                {t('vote.accessibility.back', 'Back')}
+                {'Back'}
               </button>
 
               {activeStepIndex < lastStepIndex && (
@@ -809,9 +809,9 @@ const VotingArena = () => {
                   type="button"
                   onClick={handleNextStep}
                   disabled={!canGoNext}
-                  className="btn-primary"
+                  className="btn-black-pill"
                 >
-                  {t('vote.accessibility.next', 'Continue')}
+                  {'Continue'}
                 </button>
               )}
             </div>
@@ -820,14 +820,14 @@ const VotingArena = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
             <section>
               {ballotLoading ? (
-                <div className="surface-card p-10 text-center">
-                  <LoaderCircle className="w-7 h-7 animate-spin text-[#1f66f4] mx-auto mb-3" />
-                  <p className="text-[#4e6692]">{t('vote.loadingBallot', 'Loading selected election ballot...')}</p>
+                <div className="bento-card p-10 text-center">
+                  <LoaderCircle className="w-7 h-7 animate-spin text-emerald-600 mx-auto mb-3" />
+                  <p className="text-slate-600">{'Loading selected election ballot...'}</p>
                 </div>
               ) : Object.keys(groupedCandidates).length === 0 ? (
-                <div className="surface-card p-8">
-                  <h2 className="text-2xl text-[#102347] mb-2">{t('vote.noCandidatesTitle', 'No candidates available')}</h2>
-                  <p className="text-[#5e7398]">{t('vote.noCandidatesBody', 'Candidates have not been configured for this election yet.')}</p>
+                <div className="bento-card p-8">
+                  <h2 className="font-display text-2xl text-slate-900 mb-2">{'No candidates available'}</h2>
+                  <p className="text-slate-600">{'Candidates have not been configured for this election yet.'}</p>
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -845,50 +845,50 @@ const VotingArena = () => {
               )}
             </section>
 
-            <aside className="glass-panel p-6 h-fit lg:sticky lg:top-28">
-              <p className="text-xs uppercase tracking-[0.12em] text-[#60739a] mb-3">{t('vote.summary.title', 'Vote Summary')}</p>
+            <aside className="bento-card p-6 h-fit lg:sticky lg:top-28">
+              <p className="text-xs uppercase tracking-[0.12em] text-slate-500 mb-3">{'Vote Summary'}</p>
 
               <div className="rounded-2xl overflow-hidden mb-4 shadow-sm">
                 <img
                   src={votingBallotIllustration}
-                  alt={t('vote.summary.imageAlt', 'Digital ballot and secure vote confirmation')}
+                  alt={'Digital ballot and secure vote confirmation'}
                   className="w-full h-40 object-cover"
                   loading="lazy"
                 />
               </div>
 
               {selectedElection && (
-                <div className="border-[#cad8f3] pb-3 mb-4">
-                  <p className="text-sm text-[#5f7298] mb-1">{t('vote.summary.election', 'Election')}</p>
-                  <p className="font-semibold text-[#122f5d]">{selectedElection.name}</p>
-                  <p className="text-xs text-[#4f6590] mt-1">{t('vote.statusLabel', 'Status')}: {formatElectionStatus(selectedElection.status, t)}</p>
+                <div className="border-slate-200 pb-3 mb-4">
+                  <p className="text-sm text-slate-700 mb-1">{'Election'}</p>
+                  <p className="font-semibold text-slate-900">{selectedElection.name}</p>
+                  <p className="text-xs text-slate-600 mt-1">{'Status'}: {formatElectionStatus(selectedElection.status)}</p>
                 </div>
               )}
 
               {selectedCandidate ? (
-                <div className="border-[#cad8f3] pb-3 mb-4">
-                  <p className="text-sm text-[#5f7298] mb-1">{t('vote.summary.selectedCandidate', 'Selected Candidate')}</p>
-                  <p className="font-semibold text-[#122f5d]">{selectedCandidate.name}</p>
-                  <p className="text-sm text-[#4f6590]">{selectedCandidate.party}</p>
+                <div className="border-slate-200 pb-3 mb-4">
+                  <p className="text-sm text-slate-700 mb-1">{'Selected Candidate'}</p>
+                  <p className="font-semibold text-slate-900">{selectedCandidate.name}</p>
+                  <p className="text-sm text-slate-600">{selectedCandidate.party}</p>
                 </div>
               ) : (
-                <div className="border-[#bfd1f8] pb-3 mb-4">
-                  <p className="text-sm text-[#5e7196]">{t('vote.summary.noneSelected', 'No candidate selected yet.')}</p>
+                <div className="border-slate-200 pb-3 mb-4">
+                  <p className="text-sm text-slate-700">{'No candidate selected yet.'}</p>
                 </div>
               )}
 
-              <div className="border-[#d2def6] pb-3 mb-5">
-                <p className="text-sm text-[#4f6691] leading-relaxed">
-                  {t('vote.summary.oneVote', 'One account can cast only one vote per election. Review your selection carefully before submitting.')}
+              <div className="border-slate-200 pb-3 mb-5">
+                <p className="text-sm text-slate-700 leading-relaxed">
+                  {'One account can cast only one vote per election. Review your selection carefully before submitting.'}
                 </p>
               </div>
 
-              <div className="border-[#d2def6] pb-3 mb-5">
-                <p className="text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2 inline-flex items-center gap-2">
-                  <KeyRound className="w-3.5 h-3.5" /> {t('vote.verification.title', 'Strong Voter Verification')}
+              <div className="border-slate-200 pb-3 mb-5">
+                <p className="text-xs uppercase tracking-[0.1em] text-slate-500 mb-2 inline-flex items-center gap-2">
+                  <KeyRound className="w-3.5 h-3.5" /> {'Strong Voter Verification'}
                 </p>
-                <p className="text-xs text-[#597099] leading-relaxed mb-3">
-                  {t('vote.verification.body', 'Request a one-time 6-digit code, verify it, then submit your ballot.')}
+                <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                  {'Request a one-time 6-digit code, verify it, then submit your ballot.'}
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-3">
@@ -896,9 +896,9 @@ const VotingArena = () => {
                     type="button"
                     onClick={requestStrongVerificationCode}
                     disabled={requestingVerificationCode || hasVoted || !isElectionLive}
-                    className="text-xs rounded-full border border-[#bfd1f8] bg-[#eaf2ff] text-[#1f66f4] px-3 py-1.5 font-semibold disabled:opacity-60"
+                    className="text-xs rounded-full border border-slate-200 bg-emerald-50 text-emerald-600 px-3 py-1.5 font-semibold disabled:opacity-60"
                   >
-                    {requestingVerificationCode ? t('vote.verification.requesting', 'Requesting...') : t('vote.verification.request', 'Request Code')}
+                    {requestingVerificationCode ? 'Requesting...' : 'Request Code'}
                   </button>
 
                   <input
@@ -906,7 +906,7 @@ const VotingArena = () => {
                     value={verificationCode}
                     onChange={(event) => setVerificationCode(event.target.value.replace(/\D/g, '').slice(0, 6))}
                     className="form-field !py-1.5 !px-3 max-w-[150px]"
-                    placeholder={t('vote.verification.placeholder', '6-digit code')}
+                    placeholder={'6-digit code'}
                     disabled={hasVoted || !isElectionLive}
                   />
 
@@ -914,34 +914,34 @@ const VotingArena = () => {
                     type="button"
                     onClick={verifyStrongCode}
                     disabled={verifyingCode || hasVoted || !isElectionLive}
-                    className="text-xs rounded-full border border-[#bfd1f8] bg-white text-[#35598e] px-3 py-1.5 font-semibold disabled:opacity-60"
+                    className="text-xs rounded-full border border-slate-200 bg-white text-slate-600 px-3 py-1.5 font-semibold disabled:opacity-60"
                   >
-                    {verifyingCode ? t('vote.verification.verifying', 'Verifying...') : t('vote.verification.verify', 'Verify Code')}
+                    {verifyingCode ? 'Verifying...' : 'Verify Code'}
                   </button>
                 </div>
 
                 {verificationPreviewCode && (
-                  <p className="text-xs text-[#5e7398] mb-2">
-                    {t('vote.verification.preview', 'Dev preview code')}: <span className="font-semibold text-[#1f66f4]">{verificationPreviewCode}</span>
+                  <p className="text-xs text-slate-600 mb-2">
+                    {'Dev preview code'}: <span className="font-semibold text-emerald-600">{verificationPreviewCode}</span>
                   </p>
                 )}
 
                 {verificationExpiresAt && (
-                  <p className="text-[11px] text-[#6b7fa6] mb-2">
-                    {t('vote.verification.expires', 'Code expires at')}: {new Date(verificationExpiresAt).toLocaleTimeString()}
+                  <p className="text-[11px] text-slate-500 mb-2">
+                    {'Code expires at'}: {new Date(verificationExpiresAt).toLocaleTimeString()}
                   </p>
                 )}
 
                 {verificationMessage && !verificationError && (
-                  <p className="text-xs text-[#1f7d3f]" role="status" aria-live="polite">{verificationMessage}</p>
+                  <p className="text-xs text-emerald-600" role="status" aria-live="polite">{verificationMessage}</p>
                 )}
 
                 {verificationError && (
-                  <p className="text-xs text-[#a43a3a]" role="alert" aria-live="assertive">{verificationError}</p>
+                  <p className="text-xs text-red-600" role="alert" aria-live="assertive">{verificationError}</p>
                 )}
 
                 {verificationToken && (
-                  <p className="text-xs text-[#1f66f4] mt-2 font-semibold">{t('vote.verification.active', 'Verification active for this election.')}</p>
+                  <p className="text-xs text-emerald-600 mt-2 font-semibold">{'Verification active for this election.'}</p>
                 )}
               </div>
 
@@ -951,10 +951,10 @@ const VotingArena = () => {
                   checked={agreeToTerms}
                   onChange={(event) => setAgreeToTerms(event.target.checked)}
                   disabled={hasVoted || loading || !isElectionLive}
-                  className="mt-1 h-4 w-4 rounded border-[#abc1eb]"
+                  className="mt-1 h-4 w-4 rounded border-slate-200"
                 />
-                <span className="text-sm text-[#56709a]">
-                  {t('vote.terms', 'I confirm this vote is my independent and final decision.')}
+                <span className="text-sm text-slate-700">
+                  {'I confirm this vote is my independent and final decision.'}
                 </span>
               </label>
 
@@ -962,41 +962,41 @@ const VotingArena = () => {
                 type="button"
                 onClick={handleConfirmVote}
                 disabled={loading || hasVoted || !selectedCandidate || !agreeToTerms || !isElectionLive || !verificationToken}
-                className="btn-primary w-full disabled:opacity-60 disabled:cursor-not-allowed"
+                className="btn-black-pill w-full disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {loading
-                  ? t('vote.cta.submitting', 'Submitting vote...')
+                  ? 'Submitting vote...'
                   : hasVoted
-                    ? t('vote.cta.submitted', 'Vote Already Submitted')
+                    ? 'Vote Already Submitted'
                     : !isElectionLive
-                      ? t('vote.cta.notLive', 'Election Not Live')
+                      ? 'Election Not Live'
                       : !verificationToken
-                        ? t('vote.cta.completeVerification', 'Complete Verification First')
-                        : t('vote.cta.confirm', 'Confirm Vote')}
+                        ? 'Complete Verification First'
+                        : 'Confirm Vote'}
               </button>
 
-              <p className="text-xs text-[#60739a] mt-4 inline-flex items-start gap-2">
+              <p className="text-xs text-slate-500 mt-4 inline-flex items-start gap-2">
                 <ShieldCheck className="w-4 h-4 mt-0.5" />
-                {t('vote.footerNote', 'Submission is protected by authenticated session and single-vote enforcement.')}
+                {'Submission is protected by authenticated session and single-vote enforcement.'}
               </p>
 
               {hasVoted && (
                 <div className="mt-3">
-                  <p className="text-xs text-[#1f9c4c] inline-flex items-center gap-2">
+                  <p className="text-xs text-emerald-600 inline-flex items-center gap-2">
                     <BadgeCheck className="w-4 h-4" />
-                    {t('vote.recorded', 'Your vote has been successfully recorded.')}
+                    {'Your vote has been successfully recorded.'}
                   </p>
 
                   {receipt && (
-                    <div className="mt-3 border-[#bcd0f5] pt-3">
-                      <p className="text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-1">{t('vote.receipt.title', 'Vote Receipt')}</p>
-                      <p className="text-sm font-semibold text-[#1f66f4] break-all">{receiptCode}</p>
-                      <p className="text-xs text-[#56709a] mt-2">{t('vote.statusLabel', 'Status')}: {receipt.status}</p>
+                    <div className="mt-3 border-slate-200 pt-3">
+                      <p className="text-xs uppercase tracking-[0.1em] text-slate-500 mb-1">{'Vote Receipt'}</p>
+                      <p className="text-sm font-semibold text-emerald-600 break-all">{receiptCode}</p>
+                      <p className="text-xs text-slate-700 mt-2">{'Status'}: {receipt.status}</p>
                       <Link
-                        to={withLanguagePath(`/receipt?code=${encodeURIComponent(receiptCode)}&electionId=${encodeURIComponent(selectedElectionId)}`)}
+                        to={`/receipt?code=${encodeURIComponent(receiptCode)}&electionId=${encodeURIComponent(selectedElectionId)}`}
                         className="btn-secondary mt-3 !py-2 !px-4 text-xs inline-flex"
                       >
-                        {t('vote.receipt.verify', 'Verify This Receipt')}
+                        {'Verify This Receipt'}
                       </Link>
                     </div>
                   )}

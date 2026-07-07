@@ -9,34 +9,34 @@ import { useUiPreferences } from '../context/useUiPreferences';
 
 const severityPillClass = (severity) => {
   if (severity === 'critical') {
-    return 'bg-[#ffebeb] text-[#9b2a2a] border-[#f2bdbd]';
+    return 'bg-slate-50 text-slate-700 border-slate-200';
   }
 
   if (severity === 'high') {
-    return 'bg-[#fff1f1] text-[#af3e3e] border-[#efc8c8]';
+    return 'bg-red-50 text-slate-700 border-slate-200';
   }
 
   if (severity === 'medium') {
-    return 'bg-[#fff8e9] text-[#9c6a18] border-[#f1dfb4]';
+    return 'bg-slate-50 text-slate-700 border-slate-200';
   }
 
   if (severity === 'low') {
-    return 'bg-[#edf4ff] text-[#1f66f4] border-[#bfd4fa]';
+    return 'bg-slate-50 text-emerald-600 border-slate-200';
   }
 
-  return 'bg-[#f0f4fb] text-[#557099] border-[#d6e1f3]';
+  return 'bg-slate-50 text-slate-700 border-slate-200';
 };
 
 const SecurityCenter = () => {
   const navigate = useNavigate();
-  const { t, withLanguagePath } = useUiPreferences();
+  
 
   const severityOptions = [
-    { value: 'all', label: t('security.filters.severityAll', 'All Severity') },
-    { value: 'low', label: t('security.severity.low', 'Low') },
-    { value: 'medium', label: t('security.severity.medium', 'Medium') },
-    { value: 'high', label: t('security.severity.high', 'High') },
-    { value: 'critical', label: t('security.severity.critical', 'Critical') }
+    { value: 'all', label: 'All Severity' },
+    { value: 'low', label: 'Low' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'high', label: 'High' },
+    { value: 'critical', label: 'Critical' }
   ];
 
   const [bootLoading, setBootLoading] = useState(true);
@@ -63,15 +63,15 @@ const SecurityCenter = () => {
     }));
 
     return [
-      { value: 'all', label: t('security.filters.eventAll', 'All Event Types') },
+      { value: 'all', label: 'All Event Types' },
       ...dynamic
     ];
-  }, [overview, t]);
+  }, [overview]);
 
   useEffect(() => {
     const bootstrap = async () => {
       if (!getAuthToken()) {
-        navigate(withLanguagePath('/login'));
+        navigate('/login');
         return;
       }
 
@@ -98,7 +98,7 @@ const SecurityCenter = () => {
       } catch (requestError) {
         if (requestError.response?.status === 401) {
           clearAuthSession();
-          navigate(withLanguagePath('/login'));
+          navigate('/login');
           return;
         }
 
@@ -109,7 +109,7 @@ const SecurityCenter = () => {
     };
 
     bootstrap();
-  }, [navigate, withLanguagePath]);
+  }, [navigate]);
 
   useEffect(() => {
     const loadSecurityData = async () => {
@@ -144,7 +144,7 @@ const SecurityCenter = () => {
       } catch (requestError) {
         if (requestError.response?.status === 401) {
           clearAuthSession();
-          navigate(withLanguagePath('/login'));
+          navigate('/login');
           return;
         }
 
@@ -159,15 +159,15 @@ const SecurityCenter = () => {
     };
 
     loadSecurityData();
-  }, [bootLoading, isAdmin, navigate, selectedElectionId, selectedSeverity, selectedEventType, withLanguagePath]);
+  }, [bootLoading, isAdmin, navigate, selectedElectionId, selectedSeverity, selectedEventType]);
 
   if (bootLoading) {
     return (
       <main className="min-h-screen page-shell pt-20 pb-14">
         <div className="section-wrap">
-          <section className="surface-card p-8 text-center">
-            <LoaderCircle className="w-7 h-7 animate-spin text-[#1f66f4] mx-auto mb-3" />
-            <p className="text-sm text-[#60759b]">{t('security.loading', 'Loading security monitoring center...')}</p>
+          <section className="bento-card p-8 text-center">
+            <LoaderCircle className="w-7 h-7 animate-spin text-emerald-600 mx-auto mb-3" />
+            <p className="text-sm text-slate-700">{'Loading security monitoring center...'}</p>
           </section>
         </div>
       </main>
@@ -178,11 +178,11 @@ const SecurityCenter = () => {
     return (
       <main className="min-h-screen page-shell pt-20 pb-14">
         <div className="section-wrap">
-          <section className="surface-card p-8 text-center">
-            <AlertTriangle className="w-7 h-7 text-[#be4545] mx-auto mb-3" />
-            <h1 className="text-2xl text-[#102347] mb-2">{t('security.adminRequired', 'Admin Access Required')}</h1>
-            <p className="text-sm text-[#60759b]">
-              {t('security.adminOnly', 'This module is available only for election security administrators.')}
+          <section className="bento-card p-8 text-center">
+            <AlertTriangle className="w-7 h-7 text-slate-700 mx-auto mb-3" />
+            <h1 className="font-display text-2xl text-slate-900 mb-2">{'Admin Access Required'}</h1>
+            <p className="text-sm text-slate-700">
+              {'This module is available only for election security administrators.'}
             </p>
           </section>
         </div>
@@ -200,47 +200,47 @@ const SecurityCenter = () => {
   return (
     <main className="min-h-screen page-shell pt-20 pb-14">
       <div className="section-wrap space-y-6">
-        <header className="glass-panel p-6 md:p-7">
+        <header className="bento-card p-6 md:p-7">
           <p className="eyebrow mb-4">
-            <ShieldCheck className="w-4 h-4" /> {t('security.eyebrow', 'Risk and Integrity Monitoring')}
+            <ShieldCheck className="w-4 h-4" /> {'Risk and Integrity Monitoring'}
           </p>
-          <h1 className="text-2xl sm:text-3xl text-[#102347] mb-2">{t('security.title', 'Security Monitoring Center')}</h1>
-          <p className="text-[#5f7398] max-w-3xl">
-            {t('security.subtitle', 'Monitor anomaly signals across voter verification, vote bursts, and admin activity.')}
+          <h1 className="font-display text-2xl sm:text-3xl text-slate-900 mb-2">{'Security Monitoring Center'}</h1>
+          <p className="text-slate-500 max-w-3xl">
+            {'Monitor anomaly signals across voter verification, vote bursts, and admin activity.'}
           </p>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <span className="metric-pill">{t('security.operator', 'Operator')}: {profile?.name || t('security.adminLabel', 'Admin')}</span>
-            <span className="metric-pill">{t('security.totalEvents', 'Total Events')}: {summary.totalEvents}</span>
-            <span className="metric-pill">{t('security.totalAnomalies', 'Total Anomalies')}: {summary.totalAnomalies}</span>
-            <span className="metric-pill">{t('security.anomalies24h', '24h Anomalies')}: {summary.anomaliesInWindow}</span>
+            <span className="metric-pill">{'Operator'}: {profile?.name || 'Admin'}</span>
+            <span className="metric-pill">{'Total Events'}: {summary.totalEvents}</span>
+            <span className="metric-pill">{'Total Anomalies'}: {summary.totalAnomalies}</span>
+            <span className="metric-pill">{'24h Anomalies'}: {summary.anomaliesInWindow}</span>
           </div>
         </header>
 
         {error && (
-          <div className="surface-card p-4 border border-[#f1c6c6] bg-[#fff1f1] text-[#a43a3a]">
+          <div className="bento-card p-4 border border-red-200 bg-red-50 text-red-600">
             <p className="text-sm">{error}</p>
           </div>
         )}
 
-        <section className="border-[#d2def6] pb-5">
+        <section className="border-slate-200 pb-5">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
-              <label htmlFor="security-election-filter" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
-                {t('security.filters.scope', 'Election Scope')}
+              <label htmlFor="security-election-filter" className="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">
+                {'Election Scope'}
               </label>
               <ThemedSelect
                 id="security-election-filter"
                 value={selectedElectionId}
                 onValueChange={setSelectedElectionId}
                 options={elections.map((election) => ({ value: election._id, label: election.name }))}
-                placeholder={elections.length === 0 ? t('security.noElections', 'No elections available') : t('security.selectElection', 'Select election')}
+                placeholder={elections.length === 0 ? 'No elections available' : 'Select election'}
               />
             </div>
 
             <div>
-              <label htmlFor="security-severity-filter" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
-                {t('security.filters.severity', 'Severity')}
+              <label htmlFor="security-severity-filter" className="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">
+                {'Severity'}
               </label>
               <ThemedSelect
                 id="security-severity-filter"
@@ -251,8 +251,8 @@ const SecurityCenter = () => {
             </div>
 
             <div>
-              <label htmlFor="security-event-type-filter" className="block text-xs uppercase tracking-[0.1em] text-[#5f7398] mb-2">
-                {t('security.filters.eventType', 'Event Type')}
+              <label htmlFor="security-event-type-filter" className="block text-xs uppercase tracking-[0.1em] text-slate-500 mb-2">
+                {'Event Type'}
               </label>
               <ThemedSelect
                 id="security-event-type-filter"
@@ -265,47 +265,47 @@ const SecurityCenter = () => {
         </section>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          <article className="border-[#1f66f4] pl-4 py-2">
-            <p className="text-xs uppercase tracking-[0.1em] text-[#647aa1] mb-2">{t('security.severity.low', 'Low')}</p>
-            <p className="text-2xl text-[#102347] font-semibold">{summary.severityCounts?.low || 0}</p>
+          <article className="border-slate-200 pl-4 py-2">
+            <p className="text-xs uppercase tracking-[0.1em] text-slate-700 mb-2">{'Low'}</p>
+            <p className="text-2xl text-slate-900 font-semibold">{summary.severityCounts?.low || 0}</p>
           </article>
-          <article className="border-[#1f66f4] pl-4 py-2">
-            <p className="text-xs uppercase tracking-[0.1em] text-[#647aa1] mb-2">{t('security.severity.medium', 'Medium')}</p>
-            <p className="text-2xl text-[#102347] font-semibold">{summary.severityCounts?.medium || 0}</p>
+          <article className="border-slate-200 pl-4 py-2">
+            <p className="text-xs uppercase tracking-[0.1em] text-slate-700 mb-2">{'Medium'}</p>
+            <p className="text-2xl text-slate-900 font-semibold">{summary.severityCounts?.medium || 0}</p>
           </article>
-          <article className="border-[#1f66f4] pl-4 py-2">
-            <p className="text-xs uppercase tracking-[0.1em] text-[#647aa1] mb-2">{t('security.severity.high', 'High')}</p>
-            <p className="text-2xl text-[#102347] font-semibold">{summary.severityCounts?.high || 0}</p>
+          <article className="border-slate-200 pl-4 py-2">
+            <p className="text-xs uppercase tracking-[0.1em] text-slate-700 mb-2">{'High'}</p>
+            <p className="text-2xl text-slate-900 font-semibold">{summary.severityCounts?.high || 0}</p>
           </article>
-          <article className="border-[#1f66f4] pl-4 py-2">
-            <p className="text-xs uppercase tracking-[0.1em] text-[#647aa1] mb-2">{t('security.severity.critical', 'Critical')}</p>
-            <p className="text-2xl text-[#102347] font-semibold">{summary.severityCounts?.critical || 0}</p>
+          <article className="border-slate-200 pl-4 py-2">
+            <p className="text-xs uppercase tracking-[0.1em] text-slate-700 mb-2">{'Critical'}</p>
+            <p className="text-2xl text-slate-900 font-semibold">{summary.severityCounts?.critical || 0}</p>
           </article>
         </section>
 
         <section className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          <article className="lg:pr-6 lg: border-[#d2def6]">
-            <h2 className="text-xl text-[#102347] mb-4">{t('security.recentAnomalies', 'Recent Anomalies')}</h2>
+          <article className="lg:pr-6 lg: border-slate-200">
+            <h2 className="font-display text-xl text-slate-900 mb-4">{'Recent Anomalies'}</h2>
             {loadingEvents ? (
               <div className="text-center py-6">
-                <LoaderCircle className="w-6 h-6 animate-spin text-[#1f66f4] mx-auto mb-2" />
-                <p className="text-sm text-[#60759b]">{t('security.loadingAnomalies', 'Loading anomaly feed...')}</p>
+                <LoaderCircle className="w-6 h-6 animate-spin text-emerald-600 mx-auto mb-2" />
+                <p className="text-sm text-slate-700">{'Loading anomaly feed...'}</p>
               </div>
             ) : recentAnomalies.length === 0 ? (
-              <p className="text-sm text-[#60759b]">{t('security.noAnomalies', 'No anomalies detected for the current filter scope.')}</p>
+              <p className="text-sm text-slate-700">{'No anomalies detected for the current filter scope.'}</p>
             ) : (
               <div className="space-y-3 max-h-[520px] overflow-auto pr-1">
                 {recentAnomalies.map((event) => (
-                  <article key={event._id} className="border-[#d2def4] pb-4 mb-4">
+                  <article key={event._id} className="border-slate-200 pb-4 mb-4">
                     <div className="flex items-start justify-between gap-3 mb-2">
-                      <p className="text-sm font-semibold text-[#13305f]">{event.message}</p>
+                      <p className="text-sm font-semibold text-slate-700">{event.message}</p>
                       <span className={`text-[11px] rounded-full border px-2.5 py-1 font-semibold ${severityPillClass(event.severity)}`}>
                         {event.severity}
                       </span>
                     </div>
-                    <p className="text-xs text-[#60759a] mb-1">{t('security.eventLabel', 'Event')}: {event.eventType}</p>
-                    <p className="text-xs text-[#60759a] inline-flex items-center gap-2">
-                      <CalendarDays className="w-3.5 h-3.5" /> {formatDateTime(event.createdAt, t, { fallbackKey: 'security.na', fallbackText: 'N/A' })}
+                    <p className="text-xs text-slate-500 mb-1">{'Event'}: {event.eventType}</p>
+                    <p className="text-xs text-slate-500 inline-flex items-center gap-2">
+                      <CalendarDays className="w-3.5 h-3.5" /> {formatDateTime(event.createdAt, { fallbackKey: 'security.na', fallbackText: 'N/A' })}
                     </p>
                   </article>
                 ))}
@@ -314,27 +314,27 @@ const SecurityCenter = () => {
           </article>
 
           <article className="lg:pl-6">
-            <h2 className="text-xl text-[#102347] mb-4">{t('security.filteredStream', 'Filtered Event Stream')}</h2>
+            <h2 className="font-display text-xl text-slate-900 mb-4">{'Filtered Event Stream'}</h2>
             {loadingEvents ? (
               <div className="text-center py-6">
-                <LoaderCircle className="w-6 h-6 animate-spin text-[#1f66f4] mx-auto mb-2" />
-                <p className="text-sm text-[#60759b]">{t('security.loadingEvents', 'Loading event stream...')}</p>
+                <LoaderCircle className="w-6 h-6 animate-spin text-emerald-600 mx-auto mb-2" />
+                <p className="text-sm text-slate-700">{'Loading event stream...'}</p>
               </div>
             ) : events.length === 0 ? (
-              <p className="text-sm text-[#60759b]">{t('security.noEvents', 'No events matched the selected filters.')}</p>
+              <p className="text-sm text-slate-700">{'No events matched the selected filters.'}</p>
             ) : (
               <div className="space-y-2 max-h-[520px] overflow-auto pr-1">
                 {events.map((event) => (
-                  <div key={event._id} className="border-[#d6e1f3] pb-3 mb-3">
+                  <div key={event._id} className="border-slate-200 pb-3 mb-3">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="text-sm text-[#173563] font-medium">{event.eventType}</p>
+                      <p className="text-sm text-slate-700 font-medium">{event.eventType}</p>
                       <span className={`text-[10px] rounded-full border px-2 py-0.5 font-semibold ${severityPillClass(event.severity)}`}>
                         {event.severity}
                       </span>
                     </div>
-                    <p className="text-xs text-[#536d97] mt-1">{event.message}</p>
-                    <p className="text-[11px] text-[#6a7fa5] mt-1">
-                      {formatDateTime(event.createdAt, t, { fallbackKey: 'security.na', fallbackText: 'N/A' })} | {event.actor?.email || t('security.system', 'System')}
+                    <p className="text-xs text-slate-700 mt-1">{event.message}</p>
+                    <p className="text-[11px] text-slate-700 mt-1">
+                      {formatDateTime(event.createdAt, { fallbackKey: 'security.na', fallbackText: 'N/A' })} | {event.actor?.email || 'System'}
                     </p>
                   </div>
                 ))}
