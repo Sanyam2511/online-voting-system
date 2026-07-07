@@ -1,21 +1,21 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 :root {
-  --font-body: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
-  --font-display: 'IBM Plex Serif', 'Times New Roman', serif;
-  --ink-950: #0f1f3d;
-  --ink-800: #1d3568;
-  --ink-700: #28467f;
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+  --font-display: 'Playfair Display', 'Times New Roman', serif;
+  --ink-950: #0f172a;
+  --ink-800: #1e293b;
+  --ink-700: #334155;
   --muted-500: #5f7298;
   --muted-400: #7f92b6;
   --line-200: #d6dff0;
   --line-300: #c8d4ea;
-  --accent-600: #1f66f4;
-  --accent-500: #2f7dff;
-  --surface-0: #f8fbff;
-  --surface-50: #f7faff;
-  --surface-100: #f1f6ff;
+  --accent-600: #10b981;
+  --accent-500: #34d399;
+  --surface-0: #fafafa;
+  --surface-50: #f4f4f5;
+  --surface-100: #e4e4e7;
   --surface-card: #ffffff;
   --surface-glass: #ffffff;
   --surface-card-overlay: transparent;
@@ -94,13 +94,6 @@ body {
   color: var(--ink-950);
   line-height: 1.5;
   background-color: var(--surface-0);
-  background-image:
-    radial-gradient(circle at 8% 10%, rgba(31, 102, 244, 0.14), transparent 34%),
-    radial-gradient(circle at 92% 2%, rgba(47, 125, 255, 0.11), transparent 38%),
-    radial-gradient(circle at 50% 100%, rgba(31, 102, 244, 0.05), transparent 44%),
-    linear-gradient(to bottom, rgba(214, 223, 240, 0.2) 1px, transparent 1px),
-    linear-gradient(to right, rgba(214, 223, 240, 0.2) 1px, transparent 1px);
-  background-size: auto, auto, auto, 36px 36px, 36px 36px;
   overflow-x: hidden;
 }
 
@@ -1192,4 +1185,52 @@ input[type=number] {
   html {
     font-size: 14px;
   }
+}
+/* Bento Redesign Classes */
+.bento-card {
+  background-color: #ffffff;
+  border-radius: 1.25rem; /* 20px */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.bento-card:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+.bento-accent-card {
+  background-color: var(--accent-600);
+  color: #ffffff;
+  border-radius: 1.25rem;
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.25);
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.bento-accent-card:hover {
+  box-shadow: 0 16px 40px rgba(16, 185, 129, 0.35);
+  transform: translateY(-2px);
+}
+.pill-nav {
+  background-color: #ffffff;
+  border-radius: 9999px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 0.5rem 1rem;
+  margin: 1rem auto;
+  width: max-content;
+  max-width: 95%;
+}
+.btn-black-pill {
+  background-color: #0f172a;
+  color: #ffffff;
+  border-radius: 9999px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-black-pill:hover {
+  background-color: #1e293b;
+  transform: translateY(-1px);
 }
