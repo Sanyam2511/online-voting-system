@@ -1,24 +1,18 @@
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LogOut, Menu, Moon, ShieldCheck, Sun, Vote, X } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { LogOut, Menu, Moon, ShieldCheck, Sun, X, ChevronDown } from 'lucide-react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { AUTH_CHANGED_EVENT, clearAuthSession, getStoredUser } from '../lib/auth';
 import BrandMark from './BrandMark';
 import { useUiPreferences } from '../context/useUiPreferences';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const {
-    language,
-    setLanguage,
-    theme,
-    toggleTheme,
-    accessibilityMode,
-    toggleAccessibilityMode,
-    t
-  } = useUiPreferences();
   const location = useLocation();
+  const { theme, toggleTheme } = useUiPreferences();
   const [user, setUser] = useState(getStoredUser());
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const syncAuthState = () => {
     setUser(getStoredUser());
@@ -28,130 +22,122 @@ const Navbar = () => {
     window.addEventListener(AUTH_CHANGED_EVENT, syncAuthState);
     window.addEventListener('storage', syncAuthState);
 
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+
     return () => {
       window.removeEventListener(AUTH_CHANGED_EVENT, syncAuthState);
       window.removeEventListener('storage', syncAuthState);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Close dropdown on route change
+  useEffect(() => {
+    setDropdownOpen(false);
+  }, [location.pathname]);
 
   const isLoggedIn = Boolean(user?.token || localStorage.getItem('token'));
   const isAdmin = user?.role === 'Admin';
 
   const navLinks = useMemo(
     () => [
-      { to: '/', label: t('nav.home', 'Home'), end: true },
-      { to: '/candidates', label: t('nav.candidates', 'Candidates') },
-      { to: '/disputes', label: t('nav.disputes', 'Disputes') },
-      ...(isAdmin ? [{ to: '/manage-candidates', label: t('nav.manage', 'Manage') }] : []),
-      ...(isAdmin ? [{ to: '/security', label: t('nav.security', 'Security') }] : []),
-      { to: '/transparency', label: t('nav.transparency', 'Transparency') },
-      { to: '/receipt', label: t('nav.receipt', 'Receipt Verify') }
+      { to: '/', label: 'Home', end: true },
+      { to: '/candidates', label: 'Candidates' },
+      { to: '/disputes', label: 'Disputes' },
+      ...(isAdmin ? [{ to: '/manage-candidates', label: 'Manage' }] : []),
+      ...(isAdmin ? [{ to: '/security', label: 'Security' }] : []),
+      { to: '/transparency', label: 'Transparency' },
+      { to: '/receipt', label: 'Receipt Verify' }
     ],
-    [isAdmin, t]
+    [isAdmin]
   );
-
-  const toggleLanguage = () => {
-    const nextLanguage = language === 'en' ? 'hi' : 'en';
-    setLanguage(nextLanguage);
-    const nextPath = location.pathname.replace(/^\/(en|hi)(?=\/|$)/, `/${nextLanguage}`);
-    navigate(nextPath || `/${nextLanguage}`);
-  };
 
   const handleLogout = () => {
     clearAuthSession();
     setMobileOpen(false);
-    navigate(`/${language}/login`);
+    navigate(`/login`);
   };
 
   const closeMobileMenu = () => {
     setMobileOpen(false);
   };
 
-  const getNavLinkClass = ({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`;
+  const getNavLinkClass = ({ isActive }) => `block px-4 py-2 text-sm transition-colors ${isActive ? 'bg-slate-50 font-semibold text-emerald-600' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`;
+  const getMobileNavLinkClass = ({ isActive }) => `block px-3 py-2 text-sm rounded-lg transition-colors ${isActive ? 'bg-slate-100 font-semibold text-emerald-600' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`;
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50">
-      <div className="section-wrap pt-2 pb-1">
-        <div className="rounded-[1.2rem] nav-shell backdrop-blur-xl px-3 sm:px-4 py-2.5">
+    <nav className="fixed top-4 left-0 w-full z-50 flex justify-center pointer-events-none">
+      <div className="pill-nav backdrop-blur-xl pointer-events-auto shadow-sm border border-slate-200 bg-white/80">
+        <div className="flex items-center justify-between gap-4 sm:gap-8">
           <div className="flex items-center justify-between gap-3">
-            <Link to={`/${language}/`} onClick={closeMobileMenu} className="flex items-center gap-2.5 min-w-0">
-              <BrandMark className="w-10 h-10" />
+            <Link to={`/`} onClick={closeMobileMenu} className="flex items-center gap-2.5 min-w-0 pr-2">
+              <BrandMark className="w-9 h-9" />
               <div className="min-w-0">
-                <p className="text-[15px] sm:text-base font-semibold text-[#132b56] tracking-tight truncate">SecureVote</p>
-                <p className="hidden sm:block text-[11px] uppercase tracking-[0.12em] text-[#60759a]">Election Portal</p>
+                <p className="text-[15px] sm:text-base font-semibold text-slate-900 tracking-tight truncate">SecureVote</p>
               </div>
             </Link>
 
-            <div className="hidden lg:flex items-center gap-1">
-              {navLinks.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={`/${language}${item.to === '/' ? '' : item.to}`}
-                  className={getNavLinkClass}
-                  end={item.end}
-                  onClick={closeMobileMenu}
+            <div className="hidden lg:flex items-center gap-1" ref={dropdownRef}>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="nav-link font-medium inline-flex items-center gap-1.5 px-3 py-2 text-sm text-slate-700 hover:text-slate-900 transition-colors rounded-lg hover:bg-slate-100/50"
+                  aria-expanded={dropdownOpen}
                 >
-                  {item.label}
-                </NavLink>
-              ))}
+                  Pages
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {dropdownOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-50 flex flex-col overflow-hidden">
+                    {navLinks.map((item) => (
+                      <NavLink
+                        key={item.to}
+                        to={item.to}
+                        className={getNavLinkClass}
+                        end={item.end}
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        {item.label}
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={toggleLanguage}
-                className="hidden md:inline-flex nav-link"
-                aria-label={`${t('nav.language', 'Language')}: ${t('nav.languageValue', language === 'en' ? 'English' : 'Hindi')}`}
-              >
-                {language === 'en' ? 'EN' : 'HI'}
-              </button>
-
+            <div className="flex items-center gap-1.5 ml-2">
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="hidden md:inline-flex nav-link"
+                className="hidden md:inline-flex nav-link p-2 rounded-full hover:bg-slate-100/50 transition-colors text-slate-600 hover:text-slate-900"
                 aria-pressed={theme === 'dark'}
-                aria-label={theme === 'dark' ? t('nav.themeDark', 'Dark mode on') : t('nav.themeLight', 'Light mode on')}
+                aria-label={theme === 'dark' ? 'Dark mode on' : 'Light mode on'}
               >
                 {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                <span className="hidden sm:inline">{t('nav.theme', 'Theme')}</span>
               </button>
-
-              <button
-                type="button"
-                onClick={toggleAccessibilityMode}
-                className="hidden md:inline-flex nav-link"
-                aria-pressed={accessibilityMode}
-                aria-label={accessibilityMode
-                  ? t('nav.accessibilityOn', 'Accessibility mode on')
-                  : t('nav.accessibilityOff', 'Accessibility mode off')}
-              >
-                <span className="hidden sm:inline">{t('nav.accessibility', 'Accessibility')}</span>
-                <span className="sm:hidden">A11y</span>
-              </button>
-
-              {!isAdmin && (
-                <Link to={`/${language}/vote`} onClick={closeMobileMenu} className="btn-primary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5">
-                  <Vote className="w-4 h-4" />
-                  <span className="hidden sm:inline">{t('nav.vote', 'Vote')}</span>
-                </Link>
-              )}
 
               {isLoggedIn ? (
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="btn-secondary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5"
+                  className="btn-secondary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5 ml-2 shadow-sm"
                 >
-                  <LogOut className="w-4 h-4" />
-                  <span className="hidden sm:inline">{t('nav.logout', 'Logout')}</span>
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline font-medium">{'Logout'}</span>
                 </button>
               ) : (
                 <>
-                  <Link to={`/${language}/login`} onClick={closeMobileMenu} className="hidden sm:inline-flex nav-link">{t('nav.login', 'Login')}</Link>
-                  <Link to={`/${language}/signup`} onClick={closeMobileMenu} className="btn-secondary text-xs !py-1.5 !px-3 inline-flex items-center gap-1.5">
+                  <Link to={`/login`} onClick={closeMobileMenu} className="hidden sm:inline-flex px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors rounded-lg hover:bg-slate-100/50">{'Login'}</Link>
+                  <Link to={`/signup`} onClick={closeMobileMenu} className="btn-black-pill text-sm inline-flex items-center gap-1.5 ml-1 shadow-sm px-4">
                     <ShieldCheck className="w-4 h-4" />
-                    <span className="hidden sm:inline">{t('nav.register', 'Register')}</span>
+                    <span className="hidden sm:inline">{'Sign Up'}</span>
                   </Link>
                 </>
               )}
@@ -159,8 +145,8 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={() => setMobileOpen((current) => !current)}
-                className="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[#c5d5f4] bg-[#f4f8ff] text-[#2b4d80]"
-                aria-label={t('nav.toggleMenu', 'Toggle navigation menu')}
+                className="lg:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 bg-white text-slate-800 ml-1 shadow-sm"
+                aria-label={'Toggle navigation menu'}
               >
                 {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
               </button>
@@ -168,13 +154,14 @@ const Navbar = () => {
           </div>
 
           {mobileOpen && (
-            <div className="lg:hidden mt-2.5 pt-2.5 border-t border-[#d9e4f9]">
-              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+            <div className="lg:hidden mt-3 pt-3 border-t border-slate-100 bg-white/50 rounded-b-2xl">
+              <div className="flex flex-col gap-1 max-h-[60vh] overflow-y-auto px-1 pb-2">
+                <p className="px-3 py-1 text-xs uppercase tracking-wider font-semibold text-slate-400">Pages</p>
                 {navLinks.map((item) => (
                   <NavLink
                     key={item.to}
-                    to={`/${language}${item.to === '/' ? '' : item.to}`}
-                    className={getNavLinkClass}
+                    to={item.to}
+                    className={getMobileNavLinkClass}
                     end={item.end}
                     onClick={closeMobileMenu}
                   >
@@ -184,25 +171,15 @@ const Navbar = () => {
               </div>
 
               {!isLoggedIn && (
-                <div className="mt-2">
-                  <Link to={`/${language}/login`} onClick={closeMobileMenu} className="nav-link mr-2 inline-flex">{t('nav.login', 'Login')}</Link>
+                <div className="px-1 py-2 border-t border-slate-100">
+                  <Link to={`/login`} onClick={closeMobileMenu} className="block w-full text-center py-2 text-sm font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors">{'Login'}</Link>
                 </div>
               )}
 
-              <div className="mt-2 pt-2 border-t border-[#d9e4f9] flex flex-wrap gap-2">
-                <button type="button" onClick={toggleLanguage} className="nav-link">
-                  {language === 'en' ? 'EN' : 'HI'}
-                </button>
-                <button type="button" onClick={toggleTheme} className="nav-link" aria-pressed={theme === 'dark'}>
-                  {t('nav.theme', 'Theme')}
-                </button>
-                <button
-                  type="button"
-                  onClick={toggleAccessibilityMode}
-                  className="nav-link"
-                  aria-pressed={accessibilityMode}
-                >
-                  {t('nav.accessibility', 'Accessibility')}
+              <div className="p-2 border-t border-slate-100">
+                <button type="button" onClick={toggleTheme} className="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors" aria-pressed={theme === 'dark'}>
+                  {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                  {'Toggle Theme'}
                 </button>
               </div>
             </div>
