@@ -38,12 +38,12 @@ const Footer = () => {
             <Link to={'/'} className="inline-flex items-center gap-3">
               <BrandMark className="w-10 h-10" />
               <div>
-                <p className="text-lg font-semibold text-[#102b58]">{'SecureVote Election Portal'}</p>
-                <p className="text-xs uppercase tracking-[0.12em] text-[#60759a]">{'Digital civic governance'}</p>
+                <p className="text-lg font-semibold text-slate-900">{'SecureVote Election Portal'}</p>
+                <p className="text-xs uppercase tracking-[0.12em] text-slate-500">{'Digital civic governance'}</p>
               </div>
             </Link>
 
-            <p className="text-[0.9rem] text-[#5e7298] leading-relaxed mt-3 max-w-xl">
+            <p className="text-[0.9rem] text-slate-500 leading-relaxed mt-3 max-w-xl">
               {'Built for high-trust public participation with secure authentication, controlled election lifecycles, and transparent vote accountability.'}
             </p>
 
@@ -101,7 +101,7 @@ const Footer = () => {
 
       <div className="footer-base">
         <div className="section-wrap py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-2.5">
-          <p className="text-[11px] text-[#60759a]">
+          <p className="text-[11px] text-slate-500">
             {'Copyright {year} SecureVote Election Portal. Designed for transparent and auditable civic outcomes.'
               .replace('{year}', String(currentYear))}
           </p>

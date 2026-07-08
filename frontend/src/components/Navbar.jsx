@@ -72,11 +72,11 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-4 left-0 w-full z-50 flex justify-center pointer-events-none">
-      <div className="pill-nav backdrop-blur-xl pointer-events-auto shadow-sm border border-slate-200 bg-white/80">
+      <div className="pill-nav backdrop-blur-xl pointer-events-auto shadow-sm bg-white/80">
         <div className="flex items-center justify-between gap-4 sm:gap-8">
           <div className="flex items-center justify-between gap-3">
             <Link to={`/`} onClick={closeMobileMenu} className="flex items-center gap-2.5 min-w-0 pr-2">
-              <BrandMark className="w-9 h-9" />
+              <BrandMark className="w-12 h-12" />
               <div className="min-w-0">
                 <p className="text-[15px] sm:text-base font-semibold text-slate-900 tracking-tight truncate">SecureVote</p>
               </div>
