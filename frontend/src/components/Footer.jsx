@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { BarChart3, ShieldCheck, Vote } from 'lucide-react';
 import BrandMark from './BrandMark';
 
-import { useUiPreferences } from '../context/useUiPreferences';
+
 
 const Footer = () => {
   
