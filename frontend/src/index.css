@@ -1188,11 +1188,12 @@ input[type=number] {
 }
 /* Bento Redesign Classes */
 .bento-card {
-  background-color: #ffffff;
+  background-color: var(--surface-card-base);
   border-radius: 1.25rem; /* 20px */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
   padding: 1.5rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--line-300);
 }
 .bento-card:hover {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
@@ -1210,17 +1211,18 @@ input[type=number] {
   transform: translateY(-2px);
 }
 .pill-nav {
-  background-color: #ffffff;
+  background-color: var(--surface-card-soft);
   border-radius: 9999px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   padding: 0.5rem 1rem;
   margin: 1rem auto;
   width: max-content;
   max-width: 95%;
+  border: 1px solid var(--line-300);
 }
 .btn-black-pill {
-  background-color: #0f172a;
-  color: #ffffff;
+  background-color: var(--ink-950);
+  color: var(--surface-0);
   border-radius: 9999px;
   padding: 0.6rem 1.5rem;
   font-weight: 600;
@@ -1231,6 +1233,44 @@ input[type=number] {
   justify-content: center;
 }
 .btn-black-pill:hover {
-  background-color: #1e293b;
+  background-color: var(--ink-800);
   transform: translateY(-1px);
 }
+
+/* Global Overrides for hardcoded Tailwind colors to map to our dark theme */
+body.theme-dark .text-slate-900,
+body.theme-dark .text-slate-800 {
+  color: var(--ink-950) !important;
+}
+
+body.theme-dark .text-slate-700,
+body.theme-dark .text-slate-600 {
+  color: var(--muted-500) !important;
+}
+
+body.theme-dark .text-slate-500 {
+  color: var(--muted-400) !important;
+}
+
+body.theme-dark .bg-slate-50,
+body.theme-dark .bg-slate-100 {
+  background-color: var(--surface-card-subtle) !important;
+}
+
+body.theme-dark .bg-slate-200 {
+  background-color: var(--surface-card-tint) !important;
+}
+
+body.theme-dark .border-slate-100,
+body.theme-dark .border-slate-200,
+body.theme-dark .border-slate-300,
+body.theme-dark .border-slate-800 {
+  border-color: var(--line-300) !important;
+}
+
+body.theme-dark .bg-white\/80,
+body.theme-dark .bg-white\/50,
+body.theme-dark .bg-white {
+  background-color: transparent !important;
+}
+

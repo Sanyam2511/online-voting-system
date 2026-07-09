@@ -1,14 +1,13 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, Menu, Moon, ShieldCheck, Sun, X, ChevronDown } from 'lucide-react';
+import { LogOut, Menu, ShieldCheck, X, ChevronDown } from 'lucide-react';
 import { useEffect, useMemo, useState, useRef } from 'react';
 import { AUTH_CHANGED_EVENT, clearAuthSession, getStoredUser } from '../lib/auth';
 import BrandMark from './BrandMark';
-import { useUiPreferences } from '../context/useUiPreferences';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { theme, toggleTheme } = useUiPreferences();
   const [user, setUser] = useState(getStoredUser());
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -24,7 +23,8 @@ const Navbar = () => {
 
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -72,7 +72,7 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-4 left-0 w-full z-50 flex justify-center pointer-events-none">
-      <div className="pill-nav backdrop-blur-xl pointer-events-auto shadow-sm bg-white/80">
+      <div className="pill-nav backdrop-blur-xl pointer-events-auto shadow-sm">
         <div className="flex items-center justify-between gap-4 sm:gap-8">
           <div className="flex items-center justify-between gap-3">
             <Link to={`/`} onClick={closeMobileMenu} className="flex items-center gap-2.5 min-w-0 pr-2">
@@ -95,7 +95,7 @@ const Navbar = () => {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-50 flex flex-col overflow-hidden">
+                  <div className="absolute top-full left-0 mt-2 w-48 border border-slate-200 rounded-xl shadow-lg py-1 z-50 flex flex-col overflow-hidden" style={{ backgroundColor: 'var(--surface-card-base)' }}>
                     {navLinks.map((item) => (
                       <NavLink
                         key={item.to}
@@ -113,16 +113,6 @@ const Navbar = () => {
             </div>
 
             <div className="flex items-center gap-1.5 ml-2">
-              <button
-                type="button"
-                onClick={toggleTheme}
-                className="hidden md:inline-flex nav-link p-2 rounded-full hover:bg-slate-100/50 transition-colors text-slate-600 hover:text-slate-900"
-                aria-pressed={theme === 'dark'}
-                aria-label={theme === 'dark' ? 'Dark mode on' : 'Light mode on'}
-              >
-                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </button>
-
               {isLoggedIn ? (
                 <button
                   type="button"
@@ -176,12 +166,7 @@ const Navbar = () => {
                 </div>
               )}
 
-              <div className="p-2 border-t border-slate-100">
-                <button type="button" onClick={toggleTheme} className="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors" aria-pressed={theme === 'dark'}>
-                  {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                  {'Toggle Theme'}
-                </button>
-              </div>
+
             </div>
           )}
         </div>
