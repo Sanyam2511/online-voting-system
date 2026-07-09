@@ -15,7 +15,7 @@ import { clearAuthSession, getAuthToken } from '../lib/auth';
 import { formatDateTime } from '../lib/formatting';
 import disputeModuleIllustration from '../assets/illustrations/dispute-module.png';
 import ThemedSelect from '../components/ThemedSelect';
-import { useUiPreferences } from '../context/useUiPreferences';
+
 
 const defaultFormData = {
   electionId: '',

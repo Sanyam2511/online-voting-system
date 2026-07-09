@@ -14,7 +14,7 @@ import { getAuthToken } from '../lib/auth';
 import { formatElectionStatus } from '../lib/formatting';
 import toast from 'react-hot-toast';
 import ThemedSelect from '../components/ThemedSelect';
-import { useUiPreferences } from '../context/useUiPreferences';
+
 
 const defaultCandidateForm = {
   name: '',

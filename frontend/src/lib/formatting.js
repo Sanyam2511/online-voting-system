@@ -16,12 +16,7 @@ export const formatElectionStatus = (status) => {
   return map[status] || status;
 };
 
-export const formatDateTime = (value, options = {}) => {
-  const {
-    fallbackKey = 'common.na',
-    fallbackText = 'N/A'
-  } = options;
-
+export const formatDateTime = (value, fallbackText = 'TBD') => {
   if (!value) {
     return fallbackText;
   }

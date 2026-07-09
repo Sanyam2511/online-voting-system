@@ -6,7 +6,7 @@ import api from '../lib/api';
 import receiptIllustration from '../assets/illustrations/receipt-verification.png';
 import { getAuthToken } from '../lib/auth';
 import ThemedSelect from '../components/ThemedSelect';
-import { useUiPreferences } from '../context/useUiPreferences';
+
 
 const ReceiptCard = ({ title, receipt }) => (
   <article className="p-4 border-slate-200">

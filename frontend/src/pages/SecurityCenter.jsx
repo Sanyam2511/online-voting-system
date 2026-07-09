@@ -5,7 +5,7 @@ import api from '../lib/api';
 import { clearAuthSession, getAuthToken } from '../lib/auth';
 import { formatDateTime } from '../lib/formatting';
 import ThemedSelect from '../components/ThemedSelect';
-import { useUiPreferences } from '../context/useUiPreferences';
+
 
 const severityPillClass = (severity) => {
   if (severity === 'critical') {

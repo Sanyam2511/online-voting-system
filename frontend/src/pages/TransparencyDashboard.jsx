@@ -16,7 +16,7 @@ import api from '../lib/api';
 import { formatElectionStatus } from '../lib/formatting';
 import transparencyIllustration from '../assets/illustrations/transparency-dashboard.png';
 import ThemedSelect from '../components/ThemedSelect';
-import { useUiPreferences } from '../context/useUiPreferences';
+
 
 const PARTY_COLORS = ['#1F66F4', '#2F7DFF', '#274A84', '#5A89F6', '#89AEEF', '#3A5F9C'];
 

@@ -5,7 +5,7 @@ import ThemedSelect from '../components/ThemedSelect';
 import api from '../lib/api';
 import { formatElectionStatus } from '../lib/formatting';
 import candidateCompareIllustration from '../assets/illustrations/candidate-compare.png';
-import { useUiPreferences } from '../context/useUiPreferences';
+
 
 const normalizeToken = (value) => value.trim().replace(/\.+$/, '');
 

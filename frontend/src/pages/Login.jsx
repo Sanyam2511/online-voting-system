@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import api from '../lib/api';
 import { setAuthSession } from '../lib/auth';
 import loginSecurityIllustration from '../assets/illustrations/login-security.png';
-import { useUiPreferences } from '../context/useUiPreferences';
+
 
 const Login = () => {
   const navigate = useNavigate();
