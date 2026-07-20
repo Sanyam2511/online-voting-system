@@ -5,8 +5,6 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 
 import app from '../app.js';
 import connectDB from '../config/db.js';
-import { ensureDefaultAdmin } from '../controllers/authController.js';
-import { ensureElectionInfrastructure } from '../controllers/voteController.js';
 import Candidate from '../models/Candidate.js';
 import User from '../models/User.js';
 import VoteReceipt from '../models/VoteReceipt.js';
@@ -28,8 +26,6 @@ describe('Recount + Strong Verification Workflow', () => {
     process.env.MONGO_URI = mongoServer.getUri();
 
     await connectDB();
-    await ensureDefaultAdmin();
-    await ensureElectionInfrastructure();
   });
 
   beforeEach(async () => {

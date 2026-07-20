@@ -15,10 +15,7 @@ const candidateSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add a party name']
   },
-  electionName: {
-    type: String,
-    default: 'National General Election 2026'
-  },
+
   manifesto: {
     type: String,
     required: [true, 'Please add a manifesto or description']
