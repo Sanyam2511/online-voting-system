@@ -1,27 +1,41 @@
-import { AlertCircle, ArrowRight, CheckCircle2, LockKeyhole, Mail, ShieldCheck } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle2, LockKeyhole, Mail, ShieldCheck, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../lib/api';
-import { setAuthSession } from '../lib/auth';
+import { useAuth } from '../context/AuthContext';
 import loginSecurityIllustration from '../assets/illustrations/login-security.png';
 
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [validationErrors, setValidationErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setError('');
+    setValidationErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const errors = {};
+    if (!formData.email) errors.email = 'Email is required';
+    else if (!/^\\S+@\\S+\\.\\S+$/.test(formData.email)) errors.email = 'Invalid email format';
+    if (!formData.password) errors.password = 'Password is required';
+    
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
     setLoading(true);
     setError('');
     setSuccess('');
@@ -29,7 +43,7 @@ const Login = () => {
     try {
       const response = await api.post('/auth/login', formData);
       const authPayload = response.data;
-      setAuthSession(authPayload);
+      setUser(authPayload);
       setSuccess('Login successful! Redirecting...');
       const redirectPath = authPayload.role === 'Admin'
         ? '/manage-candidates'
@@ -85,10 +99,15 @@ const Login = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder={'you@example.com'}
-                    required
-                    className="form-field form-field-with-icon"
+                    className={`form-field form-field-with-icon ${validationErrors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}`}
                   />
                 </div>
+                {validationErrors.email && (
+                  <p className="mt-1.5 text-sm font-medium text-red-500 flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    {validationErrors.email}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -102,10 +121,15 @@ const Login = () => {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder={'Enter your secure password'}
-                    required
-                    className="form-field form-field-with-icon"
+                    className={`form-field form-field-with-icon ${validationErrors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}`}
                   />
                 </div>
+                {validationErrors.password && (
+                  <p className="mt-1.5 text-sm font-medium text-red-500 flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    {validationErrors.password}
+                  </p>
+                )}
               </div>
 
               <button
@@ -113,6 +137,7 @@ const Login = () => {
                 disabled={loading}
                 className="btn-black-pill w-full inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
+                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {loading ? 'Signing in...' : 'Sign In'}
                 {!loading && <ArrowRight className="w-4 h-4" />}
               </button>

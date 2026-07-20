@@ -1,13 +1,14 @@
-import { AlertCircle, ArrowRight, CheckCircle2, LockKeyhole, Mail, ShieldCheck, User, UserPlus } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle2, LockKeyhole, Mail, ShieldCheck, User, UserPlus, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../lib/api';
-import { setAuthSession } from '../lib/auth';
+import { useAuth } from '../context/AuthContext';
 import signupOnboardingIllustration from '../assets/illustrations/signup-onboarding.png';
 
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   
   const [formData, setFormData] = useState({ 
     name: '', 
@@ -18,41 +19,40 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [validationErrors, setValidationErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setError('');
+    setValidationErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Custom Validation
+    const errors = {};
+    if (!formData.name) errors.name = 'Full name is required';
+    if (!formData.email) errors.email = 'Email is required';
+    else if (!/^\\S+@\\S+\\.\\S+$/.test(formData.email)) errors.email = 'Invalid email format';
+    if (!formData.password) errors.password = 'Password is required';
+    else if (formData.password.length < 6) errors.password = 'Password must be at least 6 characters';
+    if (formData.password !== formData.confirmPassword) errors.confirmPassword = 'Passwords do not match';
+    
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
     setLoading(true);
     setError('');
     setSuccess('');
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
-      setLoading(false);
-      return;
-    }
-
     try {
-      const submitData = {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password
-      };
-
-      const response = await api.post('/auth/register', submitData);
+      const response = await api.post('/auth/register', formData);
       const authPayload = response.data;
-      setAuthSession(authPayload);
+      setUser(authPayload);
       setSuccess('Account created successfully! Redirecting...');
       const redirectPath = authPayload.role === 'Admin'
         ? '/manage-candidates'
@@ -108,10 +108,15 @@ const Signup = () => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder={'Your full legal name'}
-                    required
-                    className="form-field form-field-with-icon"
+                    className={`form-field form-field-with-icon ${validationErrors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}`}
                   />
                 </div>
+                {validationErrors.name && (
+                  <p className="mt-1.5 text-sm font-medium text-red-500 flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    {validationErrors.name}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -125,10 +130,15 @@ const Signup = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder={'you@example.com'}
-                    required
-                    className="form-field form-field-with-icon"
+                    className={`form-field form-field-with-icon ${validationErrors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}`}
                   />
                 </div>
+                {validationErrors.email && (
+                  <p className="mt-1.5 text-sm font-medium text-red-500 flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    {validationErrors.email}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -142,10 +152,15 @@ const Signup = () => {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder={'At least 6 characters'}
-                    required
-                    className="form-field form-field-with-icon"
+                    className={`form-field form-field-with-icon ${validationErrors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}`}
                   />
                 </div>
+                {validationErrors.password && (
+                  <p className="mt-1.5 text-sm font-medium text-red-500 flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    {validationErrors.password}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -159,10 +174,15 @@ const Signup = () => {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder={'Re-enter password'}
-                    required
-                    className="form-field form-field-with-icon"
+                    className={`form-field form-field-with-icon ${validationErrors.confirmPassword ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}`}
                   />
                 </div>
+                {validationErrors.confirmPassword && (
+                  <p className="mt-1.5 text-sm font-medium text-red-500 flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    {validationErrors.confirmPassword}
+                  </p>
+                )}
               </div>
 
               <button
@@ -170,6 +190,7 @@ const Signup = () => {
                 disabled={loading}
                 className="btn-black-pill w-full inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
+                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {loading ? 'Creating account...' : 'Create Account'}
                 {!loading && <ArrowRight className="w-4 h-4" />}
               </button>
