@@ -4,7 +4,6 @@ import { useSearchParams } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
 import api from '../lib/api';
 import receiptIllustration from '../assets/illustrations/receipt-verification.png';
-import { getAuthToken } from '../lib/auth';
 import ThemedSelect from '../components/ThemedSelect';
 
 
@@ -70,10 +69,6 @@ const ReceiptVerification = () => {
 
   useEffect(() => {
     const fetchMyReceipt = async () => {
-      if (!getAuthToken()) {
-        return;
-      }
-
       setMyLoading(true);
       setMyError('');
 

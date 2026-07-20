@@ -115,13 +115,6 @@ const VotingArena = () => {
 
   useEffect(() => {
     const bootstrapVotingData = async () => {
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
       try {
         const [electionsResponse, meResponse] = await Promise.all([
           api.get('/vote/elections/public'),

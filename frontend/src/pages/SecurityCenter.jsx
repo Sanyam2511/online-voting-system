@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, CalendarDays, LoaderCircle, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
-import { clearAuthSession, getAuthToken } from '../lib/auth';
+import { clearAuthSession } from '../lib/auth';
 import { formatDateTime } from '../lib/formatting';
 import ThemedSelect from '../components/ThemedSelect';
 
@@ -70,11 +70,6 @@ const SecurityCenter = () => {
 
   useEffect(() => {
     const bootstrap = async () => {
-      if (!getAuthToken()) {
-        navigate('/login');
-        return;
-      }
-
       setBootLoading(true);
       setError('');
 

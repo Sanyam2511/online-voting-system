@@ -9,8 +9,6 @@ import {
   Trash2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import api from '../lib/api';
-import { getAuthToken } from '../lib/auth';
 import { formatElectionStatus } from '../lib/formatting';
 import toast from 'react-hot-toast';
 import ThemedSelect from '../components/ThemedSelect';
@@ -132,11 +130,6 @@ const CandidateManagement = () => {
   };
 
   const bootstrapManagement = async () => {
-    if (!getAuthToken()) {
-      navigate('/login');
-      return;
-    }
-
     setBootstrapping(true);
     setError('');
 

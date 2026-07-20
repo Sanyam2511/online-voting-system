@@ -11,7 +11,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../lib/api';
-import { clearAuthSession, getAuthToken } from '../lib/auth';
+import { clearAuthSession } from '../lib/auth';
 import { formatDateTime } from '../lib/formatting';
 import disputeModuleIllustration from '../assets/illustrations/dispute-module.png';
 import ThemedSelect from '../components/ThemedSelect';
@@ -123,11 +123,6 @@ const RecountDisputes = () => {
   );
 
   const bootstrap = async () => {
-    if (!getAuthToken()) {
-      navigate('/login');
-      return;
-    }
-
     setBootstrapping(true);
     setError('');
 
