@@ -2,36 +2,27 @@
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, Menu, ShieldCheck, X, ChevronDown } from 'lucide-react';
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { AUTH_CHANGED_EVENT, clearAuthSession, getStoredUser } from '../lib/auth';
+import { useAuth } from '../context/AuthContext';
+import api from '../lib/api';
 import BrandMark from './BrandMark';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [user, setUser] = useState(getStoredUser());
+  const { user, setUser } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const syncAuthState = () => {
-    setUser(getStoredUser());
-  };
-
   useEffect(() => {
-    window.addEventListener(AUTH_CHANGED_EVENT, syncAuthState);
-    window.addEventListener('storage', syncAuthState);
-
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDropdownOpen(false);
+        setDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      window.removeEventListener(AUTH_CHANGED_EVENT, syncAuthState);
-      window.removeEventListener('storage', syncAuthState);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
@@ -41,7 +32,7 @@ const Navbar = () => {
     setDropdownOpen(false);
   }, [location.pathname]);
 
-  const isLoggedIn = Boolean(user?.token || localStorage.getItem('token'));
+  const isLoggedIn = Boolean(user);
   const isAdmin = user?.role === 'Admin';
 
   const navLinks = useMemo(
@@ -57,8 +48,13 @@ const Navbar = () => {
     [isAdmin]
   );
 
-  const handleLogout = () => {
-    clearAuthSession();
+  const handleLogout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch {
+      // Ignore
+    }
+    setUser(null);
     setMobileOpen(false);
     navigate(`/login`);
   };

@@ -12,12 +12,15 @@ import TransparencyDashboard from './pages/TransparencyDashboard';
 import ReceiptVerification from './pages/ReceiptVerification';
 import RecountDisputes from './pages/RecountDisputes';
 import SecurityCenter from './pages/SecurityCenter';
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
 
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-transparent app-shell">
+    <AuthProvider>
+      <Router>
+        <div className="min-h-screen bg-transparent app-shell">
         <a href="#app-main-content" className="skip-link">
           Skip to main content
         </a>
@@ -55,18 +58,27 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/candidates" element={<CandidateProfiles />} />
-            <Route path="/manage-candidates" element={<CandidateManagement />} />
-            <Route path="/security" element={<SecurityCenter />} />
             <Route path="/transparency" element={<TransparencyDashboard />} />
             <Route path="/receipt" element={<ReceiptVerification />} />
-            <Route path="/disputes" element={<RecountDisputes />} />
-            <Route path="/vote" element={<VotingArena />} />
             <Route path="*" element={<Navigate to="/" replace />} />
+
+            {/* Voter Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/vote" element={<VotingArena />} />
+            </Route>
+
+            {/* Admin Protected Routes */}
+            <Route element={<ProtectedRoute adminOnly />}>
+              <Route path="/manage-candidates" element={<CandidateManagement />} />
+              <Route path="/security" element={<SecurityCenter />} />
+              <Route path="/disputes" element={<RecountDisputes />} />
+            </Route>
           </Routes>
         </main>
         <Footer />
       </div>
     </Router>
+  </AuthProvider>
   );
 }
 
