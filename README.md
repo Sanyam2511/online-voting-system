@@ -114,3 +114,9 @@ online-voting-system/
 ├── backend/          # Express REST API, Database Models, Controllers & Routes
 └── frontend/         # React Application, UI Components, Context & Views
 ```
+
+---
+
+## License
+
+This project is licensed under the MIT License.
