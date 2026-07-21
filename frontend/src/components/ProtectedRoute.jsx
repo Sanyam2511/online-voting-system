@@ -2,6 +2,9 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LoaderCircle } from 'lucide-react';
 
+/**
+ * Protected route component to restrict access based on authentication and roles.
+ */
 const ProtectedRoute = ({ adminOnly = false }) => {
   const { user, loading } = useAuth();
 
