@@ -3,6 +3,9 @@ import api from '../lib/api';
 
 const AuthContext = createContext(null);
 
+/**
+ * Context provider for managing user authentication state.
+ */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
